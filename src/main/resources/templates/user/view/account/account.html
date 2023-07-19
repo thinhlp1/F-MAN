@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Mobile Specific Meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Author Meta -->
+  <meta name="author" content="CodePixar">
+  <!-- Meta Description -->
+  <meta name="description" content="">
+  <!-- Meta Keyword -->
+  <meta name="keywords" content="">
+  <!-- meta character set -->
+  <meta charset="UTF-8">
+  <!-- Site Title -->
+  <title>Đăng nhập</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+
+
+  <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
+
+</head>
+
+<body ng-app="myApp">
+
+  <!-- Start Header Area -->
+  <div th:replace="~{/user/view/component/nav.html::nav}"></div>
+  <!-- End Header Area -->
+
+  <!-- Start Banner Area -->
+  <section class="mt-5">
+
+  </section>
+  <!-- End Banner Area -->
+
+  <!--================Login Box Area =================-->
+  <div ng-view></div>
+  <!--================End Login Box Area =================-->
+
+  <!-- Start Footer Area -->
+  <div th:replace="~{/user/view/component/footer.html::footer}"></div>
+  <!-- End Footer Area -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+  <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+  <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+  <script th:src="@{/user-resouce/js/countdown.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+  <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+  <!--gmaps Js-->
+  <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+  <script th:src="@{/user-resouce/js/main.js}"></script>
+
+  <script th:src="@{/common/commonFunction.js}"></script>
+  
+  <script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
+  <script th:src="@{/user-resouce/angularjs/controller/loginController.js}"></script>
+  <script th:src="@{/user-resouce/angularjs/controller/registerController.js}"></script>
+  <script th:src="@{/user-resouce/angularjs/controller/confirmOTPController.js}"></script>
+  <script th:src="@{/user-resouce/angularjs/controller/forgetController.js}"></script>
+  <script th:src="@{/user-resouce/angularjs/controller/changePasswordController.js}"></script>
+  <script th:src="@{/user-resouce/angularjs/user-route.js}"></script>
+
+
+</body>
+
+</html>

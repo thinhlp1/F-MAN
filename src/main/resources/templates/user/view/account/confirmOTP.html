@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<body ng-app="myApp">
+
+  <!--================Login Box Area =================-->
+  <section class="login_box_area section_gap" ng-controller="ConfirmOTPController">
+    <div class="container">
+      <div class="row d-flex mx-auto justify-content-center align-items-center">
+
+        <div class="col-lg-6">
+          <div class="login_form_inner">
+            <h3>Xác nhận OTP</h3>
+            <h5 class="text-danger my-5" ng-model="err_message" id="err_message">{{err_message}}</h5>
+						<h5 class="text-success my-5" ng-model="success_message">{{success_message}}</h5>
+            <h5 class="text-primary" id="mess">Đang gửi mã ... </h5>
+            <form name="confirmOTPForm" class="row login_form needs-validation" novalidate>
+              <div class="col-md-12 form-group">
+                <input type="text" class="form-control text-center"  pattern="([0-9]{6})" ng-model="otp" required disabled
+                  id="otp" name="otp" >
+                  <div class="invalid-feedback invalid-mess">Vui lòng nhập mã OTP </div>
+								<div id="mess-otp" class="invalid-feedback invalid-mess">
+								</div>
+              </div>
+
+              <div class="col-md-12 form-group mt-3">
+                <button ng-click="confirm()" class="primary-btn" id="btn-confirm" disabled >Xác
+                  nhận</button>
+
+                <p id="resend" class="my-4">Gửi lại sau: <span id="countdown"></span>s</p>
+                <a id="reloadButton" style="display: none; cursor: pointer;" class="my-4 text-primary"
+                  ng-click="resend()" type="button">
+                  Gửi lại</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</body>
+
+</html>

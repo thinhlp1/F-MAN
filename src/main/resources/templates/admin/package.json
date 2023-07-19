@@ -1,0 +1,12 @@
+{
+  "name": "admintemplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "bla bla bla",
+    "sass": "node-sass -w scss/style.scss  css/style.css"
+  },
+  "author": "",
+  "license": "ISC"
+}

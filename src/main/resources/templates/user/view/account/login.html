@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<!-- 
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="CodePixar">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta charset="UTF-8">
+  <title>Đăng nhập</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+
+
+  <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
+
+</head> -->
+
+<body ng-app="myApp">
+
+  <!-- Start Header Area -->
+  <!-- <div th:replace="~{/user/view/component/nav.html::nav}"></div> -->
+  <!-- End Header Area -->
+
+  <!-- Start Banner Area -->
+  <!-- <section class="section_gap">
+
+  </section> -->
+  <!-- End Banner Area -->
+
+  <!--================Login Box Area =================-->
+  <section class="login_box_area section_gap" ng-controller="LoginController">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="login_box_img">
+            <img class="img-fluid" th:src="@{/user-resouce/img/login.jpg}" alt="">
+
+            <div class="hover">
+              <h4>Chưa có tài khoản ?</h4>
+              <p>Tham gia ngay cùng chúng tôi nào</p>
+              <a class="primary-btn" href="#!register">Tạo tài khoản</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="login_form_inner " >
+            <h3>Đăng nhập</h3>
+            <h5 class="text-danger my-5" id="err_message"></h5>
+            <form name="loginForm" class="row login_form needs-validation" novalidate>
+              <div class="col-md-12 form-group">
+
+                <label for="email" class="d-flex">Email</label>
+                <input type="email" name="email" class="form-control" id="email" ng-model="email" required>
+                <div class="invalid-feedback invalid-mess">Vui lòng nhập Email </div>
+                <div id="mess-email" class="invalid-feedback invalid-mess">
+                </div>
+
+              </div>
+              <div class="col-md-12 form-group">
+                <label for="password" class="d-flex">Mật khẩu</label>
+                <input type="password" name="password" class="form-control" id="password"
+                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" ng-model="password" required>
+                <div class="invalid-feedback invalid-mess">Mật khẩu ít nhất 8 ký tự, chữ hoa và chữ thường</div>
+                <div id="mess-password" class="invalid-feedback invalid-mess">
+                </div>
+              </div>
+              <div class="col-md-12 form-group">
+                <div class="creat_account">
+                  <input type="checkbox" id="customCheck" ng-model="rememberMe">
+                  <label  for="customCheck">
+                    Nhớ mật khẩu
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-12 form-group">
+                <button type="submit" class="primary-btn" ng-click="login()">Đăng
+                  nhập</button>
+                <a href="#!forget/no-confirm" >Quên mật khẩu?</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <script th:src="@{/user-resouce/angularjs/controller/loginController.js}"></script>
+
+  <!--================End Login Box Area =================-->
+
+  <!-- Start Footer Area -->
+  <!-- <div th:replace="~{/user/view/component/footer.html::footer}"></div> -->
+  <!-- End Footer Area -->
+
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+  <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+  <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+  <script th:src="@{/user-resouce/js/countdown.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+  <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+  <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+  <script th:src="@{/user-resouce/js/main.js}"></script>
+
+  <script th:src="@{/common/commonFunction.js}"></script>
+  
+  <script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
+  <script th:src="@{/user-resouce/angularjs/user-route.js}"></script> -->
+
+
+</body>
+
+</html>

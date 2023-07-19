@@ -1,0 +1,94 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+
+<div th:fragment="nav"
+    th:with="userId=${session.userId == null} ? 0 : ${session.userId},  
+    cartQuantity=${session.cartQuantity == null} ? 0 : ${session.cartQuantity}">
+
+
+    <header class="header_area sticky-header">
+        <div class="main_menu">
+            <nav class="navbar navbar-expand-lg navbar-light main_box">
+                <div class="container">
+                    <a class="navbar-brand logo_h" href="">
+                        <img th:src="@{/admin-resouce/plugins/images/logo-client.png}" alt="">
+
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav menu_nav ml-auto">
+                            <li class="nav-item"><a class="nav-link" th:href="@{/home}">Trang chủ </a></li>
+                            <li class="nav-item"><a class="nav-link" th:href="@{/category/}">Danh mục</a></li>
+                            
+                            <!-- <li class="nav-item"><p class="nav-link" th:text="${#httpServletRequest.getCookies().token.value}
+                                " ></p></li> -->
+                            <th:block th:if="${userId == 0}">
+                                <li class="nav-item mx-0">
+                                    <a th:href="@{/auth/account#!login}" class="nav-link">Đăng nhập</a>
+                                </li>
+                                <li>
+                                    <span class="nav-link">/</span>
+                                </li>
+                                <li class="nav-item">
+                                    <a th:href="@{/auth/account#!register}" class="nav-link">Đăng kí</a>
+                                </li>
+                             
+                            </th:block>
+                            <th:block th:if="${userId != 0}">
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/auth/account#!change-password}">Đổi mật khẩu</a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link"
+                                        th:href="@{|/user/orders/by-user/${userId}?sortBy=createAt&sortOrder=desc&page=1&size=10|}">Đơn
+                                        hàng của tôi</a></li>
+
+                            </th:block>
+
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <th:block th:if="${userId != 0}">
+                                <li class="nav-item"><a th:href="@{|/user/profile/${userId}|}" class="cart"><span><img
+                                                style="height: 20px !important" th:src="@{/user-resouce/img/user.png}"
+                                                alt=""></span></a></li>
+                                <li class="nav-item">
+                                    <a th:href="@{|/user/carts/${userId}|}" class="cart position-relative">
+                                        <span class=""><img style="height: 20px !important"
+                                                th:src="@{/user-resouce/img/bag.png}" alt=""></span>
+                                        <p class="position-absolute bg-danger rounded-circle text-center text-white"
+                                            id="cartQuantity" th:text="${cartQuantity}"
+                                            style="width: 18px; height: 18px; top: -12px; right: -13px; vertical-align: center; font-size: 14px">
+                                        </p>
+                                    </a>
+                                </li>
+                            </th:block>
+
+                            <li class="nav-item">
+                                <button class="search"><span id="search"><img style="height: 20px !important"
+                                            th:src="@{/user-resouce/img/search.png}" alt=""></span></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="search_input" id="search_input_box">
+            <div class="container">
+                <form class="d-flex justify-content-between" action="/category/" method="get">
+                    <input type="text" class="form-control" name="keywords" id="search_input" placeholder="Search Here">
+                    <button type="submit" class="btn"></button>
+                    <span class="" id="close_search" title="Close Search"></span>
+                </form>
+            </div>
+        </div>
+    </header>
+
+</div>
+
+</html>

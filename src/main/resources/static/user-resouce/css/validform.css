@@ -1,0 +1,46 @@
+.form-control.is-valid,
+.was-validated .form-control:valid {
+    background-image: none !important;
+}
+
+.invalid {
+    border-color: red !important;
+
+}
+
+.invalid:focus {
+    box-shadow: 0 0 0 0.2rem rgb(220 53 69 / 25%) !important;
+}
+
+.form-group .invalid-mess {
+    position: absolute;
+    font-size: 13px;
+    justify-content: end;
+    text-align: end;
+
+}
+
+.form-group .invalid-mess .invalid-mess-2 {
+    display: block !important;
+}
+
+.invalid {
+    border-color: red !important;
+
+}
+
+.invalid:focus {
+    box-shadow: 0 0 0 0.2rem rgb(220 53 69 / 25%) !important;
+}
+
+.form-group .invalid-mess {
+    position: absolute;
+    font-size: 13px;
+    justify-content: end;
+    text-align: end;
+
+}
+
+.form-group .invalid-mess .invalid-mess-2{
+    display: block !important;
+}

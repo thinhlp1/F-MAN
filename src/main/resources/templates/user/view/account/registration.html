@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<!-- <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="CodePixar">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta charset="UTF-8">
+	<title>Đăng nhập</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+
+	<link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+	<link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+	<link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+	<link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+	<link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+	<link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+	<link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+	<link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
+
+</head> -->
+
+<body ng-app="myApp">
+
+	<!-- Start Header Area -->
+	<!-- <div th:replace="~{/user/view/component/nav.html::nav}"></div> -->
+	<!-- End Header Area -->
+
+	<!--================Login Box Area =================-->
+	<section class="login_box_area section_gap" ng-controller="RegisterController">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="login_form_inner">
+						<h3>Đăng ký</h3>
+						<h5 class="text-danger my-5" ng-model="err_message">{{err_message}}</h5>
+						<h5 class="text-success my-5" ng-model="success_message">{{success_message}}</h5>
+						<form name="registerForm" class="row login_form needs-validation" novalidate>
+							<div class="col-md-12 form-group">
+								<label for="email" class="d-flex">Email</label>
+								<input type="email" name="email" class="form-control" id="email" ng-model="email"
+									required>
+								<div class="invalid-feedback invalid-mess">Vui lòng nhập Email </div>
+								<div id="mess-email" class="invalid-feedback invalid-mess">
+								</div>
+							</div>
+
+							<div class="col-md-12 form-group">
+								<label for="email" class="d-flex">Họ tên</label>
+								<input type="text" class="form-control" id="name" name="name" ng-model="name" required>
+								<div class="invalid-feedback invalid-mess">Vui lòng nhập họ tên </div>
+								<div id="mess-name" class="invalid-feedback invalid-mess">
+								</div>
+							</div>
+
+							<div class="col-md-12 form-group">
+								<label for="email" class="d-flex">Số điện thoại</label>
+								<input type="text" name="numberPhone" class="form-control" minlength="10" maxlength="11"
+									pattern="(09|03|07|08|05)+([0-9]{8})" id="numberPhone" ng-model="numberPhone"
+									required>
+								<div id="default-mess-numberPhone" class="invalid-feedback invalid-mess">Vui
+									lòng nhập số điện thoại
+								</div>
+								<div id="mess-numberPhone" class="invalid-feedback invalid-mess">
+								</div>
+							</div>
+
+							<div class="col-md-12 form-group">
+								<label for="password" class="d-flex">Mật khẩu</label>
+								<input type="password" name="password" class="form-control" id="password"
+									pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" ng-model="password" required>
+								<div class="invalid-feedback invalid-mess">Ít nhất 8 ký tự, chữ hoa và chữ
+									thường</div>
+								<div id="mess-password" class="invalid-feedback invalid-mess">
+								</div>
+							</div>
+							<div class="col-md-12 form-group">
+								<label for="confirmPassword" class="d-flex">Xác nhận mật khẩu</label>
+								<input type="password" name="confirmPassword" class="form-control"
+									id="confirmPassword" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+									ng-model="confirmPassword" required>
+								<div class="invalid-feedback invalid-mess">Ít nhất 8 ký tự, chữ hoa và chữ
+									thường</div>
+								<div id="mess-confirmPassword" class="invalid-feedback invalid-mess">
+								</div>
+							</div>
+
+							<div class="col-md-12 form-group mt-4">
+								<button type="submit" ng-click="register()" class="primary-btn">Đăng ký</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="col-lg-6 d-flex justify-content-center align-self-center">
+					<div class="login_box_img">
+						<img class="img-fluid" th:src="@{/user-resouce/img/login.jpg}" alt="">
+						<div class="hover">
+							<h4>Đã có tài khoản ?</h4>
+							<p>Đi vào luôn nào</p>
+							<a class="primary-btn" href="#/auth/login">Đăng nhập ngay</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--================End Login Box Area =================-->
+
+	<!-- Start Footer Area -->
+	<!-- <div th:replace="~{/user/view/component/footer.html::footer}"></div> -->
+	<!-- End Footer Area -->
+
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+	<script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+	<script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+	<script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+	<script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+	<script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+	<script th:src="@{/user-resouce/js/countdown.js}"></script>
+	<script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+	<script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+	<script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+	<script th:src="@{/user-resouce/js/main.js}"></script>
+
+	<script th:src="@{/common/commonFunction.js}"></script>
+	<script th:src="@{/user-resouce/angularjs/controller/app.js}"></script> -->
+</body>
+
+</html>

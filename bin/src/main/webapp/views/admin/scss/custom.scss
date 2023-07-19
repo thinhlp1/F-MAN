@@ -1,0 +1,60 @@
+// Create variable color - Tạo biến color
+:root {
+  --blue-primary: #2f323e;
+  --blue-secondary: #707893;
+  
+}
+
+//Create button main - Tạo button chính
+.btn-blue-primary{
+  background-color: var(--blue-primary);
+  color: white;
+}
+.btn-blue-primary:hover{
+  background-color: var(--blue-primary);
+  opacity: 80%;
+  color: white;
+}
+.btn-outline-blue-primary{
+  border: 2.5px solid var(--blue-primary);
+  color: var(--blue-primary);
+}
+.btn-outline-blue-primary:hover{
+  background-color: var(--blue-primary);
+  color: white;
+}
+
+.bg-blue-primary{
+  background-color: var(--blue-primary);
+}
+
+// Custom table header Gradient
+.table-header-custom{
+  background-image: linear-gradient(180deg, var(--blue-primary),var(--blue-secondary));
+  tr{
+    th{
+      color: white;
+    }
+  }
+}
+
+// Custom pagination - Thanh điều hướng, phân trang
+.pagination-custom{
+  ul{
+    li{
+      a{
+        color: var(--blue-primary);
+        background-color: transparent;
+
+      }
+    }
+  }
+}
+
+//Custom card product
+.count-percent{
+  border-bottom-left-radius: 50px;
+  border-top-left-radius: 50px;
+  border-top-right-radius:50px;
+}
+

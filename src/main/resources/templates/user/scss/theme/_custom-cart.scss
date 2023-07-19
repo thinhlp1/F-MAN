@@ -1,0 +1,71 @@
+.cart_inner {
+  .table {
+    tbody {
+      tr {
+        td {
+          padding-top: 10px !important;
+          padding-bottom: 10px !important;
+
+          .product_count_checkout {
+            input {
+              width: 50px !important;
+              padding-left: 0 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.cc-selector-2 input {
+  position: absolute;
+  z-index: 999;
+}
+
+.momo {
+  background-image: url(https://avatars3.githubusercontent.com/u/36770798?s=400&v=4);
+}
+
+.zalo-pay {
+  background-image: url(https://i.pinimg.com/originals/94/da/32/94da32993bff86ccd2045e51ef57211b.png);
+}
+
+.mobile-banking {
+  background-image: url(https://i.pinimg.com/564x/4b/0c/7e/4b0c7e571319b6b376dd2c1d884e006a.jpg);
+}
+
+.cod-payment {
+  background-image: url(https://th.bing.com/th/id/R.85e2f6833c050647e18104f103fa3a8d?rik=coOJomBiq0aZwA&riu=http%3a%2f%2fstatic1.squarespace.com%2fstatic%2f52923f8ce4b0782ba4645852%2ft%2f5bf56727562fa744541ede85%2f1542809392314%2fCASH_ONLY%2bFACEBOOK_ICON.jpg%3fformat%3d1500w&ehk=NJ%2bExFB9CSva%2fbEA%2fURvjDFZpNrfTyNbwChq4TidpVs%3d&risl=&pid=ImgRaw&r=0);
+}
+
+.cc-selector-2 input:active + .drinkcard-cc, .cc-selector input:active + .drinkcard-cc {
+  opacity: .9;
+}
+
+.cc-selector-2 input:checked + .drinkcard-cc, .cc-selector input:checked + .drinkcard-cc {
+  -webkit-filter: none;
+  -moz-filter: none;
+  filter: none;
+}
+
+.drinkcard-cc {
+  cursor: pointer;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 80px;
+  height: 70px;
+  -webkit-transition: all 100ms ease-in;
+  -moz-transition: all 100ms ease-in;
+  transition: all 100ms ease-in;
+  -webkit-filter: brightness(1.8) grayscale(1) opacity(.7);
+  -moz-filter: brightness(1.8) grayscale(1) opacity(.7);
+  filter: brightness(1.8) grayscale(1) opacity(.7);
+}
+
+.drinkcard-cc:hover {
+  -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
+  -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
+  filter: brightness(1.2) grayscale(.5) opacity(.9);
+}

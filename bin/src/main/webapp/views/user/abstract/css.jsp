@@ -1,0 +1,23 @@
+
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/linearicons.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/themify-icons.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/bootstrap.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/owl.carousel.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/nice-select.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/nouislider.min.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/ion.rangeSlider.css" />
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/ion.rangeSlider.skinFlat.css" />
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/magnific-popup.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/views/user/css/main.css">
