@@ -46,22 +46,22 @@ public class OrderController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Page<Order> orderPage = orderService.getOders(orderStateId, sortBy, sortOrder, page - 1, size);
-        List<OrderState> orderStates = orderStateRepository.findAll();
-        List<Order> listOrder = orderPage.getContent();
-
-        if (orderStateId == null || orderStateId.equals("")) {
-            orderStateId = "ALL";
-        }
-
-        model.addAttribute("orders", orderPage.getContent());
-        model.addAttribute("currentPage", orderPage.getNumber());
-        model.addAttribute("totalPages", orderPage.getTotalPages());
-        model.addAttribute("orderStates", orderStates);
-        model.addAttribute("sortBy", sortBy);
-        model.addAttribute("orderStateId", orderStateId);
-        model.addAttribute("sortOrder", sortOrder);
-        model.addAttribute("size", size);
+//        Page<Order> orderPage = orderService.getOders(orderStateId, sortBy, sortOrder, page - 1, size);
+//        List<OrderState> orderStates = orderStateRepository.findAll();
+//        List<Order> listOrder = orderPage.getContent();
+//
+//        if (orderStateId == null || orderStateId.equals("")) {
+//            orderStateId = "ALL";
+//        }
+//
+//        model.addAttribute("orders", orderPage.getContent());
+//        model.addAttribute("currentPage", orderPage.getNumber());
+//        model.addAttribute("totalPages", orderPage.getTotalPages());
+//        model.addAttribute("orderStates", orderStates);
+//        model.addAttribute("sortBy", sortBy);
+//        model.addAttribute("orderStateId", orderStateId);
+//        model.addAttribute("sortOrder", sortOrder);
+//        model.addAttribute("size", size);
 
         return "admin/layout/Order/order-list";
     }
@@ -74,44 +74,44 @@ public class OrderController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Page<Order> orderPage = orderService.getOders(orderStateId, sortBy, sortOrder, page - 1, size);
-        List<OrderState> orderStates = orderStateRepository.findAll();
-        List<Order> listOrder = orderPage.getContent();
-
-        if (orderStateId == null || orderStateId.equals("")) {
-            orderStateId = "ALL";
-        }
-
-        model.addAttribute("orders", orderPage.getContent());
-        model.addAttribute("currentPage", orderPage.getNumber());
-        model.addAttribute("totalPages", orderPage.getTotalPages());
-        model.addAttribute("orderStates", orderStates);
-        model.addAttribute("sortBy", sortBy);
-        model.addAttribute("orderStateId", orderStateId);
-        model.addAttribute("sortOrder", sortOrder);
-        model.addAttribute("size", size);
+//        Page<Order> orderPage = orderService.getOders(orderStateId, sortBy, sortOrder, page - 1, size);
+//        List<OrderState> orderStates = orderStateRepository.findAll();
+//        List<Order> listOrder = orderPage.getContent();
+//
+//        if (orderStateId == null || orderStateId.equals("")) {
+//            orderStateId = "ALL";
+//        }
+//
+//        model.addAttribute("orders", orderPage.getContent());
+//        model.addAttribute("currentPage", orderPage.getNumber());
+//        model.addAttribute("totalPages", orderPage.getTotalPages());
+//        model.addAttribute("orderStates", orderStates);
+//        model.addAttribute("sortBy", sortBy);
+//        model.addAttribute("orderStateId", orderStateId);
+//        model.addAttribute("sortOrder", sortOrder);
+//        model.addAttribute("size", size);
 
         return "admin/layout/Order/order-approve";
     }
 
     @GetMapping("/details/{orderId}")
     public String getOrder(@PathVariable("orderId") Integer orderId, Model model) {
-        Order order = orderService.getOrder(orderId);
-
-        List<OrderItem> listOderItem = order.getOrderItems();
-        Long tempTotal = (long) 0;
-        Long discount = (long) 0;
-
-        for (OrderItem orderItem : listOderItem) {
-            tempTotal += orderItem.getProductPrice().intValue() * orderItem.getQuantity();
-        }
-
-        if (order.getVoucher() != null) {
-            discount = (long) (tempTotal * order.getVoucher().getSalePercent() / 100);
-        }
-        model.addAttribute("tempTotal", CommonUtils.convertToCurrencyString(tempTotal, " VNĐ"));
-        model.addAttribute("discount", CommonUtils.convertToCurrencyString(discount, " VNĐ"));
-        model.addAttribute("order", order);
+//        Order order = orderService.getOrder(orderId);
+//
+//        List<OrderItem> listOderItem = order.getOrderItems();
+//        Long tempTotal = (long) 0;
+//        Long discount = (long) 0;
+//
+//        for (OrderItem orderItem : listOderItem) {
+//            tempTotal += orderItem.getProductPrice().intValue() * orderItem.getQuantity();
+//        }
+//
+//        if (order.getVoucher() != null) {
+//            discount = (long) (tempTotal * order.getVoucher().getSalePercent() / 100);
+//        }
+//        model.addAttribute("tempTotal", CommonUtils.convertToCurrencyString(tempTotal, " VNĐ"));
+//        model.addAttribute("discount", CommonUtils.convertToCurrencyString(discount, " VNĐ"));
+//        model.addAttribute("order", order);
         return "admin/layout/Order/order-details";
     }
 

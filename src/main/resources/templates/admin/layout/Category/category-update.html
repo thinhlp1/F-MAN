@@ -1,0 +1,54 @@
+<!--    <c:choose>-->
+<!--                <c:when test="${isCreate}">-->
+<!--                    <div id="show-alert" class="alert alert-success alert-dismissible fade show sticky-top"-->
+<!--                         role="alert">-->
+<!--                        <strong>Success!</strong> Tạo danh mục thành công!-->
+<!--                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--                    </div>-->
+<!--                </c:when>-->
+<!--                <c:when test="${isUpdate}">-->
+<!--                    <div id="show-alert" class="alert alert-success alert-dismissible fade show sticky-top"-->
+<!--                         role="alert">-->
+<!--                        <strong>Success!</strong> Cập nhật danh mục thành công!-->
+<!--                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--                    </div>-->
+<!--                </c:when>-->
+<!--                <c:when test="${isUpdateFalse}">-->
+<!--                    <div id="show-alert" class="alert alert-warning alert-dismissible fade show sticky-top"-->
+<!--                         role="alert">-->
+<!--                        <strong>Warning!</strong> Tên danh mục này đã tồn tại vui lòng thử tên khác!-->
+<!--                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--                    </div>-->
+<!--                </c:when>-->
+<!--            </c:choose>-->
+<div class="back mb-3">
+    <a class="btn btn-blue-primary" href="#!category">
+        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        Quay Lại
+    </a>
+</div>
+<div class="row">
+    <form action="${pageContext.request.contextPath}/admin/categorys/update/${productType.id}"
+          modelAttribute="productType" method="post">
+        <div class="col-12">
+            <div class="form-floating mb-3">
+                <input type="text" path="id" class="form-control" id="category_id" maxlength="15"
+                       readonly="true"
+                       placeholder="ID Danh Mục"/>
+                <label for="category_id">ID</label>
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            <div class="form-floating mb-3">
+                <input type="text" path="name" class="form-control" id="category_name" maxlength="50"
+                       placeholder="Tên Danh Mục"/>
+                <label for="category_name">Tên danh mục</label>
+            </div>
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-blue-primary btn-lg">
+                Cập nhật
+            </button>
+        </div>
+    </form>
+</div>

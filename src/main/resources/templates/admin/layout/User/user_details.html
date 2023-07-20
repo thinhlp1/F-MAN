@@ -1,0 +1,61 @@
+<!--BACK-->
+<div class="back mb-3">
+    <a class="btn btn-blue-primary" href="#!user">
+        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        Quay Lại
+    </a>
+</div>
+<div class="product-details">
+    <div class="product-details-title mb-4">
+        <h3 class="fw-bold">Thông tin tài khoản</h3>
+    </div>
+    <div class="row product-details-content">
+        <div class="col-md-4">
+            <img th:src="@{admin-resouce/plugins/images/users/1.jpg}"
+                 class="rounded-circle img-fluid border w-100" alt="Demo" />
+        </div>
+
+        <div class="col-md-5 offset-1">
+            <table class="table table-responsive-sm table-borderless">
+                <tbody class="custom-table-list">
+                <tr>
+                    <th>Tên người dùng:</th>
+                    <td>${user.name}</td>
+                </tr>
+                <tr>
+                    <th>Tên tài khoản:</th>
+                    <td>${user.username}</td>
+                </tr>
+
+                <tr>
+                    <th>Số điện thoại:</th>
+                    <td>${user.numberPhone}</td>
+                </tr>
+                <tr>
+                    <th>Email:</th>
+                    <td>${user.email}</td>
+                </tr>
+                <tr>
+                    <th>Ngày tạo:</th>
+                    <td>${createDate}</td>
+                </tr>
+                <tr>
+                    <th>Ngày cập nhật:</th>
+                    <td>
+                        ${user.updateAt == null ? 'Chưa có ngày cập nhật' :
+                        updateDate }
+                    </td>
+                </tr>
+                <tr>
+                    <th>Vai trò:</th>
+                    <td>${user.roleId}</td>
+                </tr>
+                <tr>
+                    <th>Hoạt động:</th>
+                    <td>Đang hoạt động</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
