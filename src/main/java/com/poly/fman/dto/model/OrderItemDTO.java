@@ -1,4 +1,4 @@
-package com.poly.fman.dto;
+package com.poly.fman.dto.model;
 
 import com.poly.fman.entity.Order;
 import com.poly.fman.entity.Product;

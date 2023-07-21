@@ -1,4 +1,4 @@
-package com.poly.fman.dto;
+package com.poly.fman.dto.model;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

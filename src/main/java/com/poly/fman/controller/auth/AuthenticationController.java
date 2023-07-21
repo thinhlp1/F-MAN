@@ -94,6 +94,7 @@ public class AuthenticationController {
             if (loginDTO.isRemember()) {
                 String unlimitedToken = authenticationService.getTokenUnlimited(loginDTO).getAccessToken();
                 cookieService.add("token", unlimitedToken, -1);
+                cookieService.add("userId", authResponseDTO.getUserId() + "", -1);
                 cookieService.add("remember", "remember", -1);
                 cookieService.add("username", authResponseDTO.getUsername(), -1);
                 session.setAttribute("userId", authResponseDTO.getUserId());
@@ -101,6 +102,7 @@ public class AuthenticationController {
                 System.out.println("REMEMBER");
             } else {
                 cookieService.add("token", authResponseDTO.getAccessToken(), 24);
+                cookieService.add("userId", authResponseDTO.getUserId() + "", 24);
                 cookieService.add("username", authResponseDTO.getUsername(), 24);
                 cookieService.remove("remember");
                 session.setAttribute("userId", authResponseDTO.getUserId());
@@ -172,13 +174,14 @@ public class AuthenticationController {
         if (authenticationService.checkAccount(changePassDTO)) {
             if (authenticationService.changePassword(changePassDTO.getUsername(), changePassDTO.getNewPassword())) {
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null) {
-                cookieService.remove("token");
-                cookieService.remove("username");
-                cookieService.remove("remember");
-                session.removeAttribute("userId");
-                new SecurityContextLogoutHandler().logout(request, response, auth);
-            }
+                if (auth != null) {
+                    cookieService.remove("token");
+                    cookieService.remove("userId");
+                    cookieService.remove("username");
+                    cookieService.remove("remember");
+                    session.removeAttribute("userId");
+                    new SecurityContextLogoutHandler().logout(request, response, auth);
+                }
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.status(500)
@@ -233,6 +236,7 @@ public class AuthenticationController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null) {
                 cookieService.remove("token");
+                cookieService.remove("userId");
                 cookieService.remove("username");
                 cookieService.remove("remember");
                 session.removeAttribute("userId");
@@ -379,15 +383,16 @@ public class AuthenticationController {
     }
 
     @GetMapping(value = "/logout")
-    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<SimpleReponseDTO> logoutPage(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             cookieService.remove("token");
+            cookieService.remove("userId");
             cookieService.remove("username");
             cookieService.remove("remember");
             session.removeAttribute("userId");
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/home";
+         return ResponseEntity.status(200).body(new SimpleReponseDTO("200", "Đăng xuất thành công"));
     }
 }

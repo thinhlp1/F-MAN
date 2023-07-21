@@ -1,6 +1,6 @@
 package com.poly.fman.controller.admin;
 
-import com.poly.fman.dto.VoucherDTO;
+import com.poly.fman.dto.model.VoucherDTO;
 import com.poly.fman.entity.Voucher;
 import com.poly.fman.service.VoucherService;
 import com.poly.fman.service.common.DateUtils;

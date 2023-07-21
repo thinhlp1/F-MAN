@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.poly.fman.dto.UserDTO2;
+import com.poly.fman.dto.model.UserDTO2;
 import com.poly.fman.entity.User;
 import com.poly.fman.service.UserService;
 import com.poly.fman.service.common.DateUtils;

@@ -1,6 +1,6 @@
 package com.poly.fman.dto.reponse;
 
-import com.poly.fman.dto.ResponseDTO;
+import com.poly.fman.dto.model.ResponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

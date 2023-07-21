@@ -1,4 +1,4 @@
-package com.poly.fman.dto;
+package com.poly.fman.dto.model;
 
 import java.util.Date;
 
@@ -25,6 +25,8 @@ public class ProductSizeDTO implements ModelDTO, ResponseDTO {
 	private Date deleteAt;
 
 	private int quantity;
+
+	private int availableQuantity;
 
 	private Date updateAt;
 	

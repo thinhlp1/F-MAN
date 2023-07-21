@@ -1,4 +1,4 @@
-package com.poly.fman.dto;
+package com.poly.fman.dto.model;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO2 implements ModelDTO{
+public class ProductDTO implements ModelDTO, ResponseDTO{
     
 	@NotNull(message = "{NotNull.product.id}")
 	@NotBlank(message = "{NotBlank.product.id}")
@@ -48,7 +48,7 @@ public class ProductDTO2 implements ModelDTO{
 
 	private Date updateAt;
 
-    private ProductType productType;
+    private ProductTypeDTO productType;
 
-	private Brand brand;
+	private BrandDTO brand;
 }

@@ -1,4 +1,4 @@
-package com.poly.fman.dto;
+package com.poly.fman.dto.model;
 
 import java.math.BigInteger;
 import java.util.Date;

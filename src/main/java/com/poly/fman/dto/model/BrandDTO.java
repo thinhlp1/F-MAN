@@ -1,4 +1,4 @@
-package com.poly.fman.dto;
+package com.poly.fman.dto.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,15 +11,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductTypeDTO {
-
-	@NotNull(message = "{NotNull.productType.id}")
-	@NotBlank(message = "{NotBlank.productType.id}")
+public class BrandDTO implements ModelDTO {
+	@NotNull(message = "{NotNull.brand.id}")
+	@NotBlank(message = "{NotBlank.brand.id}")
 	private String id;
 
 	private byte active;
-
-	@NotNull(message = "{NotNull.productType.name}")
-	@NotBlank(message = "{NotBlank.productType.name}")
+	
+	@NotNull(message = "{NotNull.brand.name}")
+	@NotBlank(message = "{NotBlank.brand.name}")
 	private String name;
+	
+	private String image;
 }

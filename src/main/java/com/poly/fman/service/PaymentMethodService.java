@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.poly.fman.dto.PaymentMethodDTO;
+import com.poly.fman.dto.model.PaymentMethodDTO;
 import com.poly.fman.entity.PaymentMethod;
 import com.poly.fman.repository.PaymentMethodRepository;
 

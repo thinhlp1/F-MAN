@@ -1,4 +1,4 @@
-package com.poly.fman.dto;
+package com.poly.fman.dto.model;
 
 import com.poly.fman.entity.User;
 
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressDTO implements ModelDTO {
+public class AddressDTO2 implements ModelDTO {
 	private int id;
 
 	private byte active;

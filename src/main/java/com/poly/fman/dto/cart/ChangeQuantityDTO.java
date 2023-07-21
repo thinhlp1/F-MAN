@@ -1,7 +1,9 @@
-package com.poly.fman.dto.reponse;
+package com.poly.fman.dto.cart;
 
 import java.math.BigInteger;
 import java.util.Objects;
+
+import com.poly.fman.dto.reponse.SimpleReponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

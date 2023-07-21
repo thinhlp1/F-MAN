@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.poly.fman.dto.UserDTO2;
+import com.poly.fman.dto.model.UserDTO2;
 import com.poly.fman.entity.Role;
 import com.poly.fman.entity.User;
 import com.poly.fman.entity.Voucher;

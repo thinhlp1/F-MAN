@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.poly.fman.dto.AddressDTO;
+import com.poly.fman.dto.model.AddressDTO2;
 import com.poly.fman.entity.Address;
 import com.poly.fman.entity.User;
 import com.poly.fman.service.AddressService;
@@ -51,7 +51,7 @@ public class AddressController {
     @GetMapping(value = "/all", params = "user-id")
     public String getAllAddress(@RequestParam(name = "user-id") Integer userId, Model model) {
         User user = this.userService.getUserById(userId);
-        AddressDTO address = new AddressDTO();
+        AddressDTO2 address = new AddressDTO2();
         address.setUser(user);
         address.setUserId(user.getId());
         model.addAttribute("address", address);
@@ -59,7 +59,7 @@ public class AddressController {
     }
 
     @PostMapping(value = "/all", params = "user-id")
-    public String createAddress(@Validated @ModelAttribute("address") AddressDTO addressDTO, BindingResult result,
+    public String createAddress(@Validated @ModelAttribute("address") AddressDTO2 addressDTO, BindingResult result,
             @RequestParam(name = "user-id") Integer userId, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("userId", userId);
@@ -78,7 +78,7 @@ public class AddressController {
 
     @PostMapping(value = "/update/{addressId}", params = "user-id")
     public String updateAddress(@PathVariable("addressId") Integer addressId,
-            @RequestParam(name = "user-id") Integer userId, AddressDTO addressDTO, Model model) {
+            @RequestParam(name = "user-id") Integer userId, AddressDTO2 addressDTO, Model model) {
         addressService.update(addressDTO, addressId, userId);
         model.addAttribute("address", addressDTO);
         return "redirect:/user/address/all?user-id=" + userId;
@@ -86,7 +86,7 @@ public class AddressController {
 
     @PostMapping(value = "/address-default/{addressId}", params = "user-id")
     public String updateAddressDefault(@PathVariable("addressId") Integer addressId,
-            @RequestParam(name = "user-id") Integer userId, AddressDTO addressDTO, Model model) {
+            @RequestParam(name = "user-id") Integer userId, AddressDTO2 addressDTO, Model model) {
         addressService.updateAddressDefaultIsFalse();
         addressService.updateAddressDefault(addressId, userId);
         model.addAttribute("address", addressDTO);

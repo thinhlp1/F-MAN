@@ -1,9 +1,8 @@
 package com.poly.fman.controller.admin;
 
-import com.poly.fman.dto.ProductDTO2;
-import com.poly.fman.dto.ProductSizeCreateDTO;
-import com.poly.fman.dto.ProductSizeDTO2;
-
+import com.poly.fman.dto.model.ProductDTO2;
+import com.poly.fman.dto.model.ProductSizeCreateDTO;
+import com.poly.fman.dto.model.ProductSizeDTO2;
 import com.poly.fman.entity.Brand;
 import com.poly.fman.entity.Product;
 import com.poly.fman.entity.ProductHistory;
