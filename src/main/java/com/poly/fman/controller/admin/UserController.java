@@ -67,23 +67,23 @@ public class UserController {
 
     @GetMapping("/update-form/{username}")
     public String updateForm(@PathVariable("username") String username, Model model) {
-        UserDTO2 userDTO = userService.getUserDTO(username);
-        model.addAttribute("user", userDTO);
+//        UserDTO2 userDTO = userService.getUserDTO(username);
+//        model.addAttribute("user", userDTO);
         return "admin/layout/User/user_update";
     }
 
     @GetMapping("/details/{username}")
     public String details(@PathVariable("username") String username, Model model) {
-        UserDTO2 userDTO = this.userService.getUserDTO(username);
-        String createDate = DateUtils.toString(userDTO.getCreateAt(), "dd/MM/yyyy HH:mm:ss");
-
-        if (userDTO.getUpdateAt() != null) {
-            String updateDate = DateUtils.toString(userDTO.getUpdateAt(), "dd/MM/yyyy HH:mm:ss");
-            model.addAttribute("updateDate", updateDate);
-        }
-        model.addAttribute("createDate", createDate);
-
-        model.addAttribute("user", userDTO);
+//        UserDTO2 userDTO = this.userService.getUserDTO(username);
+//        String createDate = DateUtils.toString(userDTO.getCreateAt(), "dd/MM/yyyy HH:mm:ss");
+//
+//        if (userDTO.getUpdateAt() != null) {
+//            String updateDate = DateUtils.toString(userDTO.getUpdateAt(), "dd/MM/yyyy HH:mm:ss");
+//            model.addAttribute("updateDate", updateDate);
+//        }
+//        model.addAttribute("createDate", createDate);
+//
+//        model.addAttribute("user", userDTO);
         return "admin/layout/User/user_details";
     }
 

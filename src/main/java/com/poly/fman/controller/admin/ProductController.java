@@ -57,40 +57,36 @@ public class ProductController {
 
 	@GetMapping("/")
 	public String getProducts() {
-
 		return "admin/layout/Product/product-list";
 	}
 
-
-    
-
-	@ModelAttribute("items")
-	public Page<Product> getList(
-			@RequestParam("p") Optional<Integer> p,
-			@RequestParam("field") Optional<String> field,
-			Model model) {
-		
-		model.addAttribute("checkItems", true);
-		// Khởi tạo một đối tượng Page;
-		Page<Product> page;
-		// Và biến pageProduct để render số lượng element trong 1 page
-		int pageSize = 8;
-		// Kiểm tra điều kiện nếu người dùng lọc theo những sản phẩm KHÔNG ACTIVE
-		if (field.orElse("").equalsIgnoreCase("inactive")) {
-			// Tạo một đối tượng pageable để liệt kê ra một phuongw thức để sort
-			Pageable pageable = PageRequest.of(p.orElse(0), pageSize);
-			// Lấy biến page khởi tạo ở trên, gán bằng Page vừa tìm kiếm chỉ nhưng sản phẩm
-			// inactive
-			page = (Page<Product>) productService.getAllActiveIsFalse(pageable);
-		} else {
-			// Ngược lại sẽ tìm theo field mà người dùng chọn
-			Pageable pageable = PageRequest.of(p.orElse(0), pageSize, Sort.by(field.orElse("id")).descending());
-			page = (Page<Product>) productService.getAllActive(pageable);
-		}
-		// Gửi biến page kèm theo field để giữ trạng thái lọc
-		model.addAttribute("field", field.orElse("id"));
-		return page;
-	}
+//	@ModelAttribute("items")
+//	public Page<Product> getList(
+//			@RequestParam("p") Optional<Integer> p,
+//			@RequestParam("field") Optional<String> field,
+//			Model model) {
+//
+//		model.addAttribute("checkItems", true);
+//		// Khởi tạo một đối tượng Page;
+//		Page<Product> page;
+//		// Và biến pageProduct để render số lượng element trong 1 page
+//		int pageSize = 8;
+//		// Kiểm tra điều kiện nếu người dùng lọc theo những sản phẩm KHÔNG ACTIVE
+//		if (field.orElse("").equalsIgnoreCase("inactive")) {
+//			// Tạo một đối tượng pageable để liệt kê ra một phuongw thức để sort
+//			Pageable pageable = PageRequest.of(p.orElse(0), pageSize);
+//			// Lấy biến page khởi tạo ở trên, gán bằng Page vừa tìm kiếm chỉ nhưng sản phẩm
+//			// inactive
+//			page = (Page<Product>) productService.getAllActiveIsFalse(pageable);
+//		} else {
+//			// Ngược lại sẽ tìm theo field mà người dùng chọn
+//			Pageable pageable = PageRequest.of(p.orElse(0), pageSize, Sort.by(field.orElse("id")).descending());
+//			page = (Page<Product>) productService.getAllActive(pageable);
+//		}
+//		// Gửi biến page kèm theo field để giữ trạng thái lọc
+//		model.addAttribute("field", field.orElse("id"));
+//		return page;
+//	}
 	
 	@ResponseBody
 	@PostMapping("listfilter")
@@ -317,12 +313,12 @@ public class ProductController {
 
 	@GetMapping("/details/{id}")
 	public String details(@PathVariable("id") String id, Model model) {
-		Product product = productService.getById(id);
-		// List<ProductSize> size =
-		// productSizeService.getAllByProductID(product.getId());
-		model.addAttribute("product", product);
-		// model.addAttribute("size",product.getProductSizes());
-		// System.out.println(size + "HELLO");
+//		Product product = productService.getById(id);
+//		// List<ProductSize> size =
+//		// productSizeService.getAllByProductID(product.getId());
+//		model.addAttribute("product", product);
+//		// model.addAttribute("size",product.getProductSizes());
+//		// System.out.println(size + "HELLO");
 		return "admin/layout/Product/product-details";
 	}
 
@@ -346,13 +342,13 @@ public class ProductController {
 
 	@GetMapping("/update-form/{id}")
 	public String updateForm(Model model, @PathVariable("id") String id) {
-		model.addAttribute("product", productService.getById(id));
-
-		// lấy danh sách size của product size hiện lên modal
-		List<ProductSize> productSizes = new ArrayList<ProductSize>();
-		productSizes = productSizeService.getAllByProductID(id);
-		sessionService.set("productSS", productService.getById(id));
-		model.addAttribute("listProductSize", productSizes);
+//		model.addAttribute("product", productService.getById(id));
+//
+//		// lấy danh sách size của product size hiện lên modal
+//		List<ProductSize> productSizes = new ArrayList<ProductSize>();
+//		productSizes = productSizeService.getAllByProductID(id);
+//		sessionService.set("productSS", productService.getById(id));
+//		model.addAttribute("listProductSize", productSizes);
 		return "admin/layout/Product/product-update";
 	}
 

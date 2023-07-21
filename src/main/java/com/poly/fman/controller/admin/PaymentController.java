@@ -63,8 +63,8 @@ public class PaymentController {
 
     @GetMapping("/update-form/{id}")
     public String updateForm(@PathVariable("id") String id, Model model) {
-        PaymentMethodDTO paymentDTO = paymentService.getPaymentDTO(id);
-        model.addAttribute("payment", paymentDTO);
+//        PaymentMethodDTO paymentDTO = paymentService.getPaymentDTO(id);
+//        model.addAttribute("payment", paymentDTO);
         return "admin/layout/Payment/payment_update";
     }
 

@@ -1,11 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FMan | Collections</title>
+    <!-- Favicon icon - Icon cho trang web -->
+    <link rel="icon" type="image/png" sizes="16x16"
+          th:href="@{admin-resouce/plugins/images/favicon.png}">
+    <!-- Custom CSS -->
+    <link th:href="@{admin-resouce/css/style.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css}"
+          integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+          crossorigin=W"anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
 </head>
-<body>
-    
+
+<body onload="myFunction()" ng-app="myApp">
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- Main wrapper - style you can find in pages.scss -->
+<!-- ============================================================== -->
+
+<div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full"
+     data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full">
+    <!-- ============================================================== -->
+    <!-- Header -->
+    <header th:replace="~{/admin/layout/Conponent/header.html :: header}"></header>
+    <!-- Header -->
+    <!-- Sidebar -->
+    <aside th:replace="~{/admin/layout/Conponent/sidebar.html :: sidebar}"></aside>
+    <!-- Sidebar -->
+
+    <div id="container" class="page-wrapper">
+        <!-- Taskbar -->
+        <div th:replace="~{/admin/layout/Conponent/taskbar.html :: taskbar}"></div>
+        <!-- Taskbar -->
+        <div class="container-fluid">
+            <ng-view></ng-view>
+        </div>
+        <!-- Footer -->
+        <footer th:replace="~{/admin/layout/Conponent/footer.html :: footer}"></footer>
+        <!-- Footer -->
+    </div>
+</div>
+<script
+        th:src="@{admin-resouce/plugins/bower_components/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script th:src="@{admin-resouce/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!--Menu sidebar -->
+<script th:src="@{admin-resouce/js/sidebarmenu.js}"></script>
+<!--Custom JavaScript -->
+<script th:src="@{admin-resouce/js/custom.js}"></script>
+<%--ALERT--%>
+<script th:src="@{admin-resouce/js/show-alert.js}"></script>
+<script th:src="@{admin-resouce/angularjs/app.js}"></script>
+<script th:src="@{admin-resouce/angularjs/admin-router.js}"></script>
 </body>
+
 </html>
