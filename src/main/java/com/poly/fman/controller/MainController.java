@@ -12,6 +12,6 @@ public class MainController {
 	
 	public String getIndexPage() {
 		
-		return "admin/dashboard";
+		return "admin/index";
 	}
 }

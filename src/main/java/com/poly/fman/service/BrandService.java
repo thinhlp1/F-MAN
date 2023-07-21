@@ -8,7 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.poly.fman.dto.BrandDTO;
+
+import com.poly.fman.dto.model.BrandDTO;
 import com.poly.fman.entity.Brand;
 import com.poly.fman.entity.Size;
 import com.poly.fman.repository.BrandRepository;

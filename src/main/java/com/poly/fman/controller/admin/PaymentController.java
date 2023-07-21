@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.poly.fman.dto.PaymentMethodDTO;
+import com.poly.fman.dto.model.PaymentMethodDTO;
 import com.poly.fman.entity.PaymentMethod;
 import com.poly.fman.service.PaymentMethodService;
 import com.poly.fman.service.common.ParamService;
@@ -63,8 +63,8 @@ public class PaymentController {
 
     @GetMapping("/update-form/{id}")
     public String updateForm(@PathVariable("id") String id, Model model) {
-        PaymentMethodDTO paymentDTO = paymentService.getPaymentDTO(id);
-        model.addAttribute("payment", paymentDTO);
+//        PaymentMethodDTO paymentDTO = paymentService.getPaymentDTO(id);
+//        model.addAttribute("payment", paymentDTO);
         return "admin/layout/Payment/payment_update";
     }
 

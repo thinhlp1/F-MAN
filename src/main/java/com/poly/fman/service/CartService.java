@@ -14,9 +14,15 @@ import org.springframework.stereotype.Service;
 
 import com.poly.fman.entity.Cart;
 import com.poly.fman.entity.CartItem;
-import com.poly.fman.dto.CartDTO;
-import com.poly.fman.dto.CartItemDTO;
-import com.poly.fman.dto.CartItemDTO2;
+import com.poly.fman.dto.cart.CartItemRequestDTO;
+import com.poly.fman.dto.cart.CartItemResponseDTO;
+import com.poly.fman.dto.cart.CartResponseDTO;
+import com.poly.fman.dto.cart.CartRequestDTO;
+import com.poly.fman.dto.model.CartDTO;
+import com.poly.fman.dto.model.CartItemDTO;
+import com.poly.fman.dto.model.CartItemDTO2;
+import com.poly.fman.dto.model.ProductDTO;
+import com.poly.fman.dto.model.ProductSizeDTO;
 import com.poly.fman.dto.reponse.ApplyVoucherDTO;
 import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.entity.Product;
@@ -43,6 +49,43 @@ public class CartService {
     private final ProductSizeRepository productSizeRepository;
     private final VoucherRepository voucherRepository;
     private final ModelMapper modelMapper;
+
+
+     public CartResponseDTO processCartRequest(CartRequestDTO cartRequest) {
+        CartResponseDTO cartResponse = new CartResponseDTO();
+
+        List<CartItemRequestDTO> cartItems = cartRequest.getListCartItem();
+        List<CartItemResponseDTO> cartItemResponses = new ArrayList<>();
+        long totalPrice = 0;
+        for (CartItemRequestDTO cartItemRequest : cartItems) {
+            Product product = productRepository.findById(cartItemRequest.getProductId()).orElse(null);
+            ProductSize productSize = productSizeRepository.findById(cartItemRequest.getProductSizeId()).orElse(null);
+
+            ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+            ProductSizeDTO productSizeDTO = modelMapper.map(productSize, ProductSizeDTO.class);
+
+            CartItemResponseDTO cartItemResponse = new CartItemResponseDTO();
+            cartItemResponse.setProductDTO(productDTO);
+            cartItemResponse.setProductSizeDTO(productSizeDTO);
+
+            int quantity = cartItemRequest.getQuantity();
+            if (checkInStock(productSize.getAvailableQuantity(), quantity)){
+                quantity = productSize.getAvailableQuantity();
+            }
+
+            long subTotal = product.getPrice().longValue() * quantity;
+            totalPrice += subTotal;
+
+            cartItemResponse.setSubTotal(subTotal);
+            cartItemResponse.setQuantity(quantity);
+
+            cartItemResponses.add(cartItemResponse);
+        };
+        cartResponse.setTotal(totalPrice);
+        cartResponse.setListCartItems(cartItemResponses);
+
+        return cartResponse;
+    }
 
     public CartDTO getCartByUserId(Integer userId) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -231,10 +274,21 @@ public class CartService {
         return new SimpleReponseDTO("500", "Voucher không hợp lệ");
     }
 
-    public boolean checkInStock(Integer cartItemId, int quantity) {
+    public boolean checkInStock2(Integer cartItemId, int quantity) {
         CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
         if (cartItem != null) {
             int quantityInStock = cartItem.getProductSize().getAvailableQuantity();
+            if (quantity > quantityInStock) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+      public boolean checkInStock(Integer productSizeId, int quantity) {
+        ProductSize productSize = productSizeRepository.findById(productSizeId).orElse(null);
+        if (productSize != null) {
+            int quantityInStock = productSize.getAvailableQuantity();
             if (quantity > quantityInStock) {
                 return true;
             }

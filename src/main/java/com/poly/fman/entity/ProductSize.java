@@ -113,8 +113,6 @@ public class ProductSize implements Serializable {
 
 	
     public int getAvailableQuantity() {
-		System.out.println("QUANTITY: " + quantity);
-			System.out.println("AVAILABLE QUAN : "  + quantity);
         return quantity - getOrderedQuantityWithState("PENDING_APPROVAL");
     }
 

@@ -1,0 +1,82 @@
+<!--<c:choose>-->
+<!--    <c:when test="${isCreate}">-->
+<!--        <div id="show-alert" class="alert alert-success alert-dismissible fade show sticky-top"-->
+<!--             role="alert">-->
+<!--            <strong>Success!</strong> Tạo size thành công!-->
+<!--            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--        </div>-->
+<!--    </c:when>-->
+<!--    <c:when test="${isUpdate}">-->
+<!--        <div id="show-alert" class="alert alert-success alert-dismissible fade show sticky-top"-->
+<!--             role="alert">-->
+<!--            <strong>Success!</strong> Cập nhật size thành công!-->
+<!--            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--        </div>-->
+<!--    </c:when>-->
+<!--    <c:when test="${isUpdateFalse}">-->
+<!--        <div id="show-alert" class="alert alert-danger alert-dismissible fade show sticky-top"-->
+<!--             role="alert">-->
+<!--            <strong>Fail!</strong> Size đã tồn tại!-->
+<!--            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--        </div>-->
+<!--    </c:when>-->
+<!--</c:choose>-->
+
+<div class="back mb-3">
+    <a class="btn btn-blue-primary" href="#!size">
+        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        Quay lại
+    </a>
+</div>
+<div class="row">
+    <form action="${pageContext.request.contextPath}/admin/sizes/update-form/${size.id}" method="post"
+               modelAttribute="size">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" path="id" class="form-control" id="size_id" maxlength="6"
+                                    readonly="true"
+                                    placeholder="Nhập ID"/>
+                        <label for="size_id">ID</label>
+                        <errors path="id" cssClass="text-danger"/>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" path="size" class="form-control" id="size" step="0.5" maxlength="3"
+                                    placeholder="Nhập size"/>
+                        <label for="size">Size</label>
+                        <errors path="size" cssClass="text-danger"/>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <div class="form-floating mb-3">
+                            <input type="number" path="length" class="form-control" id="size_dai" maxlength="3"
+                                        placeholder="Nhập chiều dài"/>
+                            <label for="size_dai">Chiều dài <sup>(cm)</sup></label>
+                            <errors path="length" cssClass="text-danger"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <div class="form-floating mb-3">
+                            <input type="number" path="width" class="form-control" id="size_rong" maxlength="3"
+                                        placeholder="Nhập chiều rộng"/>
+                            <label for="size_rong">Chiều rộng <sup>(cm)</sup></label>
+                            <errors path="width" cssClass="text-danger"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-end">
+            <button class="btn btn-blue-primary btn-lg">
+                Cập nhật
+            </button>
+        </div>
+    </form>
+</div>

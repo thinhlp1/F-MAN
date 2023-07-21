@@ -1,7 +1,7 @@
 package com.poly.fman.dto.auth;
 
 import com.poly.fman.config.annotation.FieldMatch;
-import com.poly.fman.dto.ResponseDTO;
+import com.poly.fman.dto.model.ResponseDTO;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

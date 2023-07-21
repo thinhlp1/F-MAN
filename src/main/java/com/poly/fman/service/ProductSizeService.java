@@ -1,7 +1,6 @@
 package com.poly.fman.service;
 
-import com.poly.fman.dto.ProductSizeDTO2;
-
+import com.poly.fman.dto.model.ProductSizeDTO2;
 import com.poly.fman.entity.ProductSize;
 import com.poly.fman.repository.ProductSizeRepository;
 

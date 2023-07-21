@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.poly.fman.dto.TransactionDTO;
+import com.poly.fman.dto.model.TransactionDTO;
 import com.poly.fman.dto.payment.CheckoutPaymentReponse;
 import com.poly.fman.dto.payment.PaymentReponse;
 import com.poly.fman.dto.payment.PaymentRquest;

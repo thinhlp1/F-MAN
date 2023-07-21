@@ -24,12 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poly.fman.dto.AddressDTO;
-import com.poly.fman.dto.CartDTO;
-import com.poly.fman.dto.CartItemDTO;
-import com.poly.fman.dto.CartItemDTO2;
-import com.poly.fman.dto.ResponseDTO;
-import com.poly.fman.dto.reponse.ChangeQuantityDTO;
+import com.poly.fman.dto.cart.CartRequestDTO;
+import com.poly.fman.dto.cart.CartResponseDTO;
+import com.poly.fman.dto.cart.ChangeQuantityDTO;
+import com.poly.fman.dto.model.AddressDTO2;
+import com.poly.fman.dto.model.CartDTO;
+import com.poly.fman.dto.model.CartItemDTO;
+import com.poly.fman.dto.model.CartItemDTO2;
+import com.poly.fman.dto.model.ResponseDTO;
 import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.dto.request.CheckoutDTO;
 import com.poly.fman.entity.Cart;
@@ -66,62 +68,22 @@ public class CartController {
         return "user/view/cart/cart";
     }
 
-    @GetMapping("/test/{userId}")
+    @PostMapping("/get-cart-items/{userId}")
     @ResponseBody
-    public  ResponseEntity<ResponseDTO> cart2(@PathVariable("userId") Integer userId, Model model) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-        Cart cart = cartService.getCartByUserId2(userId);
-        List<CartItemDTO> listCartItemDTOs = cartService.getListCartItem(cart.getId());
-        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
-
-        long totalPrice = 0;
-        for (CartItemDTO item : listCartItemDTOs) {
-            // totalPrice += item.getProduct().getPrice().intValue() * (int) item.getQuantity();
-        }
-        cartDTO.setTotalPrice(CommonUtils.convertToCurrencyString(totalPrice, " VNĐ"));
-        // cartDTO.setCartItemsDTO(listCartItemDTOs);
-        // model.addAttribute("cart", cartDTO);
-        // model.addAttribute("listCartItem", listCartItemDTOs);
-        return ResponseEntity.ok(cartDTO);
-//    return ResponseEntity.status(401).body(new SimpleReponseDTO("401", "Sai tên đăng nhập hoặc mật khẩu"));
-    }
-
-    @GetMapping("/get-cart/{userId}")
-    @ResponseBody
-    public ResponseEntity<ResponseDTO> getCart(@PathVariable("userId") Integer userId) {
+    public ResponseEntity<ResponseDTO> getCartItems(@PathVariable("userId") Integer userId,
+            @RequestBody CartRequestDTO cartRequest) {
         try {
-            CartDTO cartDTO = cartService.getCartByUserId(userId);
-            System.out.println("GET CART DTO");
-            return ResponseEntity.ok(cartDTO);
-        
+            CartResponseDTO cartResponseDTO = cartService.processCartRequest(cartRequest);
+            return ResponseEntity.ok(cartResponseDTO);
         } catch (Exception e) {
-                   return ResponseEntity.status(401).body(new SimpleReponseDTO("401", "Sai tên đăng nhập hoặc mật khẩu"));
-
+            return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Có lỗi xảy ra"));
         }
     }
 
-
-     @GetMapping("/get-cart-items/{cartId}")
+    @GetMapping("/changeQuantity")
     @ResponseBody
-    public ResponseEntity<List<CartItemDTO>> getCartItems(@PathVariable("cartId") Integer cartId) {
-        try {
-
-            List<CartItemDTO> listCartItemDTOs = cartService.getListCartItem(cartId);
-            System.out.println("GET CART DTO");
-            return ResponseEntity.ok(listCartItemDTOs);
-        
-        } catch (Exception e) {
-              return ResponseEntity.ok(new ArrayList<>());
-                //    return ResponseEntity.status(401).body(new SimpleReponseDTO("401", "Sai tên đăng nhập hoặc mật khẩu"));
-
-        }
-    }
-
-    @GetMapping("/changeQuantity/{cartId}")
-    @ResponseBody
-    public ResponseEntity<SimpleReponseDTO> increase(@PathVariable("cartId") Integer cartId,
-            @RequestParam("cartItemId") Integer id,
+    public ResponseEntity<SimpleReponseDTO> increase(
+            @RequestParam("productSizeId") Integer id,
             @RequestParam("quantity") int quantity) {
 
         // check product have enougth in inventory
@@ -132,49 +94,7 @@ public class CartController {
             return ResponseEntity.status(500).body(simpleReponseDTO);
         }
 
-        CartItem cartItem = cartService.changeQuantity(id, quantity);
-        BigInteger subTotal = cartService.getSubTotal(id);
-        BigInteger total = cartService.getTotalPrice(cartId);
-
-        ChangeQuantityDTO changeQuantityDTO = new ChangeQuantityDTO("200", "Success",
-                CommonUtils.convertToCurrencyString(total, " VNĐ"),
-                CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        return ResponseEntity.ok(changeQuantityDTO);
-    }
-
-    @GetMapping("/product-remove/{cartId}")
-    @ResponseBody
-    public ResponseEntity<SimpleReponseDTO> removeProduct(@PathVariable("cartId") Integer cartId,
-            @RequestParam("cartItemId") Integer id) {
-        boolean rs = cartService.removeProduct(id);
-
-        if (rs == true) {
-
-            BigInteger total = cartService.getTotalPrice(cartId);
-            ChangeQuantityDTO changeQuantityDTO = new ChangeQuantityDTO("200", "Success",
-                    CommonUtils.convertToCurrencyString(total, " VNĐ"),
-                    CommonUtils.convertToCurrencyString(0, " VNĐ"));
-            return ResponseEntity.ok(changeQuantityDTO);
-        } else {
-            SimpleReponseDTO simpleReponseDTO = new SimpleReponseDTO("500", "Failed");
-            return ResponseEntity.ok(simpleReponseDTO);
-        }
-    }
-
-    @GetMapping("/product-add/{cartId}")
-    @ResponseBody
-    public ResponseEntity<SimpleReponseDTO> addToCart(@PathVariable("cartId") Integer id,
-            @RequestParam(defaultValue = "1") String quantity,
-            @RequestParam("productId") String productId,
-            @RequestParam("productSizeId") Integer productSizeId) {
-        boolean rs = cartService.addToCart(id, productId, productSizeId, Integer.parseInt(quantity));
-        if (rs == true) {
-            SimpleReponseDTO simpleReponseDTO = new SimpleReponseDTO("200", "Success");
-            return ResponseEntity.ok(simpleReponseDTO);
-        } else {
-            SimpleReponseDTO simpleReponseDTO = new SimpleReponseDTO("500", "Failed");
-            return ResponseEntity.ok(simpleReponseDTO);
-        }
+        return ResponseEntity.ok().build();
     }
 
     // @PostMapping("/checkout/{cartId}")
@@ -191,7 +111,7 @@ public class CartController {
             Model model) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         // check user address
-        List<AddressDTO> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
+        List<AddressDTO2> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
         System.out.println(listAddressDTOs.size());
         if (listAddressDTOs.isEmpty()) {
             model.addAttribute("hasAddress", false);
@@ -227,19 +147,9 @@ public class CartController {
         return "user/view/cart/cart_checkout";
     }
 
-    @GetMapping("/checkout/{cartId}")
-    public String checkoutForm(@PathVariable("cartId") Integer cartId, @RequestParam("itemList") String itemList,
-            Model model) {
+    @GetMapping("/checkout/{userId}")
+    public String checkoutForm( @RequestParam("itemList") String itemList) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        // check user address
-        List<AddressDTO> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
-        System.out.println(listAddressDTOs.size());
-        if (listAddressDTOs.isEmpty()) {
-            model.addAttribute("hasAddress", false);
-            return "user/view/cart/cart_checkout";
-            // return "redirect:/user/address/all?user-id=" +
-            // httpSession.getAttribute("userId");
-        }
 
         List<Integer> selectedItem = Arrays.stream(itemList.split(","))
                 .map(Integer::parseInt)
@@ -253,15 +163,7 @@ public class CartController {
             subTotal += cartItemDTO.getProduct().getPrice().intValue() * cartItemDTO.getQuantity();
         }
 
-        model.addAttribute("listItem", lCartItemDTOs);
-        model.addAttribute("listAddress", listAddressDTOs);
-        model.addAttribute("addressDefault", listAddressDTOs.get(0));
-        model.addAttribute("cart", cartDTO);
-        model.addAttribute("hasAddress", true);
-        model.addAttribute("subTotal", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        model.addAttribute("totalStr", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        model.addAttribute("total", subTotal);
-        model.addAttribute("isBuyNow", false);
+
         return "user/view/cart/cart_checkout";
     }
 
@@ -271,7 +173,7 @@ public class CartController {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Order order = orderService.getOrder(orderId);
         // check user address
-        List<AddressDTO> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
+        List<AddressDTO2> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
         System.out.println(listAddressDTOs.size());
         if (listAddressDTOs.isEmpty()) {
             model.addAttribute("hasAddress", false);

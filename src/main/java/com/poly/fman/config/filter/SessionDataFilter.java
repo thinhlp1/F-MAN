@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.poly.fman.dto.CartDTO;
+import com.poly.fman.dto.model.CartDTO;
 import com.poly.fman.entity.User;
 import com.poly.fman.service.CartService;
 import com.poly.fman.service.OrderService;

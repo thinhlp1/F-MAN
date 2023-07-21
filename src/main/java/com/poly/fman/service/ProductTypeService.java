@@ -1,6 +1,6 @@
 package com.poly.fman.service;
 
-import com.poly.fman.dto.ProductTypeDTO;
+import com.poly.fman.dto.model.ProductTypeDTO;
 import com.poly.fman.entity.ProductType;
 import com.poly.fman.repository.ProductTypeRepository;
 import lombok.RequiredArgsConstructor;

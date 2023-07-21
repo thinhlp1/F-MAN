@@ -17,7 +17,7 @@ import java.util.TimeZone;
 import org.springframework.stereotype.Service;
 
 import com.poly.fman.config.payment.Config;
-import com.poly.fman.dto.TransactionDTO;
+import com.poly.fman.dto.model.TransactionDTO;
 import com.poly.fman.dto.payment.PaymentReponse;
 import com.poly.fman.dto.payment.PaymentRquest;
 import com.poly.fman.entity.Bank;

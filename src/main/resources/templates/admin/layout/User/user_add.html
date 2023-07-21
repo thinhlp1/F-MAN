@@ -1,0 +1,121 @@
+<div class="back mb-3">
+    <a class="btn btn-blue-primary" href="#!user">
+        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        Quay Lại
+    </a>
+</div>
+<form action="${pageContext.request.contextPath}/admin/users/create" modelAttribute="user" method="post"
+      enctype="multipart/form-data">
+    <div class="row">
+        <div id="imgDialog" class="col-4 mb-3">
+            <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
+                <img id="blah" class="img-fluid w-100 h-100" />
+                <i id="icon-upload" class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
+                   aria-hidden="true"></i>
+                <input accept="image/*" type="file" id="imgInp" hidden="hidden" name="photo_file" />
+            </div>
+        </div>
+        <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
+        <script>
+            document.getElementById("imgDialog").onclick = (e) => {
+                document.getElementById("imgInp").click();
+            };
+            imgInp.onchange = (evt) => {
+                const [file] = imgInp.files;
+                if (file) {
+                    blah.src = URL.createObjectURL(file);
+                    console.log(file.name);
+                    document.getElementById("icon-upload").remove();
+                    document.getElementById("image-box").style.border = "none";
+                }
+            };
+        </script>
+
+        <div class="col-8">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="user_name" placeholder="Họ và tên" path="name" />
+                        <label for="user_name">Họ và tên</label>
+                    </div>
+                </div>
+                <!-- <errors
+                  class="text-danger fst-italic fw-bold"
+                  path="username"
+                /> -->
+                <!-- <div class="col-6">
+                  <div class="form-floating mb-3">
+                    <div class="form-floating mb-3">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="user_account"
+                        placeholder="Tên đăng nhập"
+                        path="username"
+                      />
+                      <label for="user_account">Tên đăng nhập</label>
+                    </div>
+                  </div>
+                </div> -->
+
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="user_password" placeholder="Nhập Password"
+                                   path="password" />
+                            <label for="user_password">Nhập mật khẩu</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="user_email" placeholder="Nhập Email"
+                                   path="email" />
+                            <label for="user_email">Email</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="user_numberPhone"
+                                   placeholder="Nhập số điện thoại" path="numberPhone" />
+                            <label for="user_email">Số điện thoại</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-3">
+                <div class="row">
+                    <div class="col-6">
+                        <label class="me-2">Vai trò:</label>
+                        <div class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" name="inlineRadioOptions" id="inlineRadio1"
+                                         value="ADMIN" path="roleId" />
+                            <label class="form-check-label" for="inlineRadio1">Admin</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" name="inlineRadioOptions" id="inlineRadio2"
+                                         value="USER" path="roleId" checked="${user.roleId == null ? 'checked' : '' }" />
+                            <label class="form-check-label" for="inlineRadio2">User</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-check form-switch">
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Hoạt động</label>
+                            <input type="checkbox" class="form-check-input" id="flexSwitchCheckChecked" path="active" value="1"
+                                      checked="checked" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-blue-primary btn-lg">
+                Tạo
+            </button>
+        </div>
+    </div>
+</form>
