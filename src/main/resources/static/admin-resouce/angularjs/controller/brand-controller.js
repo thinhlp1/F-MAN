@@ -1,3 +1,3 @@
-app.controller('BrandController', function ($scope, $routeParams) {
-    var productId = $routeParams.id;
+app.controller("BrandController", function ($scope, $routeParams) {
+  var productId = $routeParams.id;
 });

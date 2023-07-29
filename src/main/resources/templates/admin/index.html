@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="en" xmlns:th="http://www.thymeleaf.org">
+<html dir="ltr" lang="en" xmlns:th="http://www.thymeleaf.org" ng-app="myApp">
 
 <head>
     <meta charset="utf-8">
@@ -9,23 +9,29 @@
     <title>FMan | Collections</title>
     <!-- Favicon icon - Icon cho trang web -->
     <link rel="icon" type="image/png" sizes="16x16"
-          th:href="@{admin-resouce/plugins/images/favicon.png}">
+          th:href="@{/admin-resouce/plugins/images/favicon.png}">
     <!-- Custom CSS -->
-    <link th:href="@{admin-resouce/css/style.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css}"
-          integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
-          crossorigin=W"anonymous" referrerpolicy="no-referrer"/>
+    <link th:href="@{/admin-resouce/css/style.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    <script th:src="@{/admin-resouce/plugins/bower_components/jquery/dist/gridjs.production.min.js}"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script th:src="@{/admin-resouce/angularjs/notification/notification.js}"></script>
+
 </head>
 
-<body onload="myFunction()" ng-app="myApp">
-<div class="preloader">
-    <div class="lds-ripple">
-        <div class="lds-pos"></div>
-        <div class="lds-pos"></div>
-    </div>
-</div>
+<body>
+<!--<div class="preloader">-->
+<!--    <div class="lds-ripple">-->
+<!--        <div class="lds-pos"></div>-->
+<!--        <div class="lds-pos"></div>-->
+<!--    </div>-->
+<!--</div>-->
 <!-- ============================================================== -->
 <!-- Main wrapper - style you can find in pages.scss -->
 <!-- ============================================================== -->
@@ -52,18 +58,22 @@
         <!-- Footer -->
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script
-        th:src="@{admin-resouce/plugins/bower_components/jquery/dist/jquery.min.js}"></script>
+        th:src="@{/admin-resouce/plugins/bower_components/jquery/dist/jquery.min.js}"></script>
 <!-- Bootstrap tether Core JavaScript -->
-<script th:src="@{admin-resouce/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/admin-resouce/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
 <!--Menu sidebar -->
-<script th:src="@{admin-resouce/js/sidebarmenu.js}"></script>
+
+<script th:src="@{/admin-resouce/angularjs/app.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/admin-router.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/service/dataservice.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/service/formservice.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/controller/category-controller.js}"></script>
+
 <!--Custom JavaScript -->
-<script th:src="@{admin-resouce/js/custom.js}"></script>
-<%--ALERT--%>
-<script th:src="@{admin-resouce/js/show-alert.js}"></script>
-<script th:src="@{admin-resouce/angularjs/app.js}"></script>
-<script th:src="@{admin-resouce/angularjs/admin-router.js}"></script>
+<script th:src="@{/admin-resouce/js/custom.js}"></script>
 </body>
 
 </html>

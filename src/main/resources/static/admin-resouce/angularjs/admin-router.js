@@ -1,10 +1,10 @@
 app.config(function ($routeProvider) {
   $routeProvider
-    // DASHBOARD
+    // // DASHBOARD
     .when("/", {
       templateUrl: "/admin/dashboard",
     })
-    .when("/dashboard", {
+    .when("/index", {
       templateUrl: "/admin/dashboard",
     })
 
@@ -22,7 +22,6 @@ app.config(function ($routeProvider) {
     })
     .when("/product-detail/:id", {
       templateUrl: ($routeParams) => {
-        console.log($routeParams.id);
         return "/admin/products/details/" + $routeParams.id;
       },
     })
@@ -48,14 +47,15 @@ app.config(function ($routeProvider) {
     // CATEGORY
     .when("/category", {
       templateUrl: "/admin/categorys/",
+      controller: "CategoryController",
     })
     .when("/category-add", {
       templateUrl: "/admin/categorys/create",
+      controller: "CategoryController",
     })
-    .when("/category-update/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/categorys/update-form/" + $routeParams.id;
-      },
+    .when("/category-update", {
+      templateUrl: "/admin/categorys/update-form",
+      controller: "CategoryController",
     })
 
     // SIZE
@@ -139,6 +139,5 @@ app.config(function ($routeProvider) {
     })
     .when("/analysis-sellProducts", {
       templateUrl: "/admin/analysis/sellProducts",
-    })
-    .otherwise({ redirectTo: "/admin/notfound" });
+    });
 });

@@ -5,72 +5,25 @@
     </a>
 </div>
 <div class="row">
-    <form action="${pageContext.request.contextPath}/admin/categorys/create"
-               modelAttribute="productType" method="post">
+    <form>
         <div class="col-12">
             <div class="form-floating mb-3">
-                <input type="text" path="id" class="form-control" id="category_id" maxlength="15"
+                <input type="text" path="id" class="form-control" id="category_id" maxlength="15" ng-model="form.id"
                             placeholder="ID Danh Mục"/>
                 <label for="category_id">ID (VD: NIKE, ADIDAS,...)</label>
             </div>
         </div>
         <div class="col-12 mb-3">
             <div class="form-floating mb-3">
-                <input type="text" path="name" class="form-control" id="category_name" maxlength="50"
+                <input type="text" path="name" class="form-control" id="category_name" maxlength="50" ng-model="form.name"
                             placeholder="Tên Danh Mục"/>
                 <label for="category_name">Tên danh mục</label>
             </div>
         </div>
         <div class="col-12 text-end">
-            <button class="btn btn-blue-primary btn-lg">
+            <button class="btn btn-blue-primary btn-lg" ng-click="create()">
                 Tạo
             </button>
         </div>
-<!--        <%&#45;&#45;=======================================================&#45;&#45;%>-->
-<!--        <c:if test="${isCreateFasle}">-->
-<!--            <%&#45;&#45;Call thằng modal comfirm khi có lỗi&#45;&#45;%>-->
-<!--            <script>-->
-<!--                window.onload = function CallModal() {-->
-<!--                    document.getElementById('modalshow').click();-->
-<!--                }-->
-<!--            </script>-->
-<!--            &lt;!&ndash; Button trigger modal &ndash;&gt;-->
-<!--            <button id="modalshow" type="button"-->
-<!--                    class="d-none" data-bs-toggle="modal" data-bs-target="#showDialogConfirm">-->
-<!--                Errors-->
-<!--            </button>-->
-
-<!--            &lt;!&ndash; Modal &ndash;&gt;-->
-<!--            <div class="modal fade" id="showDialogConfirm" tabindex="-1" aria-labelledby="exampleModalLabel"-->
-<!--                 aria-hidden="true">-->
-<!--                <div class="modal-dialog">-->
-<!--                    <div class="modal-content">-->
-<!--                        <div class="modal-header">-->
-<!--                            <h1 class="modal-title fs-7" id="exampleModalLabel">Xác nhận</h1>-->
-<!--                            <button type="button" class="btn-close" data-bs-dismiss="modal"-->
-<!--                                    aria-label="Close"></button>-->
-<!--                        </div>-->
-<!--                        <div class="modal-body fs-4">-->
-<!--                            Danh mục này đã tồn tại, bạn có muốn cập nhật lại danh mục này?-->
-<!--                        </div>-->
-<!--                        <div class="modal-footer">-->
-<!--                            <div class="row g-3 w-100">-->
-<!--                                <div class="col-6">-->
-<!--                                    <button type="button" class="btn btn-outline-secondary w-100"-->
-<!--                                            data-bs-dismiss="modal">Không-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                                <div class="col-6">-->
-<!--                                    <button formaction="${pageContext.request.contextPath}/admin/categorys/create?isConfirm=true"-->
-<!--                                            type="submit" class="btn btn-viva w-100">Có-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </c:if>-->
-<!--        <%&#45;&#45;=======================================================&#45;&#45;%>-->
     </form>
 </div>

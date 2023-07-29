@@ -4,18 +4,18 @@
             <!-- ============================================================== -->
             <!-- Logo -->
             <!-- ============================================================== -->
-            <a class="navbar-brand" th:href="@{admin}">
+            <a class="navbar-brand" ng-href="#index">
                 <!-- Logo icon -->
                 <b class="logo-icon">
                     <!-- Dark Logo icon -->
-                    <img th:src="@{admin-resouce/plugins/images/logo-icon1.png}"
+                    <img th:src="@{/admin-resouce/plugins/images/logo-icon1.png}"
                          alt="homepage"/>
                 </b>
                 <!--End Logo icon -->
                 <!-- Logo text -->
                 <span class="logo-text">
                         <!-- dark Logo text -->
-                        <img th:src="@{admin-resouce/plugins/images/fman.admin.png}"
+                        <img th:src="@{/admin-resouce/plugins/images/fman.admin.png}"
                              alt="homepage"/>
                     </span>
             </a>
@@ -55,7 +55,7 @@
                 <!-- ============================================================== -->
                 <li>
                     <a class="profile-pic">
-                        <img src="admin-resouce/plugins/images/users/varun.jpg"
+                        <img th:src="@{/admin-resouce/plugins/images/users/varun.jpg}"
                              alt="user-img" width="36" class="img-circle">
                         <span class="text-white font-medium">Username</span>
                     </a>

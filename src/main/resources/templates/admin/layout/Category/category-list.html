@@ -1,189 +1,50 @@
-<div class="d-flex justify-content-between mb-3">
-    <div class="sort-fillter align-items-center">
-                    <span class="dropdown">
-                        <button class="btn bg-transparent border shadow dropdown-toggle" type="button" id="sort"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                           Sắp xếp theo
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="sort">
-                            <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/admin/categorys/?field=id&direction=${direction}&p=${items.number}">ID</a></li>
-                            <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/admin/categorys/?field=name&direction=${direction}&p=${items.number}">Tên thương hiệu</a></li>
-                        </ul>
-                    </span>
-        <span class="dropdown">
-                        <button class="btn bg-transparent border shadow dropdown-toggle" type="button" id="direction"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
-                            Tăng dần
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="sort">
-                            <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/admin/categorys/?field=${field}&direction=asc&p=${items.number}">Tăng dần</a></li>
-                            <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/admin/categorys/?field=${field}&direction=desc&p=${items.number}">Giảm dần</a></li>
-                        </ul>
-                    </span>
-    </div>
-    <form class="d-flex position-relative w-50"
-          action="${pageContext.request.contextPath}/admin/categorys/search"
-          method="post">
-        <input class="form-control rounded-1" placeholder="Nhập từ khóa (VD: Giày thể thao,...)"
-               name="keywords" aria-label="Search">
-        <button class="btn btn-outline-blue-primary position-absolute top-0 end-0 rounded-circle bg-transparent text-black-50 border-0"
-                type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-    </form>
+<div class="float-end">
     <a class="btn btn-blue-primary"
        href="#!category-add">
         <i class="fa fa-plus-square" aria-hidden="true"></i>
         Thêm
     </a>
 </div>
-<div class="table-responsive">
-    <table class="table table-hover table-striped">
-        <thead class="table-header-custom">
-        <tr>
-            <th scope="col">STT</th>
-            <th scope="col">ID</th>
-            <th scope="col">Tên thương hiệu</th>
-            <th scope="col">Trạng thái</th>
-            <th scope="col">Thao tác</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">ID1</th>
-            <td>CA01</td>
-            <td>Category Name</td>
-            <td>
-                <span class="badge bg-success">Hoạt động</span>
-            </td>
-            <td>
-                <!--                <button class="border-0 bg-transparent" data-bs-toggle="modal"-->
-                <!--                        data-bs-target="#CATEGORY${item.id}"><i class="fa fa-repeat"-->
-                <!--                                                                aria-hidden="true"></i>-->
-                <!--                </button>-->
-                <!--                <div class="modal fade" id="CATEGORY${item.id}" aria-hidden="true"-->
-                <!--                     tabindex="-1">-->
-                <!--                    <div class="modal-dialog modal-dialog-centered">-->
-                <!--                        <div class="modal-content">-->
-                <!--                            <div class="modal-header">-->
-                <!--                                <h5 class="modal-title text-danger">-->
-                <!--                                    <i class="fa fa-exclamation-triangle"-->
-                <!--                                       aria-hidden="true"></i>-->
-                <!--                                    PHỤC HỒI-->
-                <!--                                </h5>-->
-                <!--                                <button type="button" class="btn-close" data-bs-dismiss="modal"-->
-                <!--                                        aria-label="Close"></button>-->
+<div id="grid"></div>
 
-                <!--                            </div>-->
-                <!--                            <div class="modal-body text-center">-->
-                <!--                                <img class="img-fluid mb-3" width="300px" height="300px"-->
-                <!--                                     src="${pageContext.request.contextPath}/views/admin/plugins/images/large/cat-sayin-happy.jpg">-->
-                <!--                                <h4>Bạn có chắc chắn muốn phục hồi danh mục <span-->
-                <!--                                        class="text-danger fw-bold">${item.name}</span>?</h4>-->
-                <!--                            </div>-->
-                <!--                            <div class="modal-footer">-->
-                <!--                                <div class="row g-3 w-100">-->
-                <!--                                    <div class="col-6">-->
-                <!--                                        <button class="btn btn-outline-danger w-100"-->
-                <!--                                                class="btn-close" data-bs-dismiss="modal"-->
-                <!--                                                aria-label="Close">Không-->
-                <!--                                        </button>-->
-                <!--                                    </div>-->
-                <!--                                    <div class="col-6">-->
-                <!--                                        <a href="${pageContext.request.contextPath}/admin/categorys/restore/${item.id}"-->
-                <!--                                           class="btn btn-blue-primary w-100">Có</a>-->
-                <!--                                    </div>-->
-                <!--                                </div>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-                <a class="text-dark"
-                   href="#!category-update/TEST">
-                    <button class="border-0 bg-transparent">
-                        <i class="fa fa-pencil" aria-hidden="true"></i>
-                    </button>
-                </a>
-                <button class="border-0 bg-transparent" data-bs-toggle="modal"
-                        data-bs-target="#CATEGORY"><i class="fa fa-trash"
-                                                                aria-hidden="true"></i>
-                </button>
-                <div class="modal fade" id="CATEGORY" aria-hidden="true"
-                     tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-danger">
-                                    <i class="fa fa-exclamation-triangle"
-                                       aria-hidden="true"></i>
-                                    XÓA
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
 
-                            </div>
-                            <div class="modal-body text-center">
-                                <img class="img-fluid mb-3" width="300px" height="300px"
-                                     th:src="@{admin-resouce/plugins/images/large/cat-screaming-no.jpg}">
-                                <h4>Bạn có chắc chắn muốn xóa danh mục <span
-                                        class="text-danger fw-bold">${item.name}</span>?</h4>
-                            </div>
-                            <div class="modal-footer">
-                                <div class="row g-3 w-100">
-                                    <div class="col-6">
-                                        <button class="btn btn-outline-danger w-100"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close">Không
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <a href="${pageContext.request.contextPath}/admin/categorys/delete/${item.id}"
-                                           class="btn btn-blue-primary w-100">Có</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<div class="modal fade" id="category" aria-hidden="true"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa fa-exclamation-triangle"
+                       aria-hidden="true"></i>
+                    XÓA
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body text-center">
+                <img class="img-fluid mb-3" width="300px" height="300px"
+                     th:src="@{/admin-resouce/plugins/images/large/cat-screaming-no.jpg}">
+                <h4>Bạn có chắc chắc muốn danh mục <span class="text-danger fw-bold">{{ id }}</span>
+                    ?</h4>
+            </div>
+            <div class="modal-footer">
+                <div class="row g-3 w-100">
+                    <div class="col-6">
+                        <button class="btn btn-outline-danger w-100"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">Không
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button ng-click="delete(id)"
+                                class="btn btn-blue-primary w-100">Có
+                        </button>
                     </div>
                 </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="d-flex justify-content-center pagination-custom">
-        <ul class="pagination">
-            <!--                        <c:if test="${items.number > 0}">-->
-            <li class="page-item">
-                <a class="page-link fs-4"
-                   href="${pageContext.request.contextPath}/admin/categorys/?field=${field}&direction=${direction}&p=${items.number - 1}">
-                    <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-                </a>
-            </li>
-            <!--                        </c:if>-->
-            <!--                        <c:if test="${items.totalPages > 0}">-->
-            <!--                            <c:forEach var="i" begin="0" end="${items.totalPages - 1}">-->
-            <!--                                <c:if test="${i >= items.number - 2 && i <= items.number + 2}">-->
-            <li class="page-item ${i == items.number ? 'active' : ''}">
-                <a class="page-link fs-4"
-                   href="${pageContext.request.contextPath}/admin/categorys/?field=${field}&direction=${direction}&p=${i}">
-                    ${i + 1}
-                </a>
-            </li>
-            <!--                                </c:if>-->
-            <!--                            </c:forEach>-->
-            <!--                        </c:if>-->
-            <!--                        <c:if test="${items.number < items.totalPages - 1}">-->
-            <li class="page-item">
-                <a class="page-link fs-4"
-                   href="${pageContext.request.contextPath}/admin/categorys/?field=${field}&direction=${direction}&p=${items.number + 1}">
-                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-                </a>
-            </li>
-            <!--                        </c:if>-->
-        </ul>
+            </div>
+        </div>
     </div>
 </div>
 
