@@ -18,17 +18,14 @@ public class AdminManagementController {
     private final AnalysisService analysisService;
     private final ProductService productService;
 
-    @GetMapping("/dashboard")
-    public String index(Model model) {
-//        DashBoardOverviewDTO dashBoardOverviewDTO = analysisService.analysisDashBoardOverViewData();
- 
-//        model.addAttribute("dashBoardOverview", dashBoardOverviewDTO);
-        return "admin/layout/dashboard";
+    @GetMapping("/index")
+    public String index() {
+        return "admin/index";
     }
 
-    @GetMapping("/notfound")
-    public String notFound() {
-        return "admin/layout/404";
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "admin/layout/dashboard";
     }
 
 }
