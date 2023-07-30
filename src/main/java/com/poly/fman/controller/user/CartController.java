@@ -27,13 +27,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.fman.dto.cart.CartRequestDTO;
 import com.poly.fman.dto.cart.CartResponseDTO;
 import com.poly.fman.dto.cart.ChangeQuantityDTO;
+import com.poly.fman.dto.cart.CheckoutReponseDTO;
+import com.poly.fman.dto.model.AddressDTO;
 import com.poly.fman.dto.model.AddressDTO2;
 import com.poly.fman.dto.model.CartDTO;
 import com.poly.fman.dto.model.CartItemDTO;
 import com.poly.fman.dto.model.CartItemDTO2;
 import com.poly.fman.dto.model.ResponseDTO;
+import com.poly.fman.dto.order.CheckoutRequestDTO;
+import com.poly.fman.dto.order.ReCheckoutReponseDTO;
 import com.poly.fman.dto.reponse.SimpleReponseDTO;
-import com.poly.fman.dto.request.CheckoutDTO;
 import com.poly.fman.entity.Cart;
 import com.poly.fman.entity.CartItem;
 import com.poly.fman.entity.Order;
@@ -63,9 +66,19 @@ public class CartController {
     private final OrderService orderService;
     private final HttpSession httpSession;
 
-    @GetMapping("/{userId}")
-    public String cart(@PathVariable("userId") Integer userId, Model model) {
+    @GetMapping("/")
+    public String cartIndex() {
+        return "user/view/cart/cart-index";
+    }
+
+    @GetMapping("/cart")
+    public String cart() {
         return "user/view/cart/cart";
+    }
+
+    @GetMapping("/checkout")
+    public String checkout() {
+        return "user/view/cart/cart_checkout";
     }
 
     @PostMapping("/get-cart-items/{userId}")
@@ -80,9 +93,9 @@ public class CartController {
         }
     }
 
-    @GetMapping("/changeQuantity")
+    @GetMapping("/check-in-stock")
     @ResponseBody
-    public ResponseEntity<SimpleReponseDTO> increase(
+    public ResponseEntity<SimpleReponseDTO> checkInStock(
             @RequestParam("productSizeId") Integer id,
             @RequestParam("quantity") int quantity) {
 
@@ -111,7 +124,7 @@ public class CartController {
             Model model) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         // check user address
-        List<AddressDTO2> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
+        List<AddressDTO> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
         System.out.println(listAddressDTOs.size());
         if (listAddressDTOs.isEmpty()) {
             model.addAttribute("hasAddress", false);
@@ -147,79 +160,32 @@ public class CartController {
         return "user/view/cart/cart_checkout";
     }
 
-    @GetMapping("/checkout/{userId}")
-    public String checkoutForm( @RequestParam("itemList") String itemList) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+    @PostMapping("/checkout")
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> getCheckout(@RequestBody CartRequestDTO checkoutRequestDTO) {
 
-        List<Integer> selectedItem = Arrays.stream(itemList.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        try {
+            CheckoutReponseDTO checkoutReponseDTO = cartService.checkout(checkoutRequestDTO);
+            return ResponseEntity.ok(checkoutReponseDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Có lỗi xảy ra"));
 
-        List<CartItemDTO2> lCartItemDTOs = cartService.getListCartItem(selectedItem);
-        CartDTO cartDTO = cartService.getCartByUserId((int) httpSession.getAttribute("userId"));
-
-        int subTotal = 0;
-        for (CartItemDTO2 cartItemDTO : lCartItemDTOs) {
-            subTotal += cartItemDTO.getProduct().getPrice().intValue() * cartItemDTO.getQuantity();
         }
 
-
-        return "user/view/cart/cart_checkout";
     }
 
-    @GetMapping("/recheckout/{orderId}")
-    public String recheckoutForm(@PathVariable("orderId") Integer orderId,
-            Model model) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        Order order = orderService.getOrder(orderId);
-        // check user address
-        List<AddressDTO2> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
-        System.out.println(listAddressDTOs.size());
-        if (listAddressDTOs.isEmpty()) {
-            model.addAttribute("hasAddress", false);
-            return "user/view/cart/cart_checkout";
-            // return "redirect:/user/address/all?user-id=" +
-            // httpSession.getAttribute("userId");
-        }
-        List<CartItemDTO2> lCartItemDTOs = new ArrayList<>();
-        List<OrderItem> lOrderItems = order.getOrderItems();
-        for (OrderItem orderItem : lOrderItems) {
-            CartItemDTO2 cartItemDTO = new CartItemDTO2();
-
-            // cartItemDTO.setProduct(orderItem.getProduct());
-            // cartItemDTO.setProductSize(orderItem.getProductSize());
-            cartItemDTO.setQuantity(orderItem.getQuantity());
-            lCartItemDTOs.add(cartItemDTO);
-        }
-
-        int subTotal = 0;
-        for (CartItemDTO2 cartItemDTO : lCartItemDTOs) {
-            subTotal += cartItemDTO.getProduct().getPrice().intValue() * cartItemDTO.getQuantity();
-        }
-
-        model.addAttribute("listItem", lCartItemDTOs);
-        model.addAttribute("listAddress", listAddressDTOs);
-        model.addAttribute("addressDefault", listAddressDTOs.get(0));
-        model.addAttribute("hasAddress", true);
-        model.addAttribute("subTotal", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        model.addAttribute("totalStr", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        model.addAttribute("total", subTotal);
-        model.addAttribute("isBuyNow", false);
-        model.addAttribute("recheckout", true);
-        model.addAttribute("orderId", orderId);
-        return "user/view/cart/cart_checkout";
-    }
 
     @GetMapping("/apply-voucher")
     @ResponseBody
-    public ResponseEntity<SimpleReponseDTO> applyVoucher(
+    public ResponseEntity<ResponseDTO> applyVoucher(
             @RequestParam("voucher") String voucherName, @RequestParam("total") Long total) {
 
-        SimpleReponseDTO simpleReponseDTO = cartService.applyVoucher(voucherName, total);
-        if (!simpleReponseDTO.getStatusCode().equals("200")) {
-            return ResponseEntity.status(500).body(simpleReponseDTO);
+        ResponseDTO responseDTO = cartService.applyVoucher(voucherName, total);
+        if (responseDTO instanceof SimpleReponseDTO) {
+            return ResponseEntity.status(404).body(responseDTO);
         } else {
-            return ResponseEntity.ok(simpleReponseDTO);
+            return ResponseEntity.ok(responseDTO);
         }
     }
 

@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.poly.fman.entity.Address;
+import com.poly.fman.entity.OrderState;
 import com.poly.fman.entity.PaymentMethod;
 import com.poly.fman.entity.User;
 import com.poly.fman.entity.Voucher;
+import com.poly.fman.service.common.CommonUtils;
 import com.poly.fman.service.common.DateUtils;
 
 import lombok.AllArgsConstructor;
@@ -19,37 +21,51 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDTO implements ModelDTO {
+public class OrderDTO implements ModelDTO,ResponseDTO {
+
+    private int id;
+
+    private Date createAt;
+
+    private OrderStateDTO orderState;
+
+    private Long total;
+
+    private Date updateAt;
+
+    private List<OrderItemDTO> listOrderItemDTO;
+
+    private UserDTO user;
+
+    private AddressDTO address;
+
+    private PaymentMethodDTO paymentMethod;
+
+    private VoucherDTO voucher;
+
+    private Long discount;
     
-	private int id;
+    private Long tempTotal;
 
-	private Date createAt;
+    private String note;
 
-	private String stateId;
+    public String getTotalStringVND() {
+        return CommonUtils.convertToCurrencyString(total, " VNĐ");
+    }
 
-	private BigInteger total;
+    public String getTempTotalStringVND() {
+        return CommonUtils.convertToCurrencyString(tempTotal, " VNĐ");
+    }
 
-	private Date updateAt;
+    public String getDiscountStringVND() {
+        return CommonUtils.convertToCurrencyString(discount, " VNĐ");
+    }
 
-    private String userId;
+    public String getCreateAtString() {
+        return DateUtils.toString(createAt, "dd/mm/yyyy HH:mm");
+    }
 
-    private Integer addressId;
-
-    private String paymentId;
-
-    private Integer voucherId;
-
-	private List<OrderItemDTO> listOrderItemDTO;
-
-	private User user;
-
-	private Address address;
-
-	private PaymentMethod paymentMethod;
-
-	private Voucher voucher;
-
-	public String getCreateAtString(){
-		return DateUtils.toString(createAt, "dd/mm/yyyy HH:mm");
-	}
+    public String getUpdateAtString() {
+        return DateUtils.toString(updateAt, "dd/mm/yyyy HH:mm");
+    }
 }

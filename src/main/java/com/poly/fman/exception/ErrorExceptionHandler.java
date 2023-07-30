@@ -23,7 +23,6 @@ public class ErrorExceptionHandler implements ErrorController {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         int statusCode = Integer.valueOf(status.toString());
         if (statusCode == HttpStatus.FORBIDDEN.value()) {
-            System.out.println("PHẢI VÀO TRANG NÀY");
              model.addAttribute("err_message", "Bạn không có quyền truy cập trang này");
             model.addAttribute("err_image", "not_found.gif");
            return "user/view/error/error_page";

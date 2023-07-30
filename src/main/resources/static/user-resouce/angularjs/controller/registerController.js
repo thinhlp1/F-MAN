@@ -23,7 +23,7 @@ app.controller("RegisterController", function ($scope, $http, $location) {
             method: "POST",
             url: "/auth/checkNumberPhoneExist",
             data: numberPhone
-            
+
         }).then(function (response) {
             console.log(response)
             return true;
@@ -85,24 +85,28 @@ app.controller("RegisterController", function ($scope, $http, $location) {
                     var request = {
                         method: 'POST',
                         url: "/auth/check-register",
-                        data :data
+                        data: data
                     };
 
                     console.log(request);
-     
+
                     $http(request)
-                    	.then(function(response) {
-                    		console.log(response.data);
+                        .then(function (response) {
+                            console.log(response.data);
                             sessionStorage.setItem('registerData', JSON.stringify(data));
                             $location.path("confirmOTP/register/" + email);
-                           
-                    		                  	
-                    	})
-                    	.catch(function(error) {
-                    		console.error(error);
-                            $scope.err_message =  "Có lỗi xảy ra. Vui lòng thử lại";
 
-                    	});
+
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                            $scope.err_message = "Có lỗi xảy ra. Vui lòng thử lại";
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Có lỗi xảy ra. Vui lòng thử lại',
+                            })
+                        });
 
                 }
 

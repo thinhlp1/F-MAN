@@ -14,23 +14,34 @@ import org.springframework.stereotype.Service;
 
 import com.poly.fman.entity.Cart;
 import com.poly.fman.entity.CartItem;
+import com.poly.fman.entity.PaymentMethod;
 import com.poly.fman.dto.cart.CartItemRequestDTO;
 import com.poly.fman.dto.cart.CartItemResponseDTO;
 import com.poly.fman.dto.cart.CartResponseDTO;
+import com.poly.fman.dto.cart.CheckoutReponseDTO;
 import com.poly.fman.dto.cart.CartRequestDTO;
+import com.poly.fman.dto.model.AddressDTO;
 import com.poly.fman.dto.model.CartDTO;
 import com.poly.fman.dto.model.CartItemDTO;
 import com.poly.fman.dto.model.CartItemDTO2;
+import com.poly.fman.dto.model.OrderDTO;
+import com.poly.fman.dto.model.PaymentMethodDTO;
 import com.poly.fman.dto.model.ProductDTO;
 import com.poly.fman.dto.model.ProductSizeDTO;
+import com.poly.fman.dto.model.ResponseDTO;
+import com.poly.fman.dto.order.CheckoutRequestDTO;
+import com.poly.fman.dto.order.ReCheckoutReponseDTO;
+import com.poly.fman.dto.payment.PaymentReponse;
 import com.poly.fman.dto.reponse.ApplyVoucherDTO;
 import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.entity.Product;
 import com.poly.fman.entity.ProductSize;
 import com.poly.fman.entity.User;
 import com.poly.fman.entity.Voucher;
+import com.poly.fman.repository.AddressRepository;
 import com.poly.fman.repository.CartItemRepository;
 import com.poly.fman.repository.CartRepository;
+import com.poly.fman.repository.PaymentMethodRepository;
 import com.poly.fman.repository.ProductRepository;
 import com.poly.fman.repository.ProductSizeRepository;
 import com.poly.fman.repository.UserRepository;
@@ -47,11 +58,12 @@ public class CartService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final ProductSizeRepository productSizeRepository;
+    private final AddressService addressService;
+    private final PaymentMethodRepository paymentMethodRepository;
     private final VoucherRepository voucherRepository;
     private final ModelMapper modelMapper;
 
-
-     public CartResponseDTO processCartRequest(CartRequestDTO cartRequest) {
+    public CartResponseDTO processCartRequest(CartRequestDTO cartRequest) {
         CartResponseDTO cartResponse = new CartResponseDTO();
 
         List<CartItemRequestDTO> cartItems = cartRequest.getListCartItem();
@@ -65,11 +77,11 @@ public class CartService {
             ProductSizeDTO productSizeDTO = modelMapper.map(productSize, ProductSizeDTO.class);
 
             CartItemResponseDTO cartItemResponse = new CartItemResponseDTO();
-            cartItemResponse.setProductDTO(productDTO);
-            cartItemResponse.setProductSizeDTO(productSizeDTO);
+            cartItemResponse.setProduct(productDTO);
+            cartItemResponse.setProductSize(productSizeDTO);
 
             int quantity = cartItemRequest.getQuantity();
-            if (checkInStock(productSize.getAvailableQuantity(), quantity)){
+            if (checkInStock(productSize.getAvailableQuantity(), quantity)) {
                 quantity = productSize.getAvailableQuantity();
             }
 
@@ -80,7 +92,8 @@ public class CartService {
             cartItemResponse.setQuantity(quantity);
 
             cartItemResponses.add(cartItemResponse);
-        };
+        }
+        ;
         cartResponse.setTotal(totalPrice);
         cartResponse.setListCartItems(cartItemResponses);
 
@@ -89,7 +102,7 @@ public class CartService {
 
     public CartDTO getCartByUserId(Integer userId) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-     
+
         Cart cart;
         try {
             cart = cartRepository.findByUserId(userId).orElseThrow();
@@ -101,16 +114,37 @@ public class CartService {
         cartDTO.setCartItemsDTO(listCartItemDTOs);
         // cartDTO.setCartItemsDTO(new ArrayList<>());
 
-       
         long totalPrice = 0;
         for (CartItemDTO item : listCartItemDTOs) {
-            // totalPrice += item.getProduct().getPrice().intValue() * (int) item.getQuantity();
+            // totalPrice += item.getProduct().getPrice().intValue() * (int)
+            // item.getQuantity();
         }
         cartDTO.setTotalPrice(CommonUtils.convertToCurrencyString(totalPrice, " VNĐ"));
 
         return cartDTO;
     }
 
+    public CheckoutReponseDTO checkout(CartRequestDTO checkoutRequestDTO) {
+        CartResponseDTO cartResponseDTO = processCartRequest(checkoutRequestDTO);
+        CheckoutReponseDTO checkoutReponseDTO = new CheckoutReponseDTO();
+
+        checkoutReponseDTO.setListCartItems(cartResponseDTO.getListCartItems());
+
+        List<AddressDTO> lisAddressDTOs = addressService.getByUserId(checkoutRequestDTO.getUserId());
+        List<PaymentMethod> listPaymentMethods = paymentMethodRepository.findAllByActiveIsTrue();
+        List<PaymentMethodDTO> listPaymentMethodDTOs = listPaymentMethods.stream()
+                .map(payment -> modelMapper.map(payment, PaymentMethodDTO.class))
+                .collect(Collectors.toList());
+        checkoutReponseDTO.setListAddress(lisAddressDTOs);
+        checkoutReponseDTO.setListPaymentMethods(listPaymentMethodDTOs);
+        checkoutReponseDTO.setTotal(cartResponseDTO.getTotal());
+        checkoutReponseDTO.setDiscount((long) 0);
+        checkoutReponseDTO.setTempTotal(cartResponseDTO.getTotal());
+
+        return checkoutReponseDTO;
+    }
+
+  
     public Cart getCartByUserId2(Integer userId) {
         try {
             return cartRepository.findByUserId(userId).orElseThrow();
@@ -213,7 +247,7 @@ public class CartService {
         return listCartItemDTOs;
     }
 
-     public List<CartItemDTO> getListCartItem(Integer cartId) {
+    public List<CartItemDTO> getListCartItem(Integer cartId) {
         List<CartItem> lCartItems = cartItemRepository.findByCartIdAndProductSizeActiveIsTrue(cartId)
                 .orElse(new ArrayList<>());
         List<CartItemDTO> listCartItemDTOs = lCartItems.stream()
@@ -222,7 +256,7 @@ public class CartService {
         return listCartItemDTOs;
     }
 
-    public SimpleReponseDTO applyVoucher(String voucherName, Long total) {
+    public ResponseDTO applyVoucher(String voucherName, Long total) {
         try {
             Voucher voucher = voucherRepository.findByNameAndActiveIsTrue(voucherName).orElseThrow();
             System.out.println(voucher.getStartAt());
@@ -248,30 +282,27 @@ public class CartService {
                     long subTotal = total;
                     long discount = (long) (total * (voucher.getSalePercent() / 100));
                     long finalTotal = total - discount;
-                    return new ApplyVoucherDTO("200", "Voucher hợp lệ",
-                            CommonUtils.convertToCurrencyString(BigInteger.valueOf(subTotal), " VNĐ"),
-                            CommonUtils.convertToCurrencyString(BigInteger.valueOf(discount), " VNĐ"),
-                            CommonUtils.convertToCurrencyString(BigInteger.valueOf(finalTotal), " VNĐ"));
+                    return new ApplyVoucherDTO(subTotal, discount, finalTotal);
                 } else {
-                    return new ApplyVoucherDTO("500", "Voucher chưa đủ điều kiện áp dụng", "0 VNĐ", "0 VNĐ", "0 VNĐ");
+                    return new SimpleReponseDTO("404", "Voucher chưa đủ điều kiện áp dụng");
                 }
 
             } else if (currentDate.after(endAt)) {
                 // Hôm nay không nằm giữa startAt và endAt
                 System.out.println("Voucher đã hết hạn");
-                return new ApplyVoucherDTO("500", "Voucher đã hết hạn", "0 VNĐ", "0 VNĐ", "0 VNĐ");
+                return new SimpleReponseDTO("404", "Voucher đã hết hạn");
 
             } else if (currentDate.before(startAt)) {
                 // Hôm nay không nằm giữa startAt và endAt
                 System.out.println("Voucher chưa bắt đầu áp dụng");
-                return new ApplyVoucherDTO("500", "Voucher chưa bắt đầu áp dụng", "0 VNĐ", "0 VNĐ", "0 VNĐ");
+                return new SimpleReponseDTO("404", "Voucher chưa bắt đầu áp dụng");
             }
 
             // kiểm tra xem hôm nay có nằm giữa start at và end at không
         } catch (Exception e) {
-            return new SimpleReponseDTO("500", "Voucher không hợp lệ");
+            return new SimpleReponseDTO("404", "Voucher không hợp lệ");
         }
-        return new SimpleReponseDTO("500", "Voucher không hợp lệ");
+        return new SimpleReponseDTO("404", "Voucher không hợp lệ");
     }
 
     public boolean checkInStock2(Integer cartItemId, int quantity) {
@@ -285,7 +316,7 @@ public class CartService {
         return false;
     }
 
-      public boolean checkInStock(Integer productSizeId, int quantity) {
+    public boolean checkInStock(Integer productSizeId, int quantity) {
         ProductSize productSize = productSizeRepository.findById(productSizeId).orElse(null);
         if (productSize != null) {
             int quantityInStock = productSize.getAvailableQuantity();

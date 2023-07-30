@@ -1,12 +1,7 @@
 package com.poly.fman.controller.user;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,27 +14,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.poly.fman.dto.model.OrderDTO;
+import com.poly.fman.dto.model.ResponseDTO;
 import com.poly.fman.dto.model.TransactionDTO;
+import com.poly.fman.dto.order.CheckoutOrderResponseDTO;
+import com.poly.fman.dto.order.CheckoutRequestDTO;
+import com.poly.fman.dto.order.ReCheckoutReponseDTO;
 import com.poly.fman.dto.payment.CheckoutPaymentReponse;
 import com.poly.fman.dto.payment.PaymentReponse;
-import com.poly.fman.dto.payment.PaymentRquest;
 import com.poly.fman.dto.reponse.SimpleReponseDTO;
-import com.poly.fman.dto.request.CheckoutDTO;
 import com.poly.fman.entity.Order;
-import com.poly.fman.entity.OrderItem;
 import com.poly.fman.entity.OrderState;
 import com.poly.fman.entity.Transaction;
-import com.poly.fman.entity.User;
-import com.poly.fman.repository.OrderRepository;
 import com.poly.fman.repository.OrderStateRepository;
 import com.poly.fman.repository.TransactionRepository;
+import com.poly.fman.service.CartService;
 import com.poly.fman.service.CheckoutPaymentService;
 import com.poly.fman.service.OrderService;
-import com.poly.fman.service.UserService;
-import com.poly.fman.service.common.CommonUtils;
 import com.poly.fman.service.common.DateUtils;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -47,13 +40,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserOrderController {
 
-    private final ModelMapper modelMapper;
     private final OrderService orderService;
-    private final UserService userService;
     private final OrderStateRepository orderStateRepository;
     private final CheckoutPaymentService checkoutPaymentService;
     private final TransactionRepository transactionRepository;
-    private final HttpSession httpSession;
 
     @GetMapping("/by-user/{userId}")
     public String getOrdersByUser(Model model, @PathVariable("userId") Integer userId,
@@ -86,98 +76,83 @@ public class UserOrderController {
 
     @GetMapping("/{orderId}")
     public String getOrder(@PathVariable("orderId") Integer orderId, Model model) {
-        Order order = orderService.getOrder(orderId);
-        Transaction transaction = transactionRepository.findByOrderId(orderId);
-        List<OrderItem> listOderItem = order.getOrderItems();
-        Long tempTotal = (long) 0;
-        Long discount = (long) 0;
+        OrderDTO orderDTO = orderService.getOrderDTO(orderId);
 
-        for (OrderItem orderItem : listOderItem) {
-            tempTotal += orderItem.getProduct().getPrice().intValue() * orderItem.getQuantity();
-        }
+        if (orderDTO.getPaymentMethod().getId().equals("VISA")) {
 
-        if (order.getVoucher() != null) {
-            discount = (long) (tempTotal * order.getVoucher().getSalePercent() / 100);
+            TransactionDTO transactionDTO = orderService.getTransactionDTO(orderId);
+            System.out.println(transactionDTO);
+            model.addAttribute("transaction", transactionDTO);
+
         }
-        model.addAttribute("tempTotal", CommonUtils.convertToCurrencyString(tempTotal, " VNĐ"));
-        model.addAttribute("discount", CommonUtils.convertToCurrencyString(discount, " VNĐ"));
-        model.addAttribute("order", order);
-        model.addAttribute("transaction", transaction);
+        model.addAttribute("order", orderDTO);
+
         return "user/view/order/order";
     }
 
     @PostMapping("/checkout")
     @ResponseBody
-    public ResponseEntity<Map> checkout(@RequestBody CheckoutDTO checkoutDTO,
-            Model model) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+    public ResponseEntity<ResponseDTO> checkout(@RequestBody CheckoutRequestDTO checkoutDTO) {
+        System.out.println("OKE");
+        ResponseDTO checkoutOrderResponseDTO = orderService.create(checkoutDTO);
+        if (checkoutOrderResponseDTO instanceof SimpleReponseDTO) {
 
-        checkoutDTO.setUserId((int) httpSession.getAttribute("userId"));
-        String is = checkoutDTO.getIsReCheckout();
-        Map<String, Object> reponse = new HashMap<>();
-        Order oder;
-        if (checkoutDTO.getIsReCheckout().equals("true")) {
-            oder = orderService.reCreate(checkoutDTO);
+            return ResponseEntity.status(500).body(checkoutOrderResponseDTO);
         } else {
-            oder = orderService.create(checkoutDTO);
-        }
-        if (oder != null) {
-            reponse.put("status", 200);
-            reponse.put("message", "Checkout success");
-            reponse.put("orderId", oder.getId());
-        } else {
-            reponse.put("status", 500);
-            reponse.put("message", "Checkout failed");
 
+            return ResponseEntity.ok(checkoutOrderResponseDTO);
         }
+    }
 
-        return ResponseEntity.ok(reponse);
+    
+    @PostMapping("/recheckout/{orderId}")
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> recheckout(@PathVariable("orderId") Integer orderId) {
+        try {
+            ReCheckoutReponseDTO recheckoutReponseDTO = orderService.reCheckout(orderId);
+            return ResponseEntity.ok(recheckoutReponseDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Có lỗi xảy ra"));
+        }
     }
 
     @PostMapping("/checkout-payment")
     @ResponseBody
-    public ResponseEntity<SimpleReponseDTO> checkoutPayment(@RequestBody CheckoutDTO checkoutDTO,
-            @RequestParam(required = false) Model model) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+    public ResponseEntity<ResponseDTO> checkoutPayment(@RequestBody CheckoutRequestDTO checkoutDTO) {
 
-        checkoutDTO.setUserId((int) httpSession.getAttribute("userId"));
-        PaymentRquest paymentRequestDTO = checkoutDTO.getPaymentRequestDTO();
-        String is = checkoutDTO.getIsBuyNow();
-        Order oder;
-        if (checkoutDTO.getIsReCheckout().equals("true")) {
-            oder = orderService.reCreate(checkoutDTO);
-        } else {
-            oder = orderService.create(checkoutDTO);
+        ResponseDTO checkoutOrderResponseDTO = orderService.create(checkoutDTO);
+        if (checkoutOrderResponseDTO instanceof SimpleReponseDTO) {
+
+            return ResponseEntity.status(500).body(checkoutOrderResponseDTO);
         }
 
         CheckoutPaymentReponse checkoutPaymentReponse = new CheckoutPaymentReponse();
         PaymentReponse paymentReponse = new PaymentReponse();
         try {
-            if (paymentRequestDTO.getBankCode().equals("NCB")) {
-                paymentReponse = checkoutPaymentService.createPaymentVnpay(paymentRequestDTO, oder.getTotal().longValue());
+            if (checkoutDTO.getBankCode() != null || !checkoutDTO.getBankCode().equals("")) {
+                paymentReponse = checkoutPaymentService.createPaymentVnpay(checkoutDTO.getBankCode(),
+                        ((CheckoutOrderResponseDTO) checkoutOrderResponseDTO).getOrder().getTotal(),
+                        ((CheckoutOrderResponseDTO) checkoutOrderResponseDTO).getOrder().getId());
             }
 
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            return ResponseEntity.ok(new SimpleReponseDTO("500", "Không thể thanh toán hóa đơn này"));
         }
-
-        if (oder != null) {
+        if (paymentReponse != null) {
             checkoutPaymentReponse.setPaymentReponse(paymentReponse);
-            checkoutPaymentReponse.setMessage("Checkout success");
-            checkoutPaymentReponse.setStatusCode("200");
-            checkoutPaymentReponse.setOrderId(oder.getId());
-            httpSession.setAttribute("orderId", oder.getId());
+            checkoutPaymentReponse
+                    .setOrderId(((CheckoutOrderResponseDTO) checkoutOrderResponseDTO).getOrder().getId());
 
         } else {
-            return ResponseEntity.ok(new SimpleReponseDTO("200", "Can't create order"));
+            return ResponseEntity.ok(new SimpleReponseDTO("500", "Không thể thanh toán hóa đơn này"));
 
         }
 
         return ResponseEntity.ok(checkoutPaymentReponse);
     }
 
-    @GetMapping("/checkout-vnpay-result")
+    @GetMapping("/checkout-vnpay-result/{orderId}")
     public String checkoutResult(@RequestParam(value = "vnp_Amount", required = false) String vnpAmount,
             @RequestParam(value = "vnp_BankCode", required = false) String vnpBankCode,
             @RequestParam(value = "vnp_BankTranNo", required = false) String vnpBankTranNo,
@@ -190,9 +165,8 @@ public class UserOrderController {
             @RequestParam(value = "vnp_TransactionStatus", required = false) String vnpTransactionStatus,
             @RequestParam(value = "vnp_TxnRef", required = false) String vnpTxnRef,
             @RequestParam(value = "vnp_SecureHash", required = false) String vnpSecureHash,
+            @PathVariable("orderId") Integer orderId,
             Model model) {
-
-        Integer orderId = (Integer) httpSession.getAttribute("orderId");
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setBankCode(vnpBankCode);

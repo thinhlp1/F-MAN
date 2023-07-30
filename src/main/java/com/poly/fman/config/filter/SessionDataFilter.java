@@ -35,7 +35,7 @@ public class SessionDataFilter extends OncePerRequestFilter {
         if (!jwtFilterValided || jwtFilterValided == null) {
             filterChain.doFilter(request, response);
             return;
-        }
+        } 
 
         String username = cookieService.getValue("username");
 
@@ -43,19 +43,19 @@ public class SessionDataFilter extends OncePerRequestFilter {
             User user = userService.getUser(username);
             String role = user.getRole().getId();
             if (role.equals("USER")) {
-             
-                CartDTO cartDTO = cartService.getCartByUserId(user.getId());
-                int quantity = cartService.getCartQuantity(user.getId());
+
                 httpSession.setAttribute("userId", user.getId());
-                httpSession.setAttribute("cartId", cartDTO.getId());
-                httpSession.setAttribute("cartQuantity", quantity);
+
             } else {
                 int quantityOrderApprove = orderService.getOrderApproveQuantity();
                 httpSession.setAttribute("username", user.getUsername());
                 httpSession.setAttribute("userId", user.getId());
                 httpSession.setAttribute("quantityOrderApprove", quantityOrderApprove);
+
+
             }
         } catch (Exception e) {
+            e.printStackTrace();
             // TODO: handle exception
         }
         filterChain.doFilter(request, response);

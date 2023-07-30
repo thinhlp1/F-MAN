@@ -37,17 +37,17 @@ public class CheckoutPaymentService {
     private final OrderService orderService;
     private final OrderStateRepository orderStateRepository;
 
-     public PaymentReponse createPaymentVnpay(PaymentRquest paymentRequestDTO, Long amt) throws UnsupportedEncodingException {
+     public PaymentReponse createPaymentVnpay(String bankCode, Long amt, Integer orderId) throws UnsupportedEncodingException {
      
         // String orderType = req.getParameter("ordertype");
         long amount =amt * 100 ;
-        String bankCode =paymentRequestDTO.getBankCode();
+       
 
         System.out.println(amount);
         System.out.println(bankCode);
 
         String vnp_TxnRef = Config.getRandomNumber(8);
-        // String vnp_IpAddr = Config.getIpAddress(req);
+        String vnp_IpAddr = "127.0.0.1";
         String vnp_TmnCode = Config.vnp_TmnCode;
         
         Map<String, String> vnp_Params = new HashMap<>();
@@ -61,11 +61,11 @@ public class CheckoutPaymentService {
         }
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
-        // vnp_Params.put("vnp_OrderType", orderType);
+        vnp_Params.put("vnp_OrderType", "other");
         vnp_Params.put("vnp_Locale", Config.vnp_Locale);
         
-        vnp_Params.put("vnp_ReturnUrl", Config.vnp_Returnurl);
-        // vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
+        vnp_Params.put("vnp_ReturnUrl", Config.vnp_Returnurl + "/" + orderId);
+        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");

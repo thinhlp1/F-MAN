@@ -18,7 +18,10 @@ public class TransactionDTO {
     String bankNo;
     String transNo;
 
-    public String getPayDateString(){
+    private BankDTO bank;
+    private OrderDTO order;
+
+    public String getPayDateString() {
         return DateUtils.toString(payDate, "dd/MM/yyy HH:mm");
     }
 }

@@ -6,6 +6,8 @@ import java.util.Date;
 
 import com.poly.fman.entity.Brand;
 import com.poly.fman.entity.ProductType;
+import com.poly.fman.service.common.CommonUtils;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -51,4 +53,9 @@ public class ProductDTO implements ModelDTO, ResponseDTO{
     private ProductTypeDTO productType;
 
 	private BrandDTO brand;
+
+	public String getPriceStringVND(){
+		return CommonUtils.convertToCurrencyString(price, " VNĐ");
+	}
+
 }

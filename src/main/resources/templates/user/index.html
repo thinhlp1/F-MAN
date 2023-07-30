@@ -1,189 +1,71 @@
 <!DOCTYPE html>
-<html lang="zxx" class="no-js">
+<html>
 
 <head>
-    <!-- Mobile Specific Meta -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Favicon-->
-  
-    <!-- Author Meta -->
-    <meta name="author" content="CodePixar">
-    <!-- Meta Description -->
-    <meta name="description" content="">
-    <!-- Meta Keyword -->
-    <meta name="keywords" content=""> 
-    <!-- meta character set -->
-    <meta charset="UTF-8">
-    <!-- Site Title -->
-   
+  <!-- Mobile Specific Meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Author Meta -->
+  <meta name="author" content="CodePixar">
+  <!-- Meta Description -->
+  <meta name="description" content="">
+  <!-- Meta Keyword -->
+  <meta name="keywords" content="">
+  <!-- meta character set -->
+  <meta charset="UTF-8">
+  <!-- Site Title -->
+  <title>Đăng nhập</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
-    <style>
-        .owl-carousel .owl-nav .owl-prev,
-        .owl-carousel .owl-nav .owl-next,
-        .owl-carousel .owl-dot {
-            display: none !important;
-            cursor: pointer;
-            cursor: hand;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-    </style>
+  <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+  <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
 
-    <jsp:include page="${pageContext.request.contextPath}/views/user/abstract/css.jsp"/>
 </head>
 
-<body>
-<!-- Start Header Area -->
-<jsp:include page="${pageContext.request.contextPath}/views/user/view/component/nav.jsp"></jsp:include>
-<!-- End Header Area -->
+<body ng-app="myApp">
 
-<!-- start features Area -->
-<section class="features-area section_gap">
+  <!-- Start Header Area -->
+  <div th:replace="~{/user/view/component/nav.html::nav}"></div>
+  <!-- End Header Area -->
 
-</section>
-<!-- end features Area -->
-<!-- Start brand Area -->
+  <!-- Start Banner Area -->
+  <section class="mt-5">
 
-<section class="brand-area">
-    <div class="container">
-        <div class="row">
-            <c:forEach varStatus="i" var="brand" items="${brands}">
-                <a class="col single-img" href="${pageContext.request.contextPath}/category/brand?brand-id=${brand.id}">
-                    <img class="img-fluid d-block mx-auto"
-                         src="${pageContext.request.contextPath}/views/admin/plugins/images/brand/${brand.image}" alt="">
-                </a>
-            </c:forEach>
-        </div>
-    </div>
-</section>
-<!-- End brand Area -->
-<!-- start product Area -->
-
-<div class="row justify-content-center mt-5 mx-0">
-    <div class="col-lg-6 text-center">
-        <div class="section-title">
-            <h1>Mới nhất</h1>
-            <p>Những sản phẩm mới nhất được cập nhật liên tục</p>
-        </div>
-    </div>
-</div>
-
-<section class="owl-carousel active-product-area section_gap" style="padding-top: 0px !important;">
-    <!-- single product slide -->
-    <div class="single-product-slider">
-        <div class="container">
-            <div class="row">
-                <c:forEach var="item" varStatus="i" items="${items.content}">
-                    <c:if test="${i.index <= 7}">
-                        <jsp:include
-                                page="${pageContext.request.contextPath}/views/user/view/component/single-product.jsp">
-                            <jsp:param name="id" value="${item.id}"/>
-                            <jsp:param name="name" value="${item.name}"/>
-                            <jsp:param name="image" value="${item.image}"/>
-                            <jsp:param name="price" value="${item.getPriceStringVND()}"/>
-                            <jsp:param name="desc" value="${item.desc}"/>
-                        </jsp:include>
-                    </c:if>
-                </c:forEach>
-            </div>
-        </div>
-    </div>
-    <!-- single product slide -->
-    <div class="single-product-slider">
-        <div class="container">
-            <div class="row">
-                <!-- single product -->
-                <c:forEach var="item" varStatus="i" items="${items.content}">
-                    <c:if test="${i.index > 7 && i.index <= 15}">
-                        <jsp:include
-                                page="${pageContext.request.contextPath}/views/user/view/component/single-product.jsp">
-                            <jsp:param name="id" value="${item.id}"/>
-                            <jsp:param name="name" value="${item.name}"/>
-                            <jsp:param name="image" value="${item.image}"/>
-                            <jsp:param name="price" value="${item.getPriceStringVND()}"/>
-                            <jsp:param name="desc" value="${item.desc}"/>
-                        </jsp:include>
-                    </c:if>
-                </c:forEach>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- end product Area -->
-
-<div class="row justify-content-center mt-5 mx-0">
-    <div class="col-lg-6 text-center">
-        <div class="section-title">
-            <h1>Bán chạy</h1>
-            <p>Những sản phẩm được bán chạy</p>
-        </div>
-    </div>
-</div>
-
-<section class="owl-carousel active-product-area section_gap" style="padding-top: 0px !important;">
-    <!-- single product slide -->
-    <div class="single-product-slider">
-        <div class="container">
-            <div class="row">
-                <!-- single product -->
-                <c:if test="${product_selling.hasContent()}">
-                    <c:forEach var="item" varStatus="i" items="${product_selling.content }">
-                        <c:if test="${i.index <= 7}">
-                            <jsp:include
-                                    page="${pageContext.request.contextPath}/views/user/view/component/single-product.jsp">
-                                <jsp:param name="id" value="${item.id}"/>
-                                <jsp:param name="name" value="${item.name}"/>
-                                <jsp:param name="image" value="${item.image}"/>
-                                <jsp:param name="price" value="${item.getPriceStringVND()}"/>
-                                <jsp:param name="desc" value="${item.desc}"/>
-                            </jsp:include>
-                        </c:if>
-                    </c:forEach>
-                </c:if>
-            </div>
-        </div>
-    </div>
-    <!-- single product slide -->
-    <div class="single-product-slider">
-        <div class="container">
-            <div class="row">
-                <!-- single product -->
-                <c:if test="${product_selling.hasContent()}">
-                    <c:forEach var="item" varStatus="i" items="${product_selling.content }">
-                        <c:if test="${i.index > 7}">
-                            <jsp:include
-                                    page="${pageContext.request.contextPath}/views/user/view/component/single-product.jsp">
-                                <jsp:param name="id" value="${item.id}"/>
-                                <jsp:param name="name" value="${item.name}"/>
-                                <jsp:param name="image" value="${item.image}"/>
-                                <jsp:param name="price" value="${item.getPriceStringVND()}"/>
-                                <jsp:param name="desc" value="${item.desc}"/>
-                            </jsp:include>
-                        </c:if>
-                    </c:forEach>
-                </c:if>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- end product Area -->
-
-<!-- Start Product List -->
+  </section>
+  <!-- End Banner Area -->
 
 
-<!-- Start Footer Area -->
-<jsp:include page="${pageContext.request.contextPath}/views/user/view/component/footer.jsp"></jsp:include>
-<!-- End Footer Area -->
+  <!-- Start Footer Area -->
+  <div th:replace="~{/user/view/component/footer.html::footer}"></div>
+  <!-- End Footer Area -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+  <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+  <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+  <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+  <script th:src="@{/user-resouce/js/countdown.js}"></script>
+  <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+  <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+  <!--gmaps Js-->
+  <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+  <script th:src="@{/user-resouce/js/main.js}"></script>
+
+  <script th:src="@{/common/commonFunction.js}"></script>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
-        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-        crossorigin="anonymous"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
-<jsp:include page="${pageContext.request.contextPath}/views/user/abstract/js.jsp"/>
+
 </body>
 
 </html>

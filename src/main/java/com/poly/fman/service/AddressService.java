@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mysql.cj.callback.FidoAuthenticationCallback;
+import com.poly.fman.dto.model.AddressDTO;
 import com.poly.fman.dto.model.AddressDTO2;
 import com.poly.fman.dto.model.CartItemDTO2;
 import com.poly.fman.entity.Address;
@@ -30,12 +31,12 @@ public class AddressService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public List<AddressDTO2> getByUserId(Integer userId) {
-        List<AddressDTO2> listAddressDTOs = new ArrayList<>();
+    public List<AddressDTO> getByUserId(Integer userId) {
+        List<AddressDTO> listAddressDTOs = new ArrayList<>();
         try {
             List<Address> listAdress = addressRepository.findByUserIdAndActive(userId, (byte) 1).orElseThrow();
             listAddressDTOs = listAdress.stream()
-                    .map(address -> modelMapper.map(address, AddressDTO2.class))
+                    .map(address -> modelMapper.map(address, AddressDTO.class))
                     .collect(Collectors.toList());
             return listAddressDTOs;
         } catch (Exception e) {
@@ -45,10 +46,10 @@ public class AddressService {
 
     }
 
-    public AddressDTO2 getById(Integer id) {
+    public AddressDTO getById(Integer id) {
         try {
             Address address = addressRepository.findById(id).orElseThrow();
-            AddressDTO2 addressDTO = modelMapper.map(address, AddressDTO2.class);
+            AddressDTO addressDTO = modelMapper.map(address, AddressDTO.class);
             return addressDTO;
         } catch (Exception e) {
             return null;

@@ -31,5 +31,4 @@ public class AddressDTO implements ModelDTO {
 
 	private Integer userId;
 
-	private UserDTO user;
 }

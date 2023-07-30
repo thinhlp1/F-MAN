@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Author Meta -->
+    <meta name="author" content="CodePixar">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>Đơn Hàng</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
+    <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
+
+    <style>
+        .order_details_table .table tbody td p {
+            color: #222222;
+        }
+
+        .body {
+            color: black;
+        }
+
+        tr td {
+            height: 130px !important;
+        }
+
+        .td_p {
+            margin-top: 35px;
+        }
+    </style>
+</head>
+
+<body ng-app="myApp">
+
+    <!-- Start Header Area -->
+    <div th:replace="~{/user/view/component/nav.html::nav}"></div>
+    <!-- End Header Area -->
+
+    <!-- Start Banner Area -->
+    <!-- Replace this section with Thymeleaf syntax -->
+    <!-- End Banner Area -->
+
+    <!--================Order Details Area =================-->
+    <section class="order_details section_gap" ng-controller="OrderController">
+        <div class="container">
+            <h3 class="title_confirmation" style="font-family: Roboto">Xin cảm ơn bạn đã đặt hàng. Đơn hàng đang chờ
+                xác
+                nhận.</h3>
+            <div class="row order_d_inner">
+                <div class="col">
+                    <div class="details_item">
+                        <h4 style="font-family: Roboto">Thông tin hóa đơn</h4>
+                        <ul class="list">
+                            <li><span>Mã hóa đơn</span> :[[${order.id}]]</li>
+                            <li><span>Ngày tạo</span> : [[${order.createAtString}]]</li>
+                            <li><span>Tổng tiền</span> : [[${order.totalStringVND}]]</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="details_item">
+                        <h4 style="font-family: Roboto">Thông tin hóa đơn</h4>
+                        <ul class="list">
+                            <li><span>Thanh toán</span> : [[${order.paymentMethod.name}]]</li>
+                            <li><span>Voucher</span> : [[${order.voucher == null ? "Không có" : order.voucher.name}]]
+                            </li>
+
+                            <li><span>Trạng thái :</span> <span id="span_state"
+                                    th:text="${order.orderState.name}"></span>
+                            </li>
+                            <li id="orderNoteLi" th:class="${order.note == null} ? 'd-none' : ''"><span>Lý do
+                                    :</span><span id="orderNote" th:text="${order.note}"></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col" th:classappend="${order.paymentMethod.id != 'VISA' ? 'd-none' : ''}">
+                    <div class="details_item">
+                        <h4 style="font-family: Roboto">Thông tin thanh toán</h4>
+                        <ul class="list">
+                            <li><span>Mã giao dịch</span> : [[${transaction != null ? transaction.transNo : ''}]]
+                            </li>
+                            <li><span>Ngân hàng</span> : [[${transaction != null ? transaction.bank.name : ""}]]
+                            </li>
+                            <li><span>Ngày thanh toán</span> : [[${transaction != null ?
+                                transaction.payDateString : ""}]]</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="details_item">
+                        <h4 style="font-family: Roboto">Địa chỉ nhận hàng </h4>
+                        <ul class="list">
+                            <li><span>Tên</span> : [[${order.address.receiverName}]]</li>
+                            <li><span>Số điện thoại</span> : [[${order.address.numberPhone}]]</li>
+                            <li><span>Địa chỉ</span> : [[${order.address.address}]]</li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="order_details_table">
+                <h2 style="font-family: Roboto">Thông tin hóa đơn chi tiết</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sản phẩm</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${order.listOrderItemDTO}">
+                                <td>
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <img alt="" style="width: 90px; height: 100px; border-radius: 30px;"
+                                            th:src="@{/admin-resouce/plugins/images/products/__${item.product.image}__}">
+                                        <p class="ml-3" th:text="${item.product.name}"></p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="td_p" th:text="${item.productSize.size.size}"></p>
+                                </td>
+                                <td>
+                                    <p class="td_p" th:text="${item.quantity}"></p>
+                                </td>
+                                <td>
+                                    <p class="td_p" th:text="${item.totalStringVND}"></p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mx-0 mt-5">
+                        <div class="col">
+                            <div>
+                                <h4 style="font-family: Roboto" th:text="'Tạm tính: ' + ${order.tempTotalStringVND}">
+                                </h4>
+                            </div>
+                            <div>
+                                <h4 style="font-family: Roboto" th:text="'Giảm giá: ' + ${order.discountStringVND}">
+                                </h4>
+                            </div>
+                            <div>
+                                <h4 style="font-family: Roboto" th:text="'Tổng tiền: ' + ${order.totalStringVND}"></h4>
+                            </div>
+                        </div>
+                        <div class="col d-flex align-items-end justify-content-end">
+                            <div
+                                th:if="${order.orderState.id eq 'PENDING_APPROVAL' or order.orderState.id eq 'WAIT_PAYMENT'}">
+                                <a id="btn-cancel" th:attr="ng-click=|cancelOrder(${order.id})|"
+                                    class="btn btn-danger ms-3 text-white mr-3">
+                                    Hủy
+                                </a>
+                            </div>
+                            <div th:if="${order.orderState.id eq 'WAIT_PAYMENT'}">
+                                <a id="btn-cancel" th:href="@{/user/carts/recheckout/__${orderId}__}"
+                                    class="btn ms-3 text-white mr-3"
+                                    style="background: rgb(255, 162, 0); color: white;">Tiếp tục thanh toán</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Order Details Area =================-->
+
+    <!-- Start Footer Area -->
+    <div th:replace="~{/user/view/component/footer.html::footer}"></div>
+    <!-- End Footer Area -->
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+    <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+    <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+    <script th:src="@{/user-resouce/js/countdown.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+    <!--gmaps Js-->
+    <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+    <script th:src="@{/user-resouce/js/main.js}"></script>
+
+
+    <script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
+    <script th:src="@{/common/commonFunction.js}"></script>
+    <script th:src="@{/user-resouce/angularjs/controller/orderController.js}"></script>
+
+
+
+</body>
+
+</html>

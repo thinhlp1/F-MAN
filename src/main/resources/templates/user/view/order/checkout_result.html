@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zxx">
+
+<head>
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Author Meta -->
+    <meta name="author" content="CodePixar">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>Đơn Hàng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+  
+    <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
+
+    <style>
+        .order_details_table .table tbody td p {
+            color: #222222;
+        }
+
+        .body {
+            color: black;
+        }
+
+        tr td {
+            height: 130px !important;
+        }
+
+        .td_p {
+            margin-top: 35px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Start Header Area -->
+    <div th:replace="~{/user/view/component/nav.html::nav}"></div>
+    <!-- End Header Area -->
+
+    <!-- Start Banner Area -->
+    <!-- Replace this section with Thymeleaf syntax -->
+    <!-- End Banner Area -->
+
+    <!--================Order Details Area =================-->
+    <section class="order_details section_gap">
+        <div class="container">
+            <h3 class="title_confirmation">Thanh toán thành công.</h3>
+            <div class="row order_d_inner d-flex justify-content-center align-content-center">
+
+                <div class="col-lg-4">
+                    <div class="details_item">
+                        <h4 class="text-center"> Thông tin giao dịch</h4>
+                        <ul class="list">
+                            <li><a ><span>Mã giao dịch</span> : [[${transaction.transNo}]]</a></li>
+                            <li><a ><span>Ngân hàng </span> : [[${transaction.bank.name}]]</a></li>
+                            <li><a ><span>Ngày giao dịch </span> : [[${transaction.payDateString}]]</a></li>
+                            <li><a ><span>Số tiền giao dịch </span> :
+                                    [[${transaction.order.totalStringVND}]]</a>
+                            </li>
+                            <li><a ><span>Người thanh toán </span> : [[${transaction.order.user.name}]]</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="d-flex align-content-center justify-content-center">
+                <a th:href="@{/user/orders/__${transaction.order.id}__}" class="title_confirmation text-center">Kiểm tra
+                    đơn hàng.</a>
+            </div>
+
+        </div>
+    </section>
+    <!--================End Order Details Area =================-->
+
+    <!-- Start Footer Area -->
+    <div th:replace="~{/user/view/component/footer.html::footer}"></div>
+    <!-- End Footer Area -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+    <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+    <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+    <script th:src="@{/user-resouce/js/countdown.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+    <!--gmaps Js-->
+    <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+    <script th:src="@{/user-resouce/js/main.js}"></script>
+
+    <script th:src="@{/common/commonFunction.js}"></script>
+</body>
+
+</html>

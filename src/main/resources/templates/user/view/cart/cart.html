@@ -1,24 +1,18 @@
 <!DOCTYPE html>
-<html class="no-js" lang="zxx" ng-app="cartApp">
+<html class="no-js" lang="zxx">
 
-<head>
-    <!-- Mobile Specific Meta -->
+<!-- <head>
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <!-- Author Meta -->
     <meta content="CodePixar" name="author">
-    <!-- Meta Description -->
     <meta content="" name="description">
-    <!-- Meta Keyword -->
     <meta content="" name="keywords">
-    <!-- meta character set -->
     <meta charset="UTF-8">
-    <!-- Site Title -->
     <title>Giỏ hàng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
-  
-  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
     <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
     <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
@@ -27,17 +21,17 @@
     <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
     <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
     <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
-</head>
+</head> -->
 
-<body>
+<body ng-app="myApp">
 
-  <!-- Start Header Area -->
-  <div th:replace="~{/user/view/component/nav.html::nav}"></div>
-  <!-- End Header Area -->
+    <!-- Start Header Area -->
+    <!-- <div th:replace="~{/user/view/component/nav.html::nav}"></div> -->
+    <!-- End Header Area -->
 
 
     <!--================Cart Area =================-->
-    <section class="cart_area mt-5">
+    <section class="cart_area mt-5" ng-controller="CartController">
         <div class="container mt-5">
             <div class="cart_inner">
                 <div class="table-responsive">
@@ -46,7 +40,8 @@
                             <tr>
                                 <th scope="col">
                                     <div class="form-check">
-                                        <input class="form-check-input" id="checkAllProducts" type="checkbox" ng-model="allChecked" ng-click="toggleAllProducts()">
+                                        <input class="form-check-input" id="checkAllProducts" type="checkbox"
+                                            ng-model="allChecked" ng-click="toggleAllProducts()">
                                         <label class="form-check-label" for="checkAllProducts">
                                             Chọn
                                         </label>
@@ -60,43 +55,59 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="item in listCartItem track by $index" id="item_{{item.id}}">
+                            <tr ng-repeat="item in listCartItem track by $index" id="item_{{item.productSize.id}}">
                                 <td>
                                     <div class="form-check">
-                                        <input class="form-check-input" id="checkProduct_{{$index}}" type="checkbox" ng-model="item.checked">
+                                        <input class="form-check-input" id="checkProduct_{{item.productSize.id}}"
+                                            type="checkbox" value="{{item.productSize.id}}">
                                         <label class="form-check-label" for="checkProduct">
                                         </label>
                                     </div>
                                 </td>
                                 <td>
-                                    <a class="media" style="color: rgb(119, 119, 119);" ng-href="/product/{{item.product.id}}">
+                                    <!-- Hiển thị hình ảnh và thông tin sản phẩm -->
+                                    <a class="media" style="color: rgb(119, 119, 119);"
+                                        ng-href="/product/{{item.product.id}}">
                                         <div class="d-flex">
-                                            <img alt="" style="width: 90px;" ng-src="{{item.product.image}}">
+                                            <img alt="" style="width: 90px;"
+                                                ng-src="/admin-resouce/plugins/images/products/{{item.product.image}}">
                                         </div>
                                         <div class="media-body">
-                                            <p>{{item.product.name}} - SIZE  {{item.productSize.size.size}}</p>
+                                            <p>{{item.product.name}} - SIZE {{item.productSize.size.size}}</p>
                                         </div>
                                     </a>
                                 </td>
                                 <td>
-                                    <h5 id="price_{{item.id}}" ng-value="item.product.price">{{item.product.priceStringVND}}</h5>
+                                    <!-- Hiển thị giá sản phẩm -->
+                                    <h5 id="price_{{item.id}}" ng-value="item.product.price">
+                                        {{item.product.priceStringVND}}
+                                    </h5>
                                 </td>
                                 <td>
+                                    <!-- Hiển thị số lượng sản phẩm -->
                                     <div class="product_count">
-                                        <input class="input-text qty" id="qty_{{$index}}" maxlength="12" ng-disabled="item.quantity <= 0" ng-model="item.quantity" ng-change="updateSubTotal(item)">
-                                        <button class="increase items-count" id="quantityPopup_{{item.id}}" data-toggle="popover" data-content="" ng-click="changeQuantity(cart.id, item.id, $index, 'increase')" type="button">
-                                            <i class="lnr lnr-chevron-up"></i>
+                                        <input class="input-text qty" id="qty_{{item.productSize.id}}" maxlength="12"
+                                            ng-disabled="item.quantity <= 0" ng-model="item.quantity"
+                                            value="{{item.quantity}}">
+                                        <button class="increase items-count" id="quantityPopup_{{item.productSize.id}}"
+                                            data-toggle="popover" data-content=""
+                                            ng-click=" increaseItemQuantityById(item.productSize.id)" type="button">
+                                            <i class="fa fa-chevron-up"></i>
                                         </button>
-                                        <button class="reduced items-count" ng-click="changeQuantity(cart.id, item.id, $index, 'decrease')" type="button">
-                                            <i class="lnr lnr-chevron-down"></i>
+                                        <button class="reduced items-count"
+                                            ng-click="decreaseItemQuantityById(item.productSize.id)" type="button">
+                                            <i class="fa fa-chevron-down"></i>
                                         </button>
                                     </div>
                                 </td>
                                 <td>
-                                    <h5 id="subTotal_{{item.id}}">{{item.subTotalStringVND}}</h5>
+                                    <!-- Hiển thị tổng tiền cho mỗi mục -->
+                                    <h5 id="subTotal_{{item.productSize.id}}">{{item.subTotalStringVND}}</h5>
                                 </td>
                                 <td>
-                                    <a class="btn btn-danger" style="color: white;" ng-click="removeProduct(cart.id, item.id)" role="button">
+                                    <!-- Nút xóa sản phẩm -->
+                                    <a class="btn btn-danger" style="color: white;"
+                                        ng-click="removeItem( item.productSize.id)" role="button">
                                         <i aria-hidden="true" class="fa fa-trash"></i>
                                     </a>
                                 </td>
@@ -105,40 +116,47 @@
                     </table>
                     <div class="d-flex align-items-end justify-content-end py-3 border-top">
                         <div>
-                            <h5 id="total" class="ml-auto">Tổng tiền: {{cart.totalPrice}}</h5>
+                            <h5 id="total" class="ml-auto">Tổng tiền: {{totalPrice}}</h5>
                         </div>
                     </div>
                     <div class="checkout_btn_inner d-flex align-items-center justify-content-end py-3 border-top">
-                        <a class="gray_btn" href="/category/">Tiếp tục mua sắm</a>
-                        <a class="primary-btn rounded-0" ng-click="checkout(cart.id)" style="line-height: 40px; color: white;">Thanh toán giỏ hàng</a>
+                        <a class="gray_btn">Tiếp tục mua sắm</a>
+                        <a class="primary-btn rounded-0" ng-click="checkout()"
+                            style="line-height: 40px; color: white;">Thanh toán giỏ hàng</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!--================End Cart Area =================-->
-  <!-- Start Footer Area -->
-  <div th:replace="~{/user/view/component/footer.html::footer}"></div>
-  <!-- End Footer Area -->
+    <!-- ================End Cart Area =================
+    <!-- Start Footer Area -->
+    <!-- <div th:replace="~{/user/view/component/footer.html::footer}"></div> -->
+    <!-- End Footer Area -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-  <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
-  <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
-  <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
-  <script th:src="@{/user-resouce/js/countdown.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
-  <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
-  <!--gmaps Js-->
-  <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
-  <script th:src="@{/user-resouce/js/main.js}"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <script th:src="@{/common/commonFunction.js}"></script>
-  
-  <script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
-  <script th:src="@{/user-resouce/angularjs/controller/cartController.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+        crossorigin="anonymous"></script>
+    <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+    <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+    <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+    <script th:src="@{/user-resouce/js/countdown.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+    <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+    <script th:src="@{/user-resouce/js/main.js}"></script>
+
+    <script th:src="@{/common/commonFunction.js}"></script>
+
+    <script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
+    <script th:src="@{/user-resouce/angularjs/controller/cartController.js}"></script>  -->
+
 
 </body>
 

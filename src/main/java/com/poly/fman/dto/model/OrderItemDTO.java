@@ -1,8 +1,11 @@
 package com.poly.fman.dto.model;
 
+import java.math.BigInteger;
+
 import com.poly.fman.entity.Order;
 import com.poly.fman.entity.Product;
 import com.poly.fman.entity.ProductSize;
+import com.poly.fman.service.common.CommonUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,19 +18,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderItemDTO implements ModelDTO {
 
-	private int id;
+    private int id;
 
-	private int quantity;
+    private int quantity;
 
-    private String orderId;
+    private ProductDTO product;
 
-    private String productId;
+    private ProductSizeDTO productSize;
 
-    private String productSizeId;
+    public String getTotalStringVND() {
+        return CommonUtils.convertToCurrencyString(product.getPrice().intValue() * quantity, " VNĐ");
+    }
 
-	private Order order;
-
-	private Product product;
-
-	private ProductSize productSize;
+     public Long getTotal() {
+        return (long) (product.getPrice().intValue() * quantity);
+    }
 }

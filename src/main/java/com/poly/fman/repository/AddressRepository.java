@@ -26,4 +26,7 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
 
     public Optional<Address> findByIdAndUserId(Integer id, Integer userId);
 
+    public Optional<Address> findByIdAndActiveIsTrue(Integer id);
+
+
 }

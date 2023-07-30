@@ -22,6 +22,9 @@ public class DateUtils {
     }
 
     public static String toString(Date date, String pattern) {
+        if (date == null){
+            return "";
+        }
         formatter.applyPattern(pattern);
         return formatter.format(date);
     }

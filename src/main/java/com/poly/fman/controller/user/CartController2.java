@@ -25,13 +25,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.fman.dto.cart.ChangeQuantityDTO;
-import com.poly.fman.dto.model.AddressDTO2;
+import com.poly.fman.dto.model.AddressDTO;
+import com.poly.fman.dto.model.AddressDTO;
 import com.poly.fman.dto.model.CartDTO;
 import com.poly.fman.dto.model.CartItemDTO;
 import com.poly.fman.dto.model.CartItemDTO2;
 import com.poly.fman.dto.model.ResponseDTO;
+import com.poly.fman.dto.order.CheckoutRequestDTO;
 import com.poly.fman.dto.reponse.SimpleReponseDTO;
-import com.poly.fman.dto.request.CheckoutDTO;
 import com.poly.fman.entity.Cart;
 import com.poly.fman.entity.CartItem;
 import com.poly.fman.entity.Order;
@@ -172,7 +173,7 @@ public class CartController2 {
             Model model) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         // check user address
-        List<AddressDTO2> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
+        List<AddressDTO> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
         System.out.println(listAddressDTOs.size());
         if (listAddressDTOs.isEmpty()) {
             model.addAttribute("hasAddress", false);
@@ -213,7 +214,7 @@ public class CartController2 {
             Model model) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         // check user address
-        List<AddressDTO2> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
+        List<AddressDTO> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
         System.out.println(listAddressDTOs.size());
         if (listAddressDTOs.isEmpty()) {
             model.addAttribute("hasAddress", false);
@@ -246,60 +247,60 @@ public class CartController2 {
         return "user/view/cart/cart_checkout";
     }
 
-    @GetMapping("/recheckout/{orderId}")
-    public String recheckoutForm(@PathVariable("orderId") Integer orderId,
-            Model model) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        Order order = orderService.getOrder(orderId);
-        // check user address
-        List<AddressDTO2> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
-        System.out.println(listAddressDTOs.size());
-        if (listAddressDTOs.isEmpty()) {
-            model.addAttribute("hasAddress", false);
-            return "user/view/cart/cart_checkout";
-            // return "redirect:/user/address/all?user-id=" +
-            // httpSession.getAttribute("userId");
-        }
-        List<CartItemDTO2> lCartItemDTOs = new ArrayList<>();
-        List<OrderItem> lOrderItems = order.getOrderItems();
-        for (OrderItem orderItem : lOrderItems) {
-            CartItemDTO2 cartItemDTO = new CartItemDTO2();
+    // @GetMapping("/recheckout/{orderId}")
+    // public String recheckoutForm(@PathVariable("orderId") Integer orderId,
+    //         Model model) {
+    //     modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+    //     Order order = orderService.getOrder(orderId);
+    //     // check user address
+    //     List<AddressDTO> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
+    //     System.out.println(listAddressDTOs.size());
+    //     if (listAddressDTOs.isEmpty()) {
+    //         model.addAttribute("hasAddress", false);
+    //         return "user/view/cart/cart_checkout";
+    //         // return "redirect:/user/address/all?user-id=" +
+    //         // httpSession.getAttribute("userId");
+    //     }
+    //     List<CartItemDTO2> lCartItemDTOs = new ArrayList<>();
+    //     List<OrderItem> lOrderItems = order.getOrderItems();
+    //     for (OrderItem orderItem : lOrderItems) {
+    //         CartItemDTO2 cartItemDTO = new CartItemDTO2();
 
-            // cartItemDTO.setProduct(orderItem.getProduct());
-            // cartItemDTO.setProductSize(orderItem.getProductSize());
-            cartItemDTO.setQuantity(orderItem.getQuantity());
-            lCartItemDTOs.add(cartItemDTO);
-        }
+    //         // cartItemDTO.setProduct(orderItem.getProduct());
+    //         // cartItemDTO.setProductSize(orderItem.getProductSize());
+    //         cartItemDTO.setQuantity(orderItem.getQuantity());
+    //         lCartItemDTOs.add(cartItemDTO);
+    //     }
 
-        int subTotal = 0;
-        for (CartItemDTO2 cartItemDTO : lCartItemDTOs) {
-            subTotal += cartItemDTO.getProduct().getPrice().intValue() * cartItemDTO.getQuantity();
-        }
+    //     int subTotal = 0;
+    //     for (CartItemDTO2 cartItemDTO : lCartItemDTOs) {
+    //         subTotal += cartItemDTO.getProduct().getPrice().intValue() * cartItemDTO.getQuantity();
+    //     }
 
-        model.addAttribute("listItem", lCartItemDTOs);
-        model.addAttribute("listAddress", listAddressDTOs);
-        model.addAttribute("addressDefault", listAddressDTOs.get(0));
-        model.addAttribute("hasAddress", true);
-        model.addAttribute("subTotal", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        model.addAttribute("totalStr", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        model.addAttribute("total", subTotal);
-        model.addAttribute("isBuyNow", false);
-        model.addAttribute("recheckout", true);
-        model.addAttribute("orderId", orderId);
-        return "user/view/cart/cart_checkout";
-    }
+    //     model.addAttribute("listItem", lCartItemDTOs);
+    //     model.addAttribute("listAddress", listAddressDTOs);
+    //     model.addAttribute("addressDefault", listAddressDTOs.get(0));
+    //     model.addAttribute("hasAddress", true);
+    //     model.addAttribute("subTotal", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
+    //     model.addAttribute("totalStr", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
+    //     model.addAttribute("total", subTotal);
+    //     model.addAttribute("isBuyNow", false);
+    //     model.addAttribute("recheckout", true);
+    //     model.addAttribute("orderId", orderId);
+    //     return "user/view/cart/cart_checkout";
+    // }
 
-    @GetMapping("/apply-voucher")
-    @ResponseBody
-    public ResponseEntity<SimpleReponseDTO> applyVoucher(
-            @RequestParam("voucher") String voucherName, @RequestParam("total") Long total) {
+    // @GetMapping("/apply-voucher")
+    // @ResponseBody
+    // public ResponseEntity<SimpleReponseDTO> applyVoucher(
+    //         @RequestParam("voucher") String voucherName, @RequestParam("total") Long total) {
 
-        SimpleReponseDTO simpleReponseDTO = cartService.applyVoucher(voucherName, total);
-        if (!simpleReponseDTO.getStatusCode().equals("200")) {
-            return ResponseEntity.status(500).body(simpleReponseDTO);
-        } else {
-            return ResponseEntity.ok(simpleReponseDTO);
-        }
-    }
+    //     SimpleReponseDTO simpleReponseDTO = cartService.applyVoucher(voucherName, total);
+    //     if (!simpleReponseDTO.getStatusCode().equals("200")) {
+    //         return ResponseEntity.status(500).body(simpleReponseDTO);
+    //     } else {
+    //         return ResponseEntity.ok(simpleReponseDTO);
+    //     }
+    // }
 
 }

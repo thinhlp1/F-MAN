@@ -4,8 +4,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +17,19 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import com.poly.fman.dto.request.CheckoutDTO;
+import com.poly.fman.dto.cart.CartItemResponseDTO;
+import com.poly.fman.dto.cart.CartRequestDTO;
+import com.poly.fman.dto.cart.CartResponseDTO;
+import com.poly.fman.dto.model.CartItemDTO;
+import com.poly.fman.dto.model.OrderDTO;
+import com.poly.fman.dto.model.OrderItemDTO;
+import com.poly.fman.dto.model.PaymentMethodDTO;
+import com.poly.fman.dto.model.ResponseDTO;
+import com.poly.fman.dto.model.TransactionDTO;
+import com.poly.fman.dto.order.CheckoutOrderResponseDTO;
+import com.poly.fman.dto.order.CheckoutRequestDTO;
+import com.poly.fman.dto.order.ReCheckoutReponseDTO;
+import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.entity.Address;
 import com.poly.fman.entity.Cart;
 import com.poly.fman.entity.CartItem;
@@ -25,6 +39,7 @@ import com.poly.fman.entity.OrderState;
 import com.poly.fman.entity.PaymentMethod;
 import com.poly.fman.entity.Product;
 import com.poly.fman.entity.ProductSize;
+import com.poly.fman.entity.Transaction;
 import com.poly.fman.entity.User;
 import com.poly.fman.entity.Voucher;
 import com.poly.fman.repository.AddressRepository;
@@ -36,6 +51,7 @@ import com.poly.fman.repository.OrderStateRepository;
 import com.poly.fman.repository.PaymentMethodRepository;
 import com.poly.fman.repository.ProductRepository;
 import com.poly.fman.repository.ProductSizeRepository;
+import com.poly.fman.repository.TransactionRepository;
 import com.poly.fman.repository.UserRepository;
 import com.poly.fman.repository.VoucherRepository;
 
@@ -49,6 +65,7 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
     private final OrderStateRepository orderStateRepository;
+    private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final ProductSizeRepository productSizeRepository;
@@ -58,9 +75,49 @@ public class OrderService {
     private final ModelMapper modelMapper;
     private final CartItemRepository cartItemRepository;
     private final PlatformTransactionManager transactionManager;
+    private final CartService cartService;
 
     public Order getOrder(Integer id) {
         return orderRepository.findById(id).orElse(null);
+    }
+
+    public OrderDTO getOrderDTO(Integer id) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        Order order = orderRepository.findById(id).orElse(null);
+        OrderDTO orderDTO = new OrderDTO();
+        List<OrderItem> listOderItem = order.getOrderItems();
+        List<OrderItemDTO> listOrderItemDTOs = new ArrayList();
+        listOrderItemDTOs = listOderItem.stream()
+                .map(item -> modelMapper.map(item, OrderItemDTO.class))
+                .collect(Collectors.toList());
+
+        Long tempTotal = (long) 0;
+        Long discount = (long) 0;
+
+        for (OrderItem orderItem : listOderItem) {
+            tempTotal += orderItem.getProduct().getPrice().intValue() * orderItem.getQuantity();
+        }
+
+        if (order.getVoucher() != null) {
+            discount = (long) (tempTotal * order.getVoucher().getSalePercent() / 100);
+        }
+
+        orderDTO = modelMapper.map(order, OrderDTO.class);
+        orderDTO.setTempTotal(tempTotal);
+        orderDTO.setDiscount(discount);
+        orderDTO.setListOrderItemDTO(listOrderItemDTOs);
+
+        return orderDTO;
+    }
+
+    public TransactionDTO getTransactionDTO(Integer orderId) {
+        Transaction transaction = transactionRepository.findByOrderId(orderId);
+        if (transaction == null) {
+            return null;
+        }
+        TransactionDTO transactionDTO = modelMapper.map(transaction, TransactionDTO.class);
+        return transactionDTO;
     }
 
     public Page<Order> getOrdersByUser(Integer userId, String orderStateId, String sortBy, String sortOrder, int page,
@@ -79,66 +136,88 @@ public class OrderService {
         }
 
         return orderRepository.findByUserId(userId, pageable);
+
     }
 
-    public Order create(CheckoutDTO checkoutDTO) {
+    public ReCheckoutReponseDTO reCheckout(Integer orderId) {
+
+        OrderDTO order = getOrderDTO(orderId);
+
+        ReCheckoutReponseDTO reCheckoutReponseDTO = new ReCheckoutReponseDTO();
+        reCheckoutReponseDTO.setOrder(order);
+
+        return reCheckoutReponseDTO;
+    }
+
+    public ResponseDTO create(CheckoutRequestDTO checkoutDTO) {
+
+        if (checkoutDTO.getListCheckoutItem().isEmpty()) {
+            return new SimpleReponseDTO("500", "Không có danh sách sản phẩm");
+        }
+
         Order order = new Order();
 
-        if (checkoutDTO.getPaymentRequestDTO() == null) {
-            order.setOrderState(orderStateRepository.findById("PENDING_APPROVAL").orElse(null));
-        } else {
-            order.setOrderState(orderStateRepository.findById("WAIT_PAYMENT").orElse(null));
-        }
+        TransactionStatus transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
-        long total = 0;
-        String isByNow = checkoutDTO.getIsBuyNow();
+        try {
+            CheckoutOrderResponseDTO checkoutOrderResponse = new CheckoutOrderResponseDTO();
+            OrderDTO orderDTO = new OrderDTO();
+            List<OrderItem> listOderItem = new ArrayList<>();
+            List<OrderItemDTO> listOrderItemDTOs = new ArrayList();
 
-        List<CartItem> listCartItem = cartItemRepository.findAllById(checkoutDTO.getListItemId());
-        System.out.println(checkoutDTO.toString());
-        if (isByNow.equals("true")) {
-            int productSizeId = checkoutDTO.getProductSizeId();
-            ProductSize productSize = productSizeRepository.findById(productSizeId).orElse(null);
-            Product product = productSize.getProduct();
-            total = product.getPrice().intValue() * checkoutDTO.getQuantity();
-        } else {
-            for (CartItem item : listCartItem) {
-                total += item.getProduct().getPrice().intValue() * item.getQuantity();
+            if (checkoutDTO.getBankCode().equals("")) {
+                System.out.println(checkoutDTO.getBankCode());
+                order.setOrderState(orderStateRepository.findById("PENDING_APPROVAL").orElse(null));
+            } else {
+                order.setOrderState(orderStateRepository.findById("WAIT_PAYMENT").orElse(null));
             }
-        }
 
-        List<OrderItem> listOderItem = new ArrayList<>();
+            long total = 0;
+            long discount = 0;
 
-        PaymentMethod paymentMethod = paymentMethodRepository.findById(checkoutDTO.getPaymentMethod()).orElse(null);
+            CartRequestDTO cartRequestDTO = new CartRequestDTO(); // user for progess cart to calculate data
+            cartRequestDTO.setListCartItem(checkoutDTO.getListCheckoutItem());
+            cartRequestDTO.setUserId(cartRequestDTO.getUserId());
 
-        if (!checkoutDTO.getVoucher().equals("")) {
-            Voucher voucher = voucherRepository.findByNameAndActiveIsTrue(checkoutDTO.getVoucher()).orElse(null);
-            if (voucher != null) {
-                long discount = (long) (total * (voucher.getSalePercent() / 100));
-                total = total - discount;
-                order.setVoucher(voucher);
+            CartResponseDTO cartResponseDTO = cartService.processCartRequest(cartRequestDTO);
+
+            List<CartItemResponseDTO> listCartItem = cartResponseDTO.getListCartItems();
+            total = cartResponseDTO.getTotal();
+
+            PaymentMethod paymentMethod = paymentMethodRepository.findById(checkoutDTO.getPaymentMethodId())
+                    .orElse(null);
+
+            if (!checkoutDTO.getVoucherCode().equals("")) {
+                Voucher voucher = voucherRepository.findByNameAndActiveIsTrue(checkoutDTO.getVoucherCode())
+                        .orElse(null);
+                if (voucher != null) {
+                    discount = (long) (total * (voucher.getSalePercent() / 100));
+                    total = total - discount;
+                    order.setVoucher(voucher);
+                }
             }
-        }
-        User user = userRepository.findById(checkoutDTO.getUserId()).orElse(null);
-        Address address = addressRepository.findById(checkoutDTO.getAddressId()).orElse(null);
+            User user = userRepository.findByIdAndActiveIsTrue(checkoutDTO.getUserId()).orElse(null);
+            Address address = addressRepository.findByIdAndActiveIsTrue(checkoutDTO.getAddressId()).orElse(null);
 
-        order.setAddress(address);
-        order.setCreateAt(new Date());
-        order.setPaymentMethod(paymentMethod);
-        order.setTotal(BigInteger.valueOf(total));
+            order.setAddress(address);
+            order.setCreateAt(new Date());
+            order.setPaymentMethod(paymentMethod);
+            order.setTotal(BigInteger.valueOf(total));
 
-        order.setUser(user);
+            order.setUser(user);
 
-        // System.out.println(order.toString());
-        // order = orderRepository.findById(1).orElse(order);
-        // System.out.println(order.getAddress().getReceiverName());
-        order = orderRepository.save(order);
+            // System.out.println(order.toString());
+            // order = orderRepository.findById(1).orElse(order);
+            // System.out.println(order.getAddress().getReceiverName());
+            order = orderRepository.save(order);
 
-        if (!isByNow.equals("true")) {
-            for (CartItem item : listCartItem) {
+            for (CartItemResponseDTO item : listCartItem) {
                 OrderItem orderItem = new OrderItem();
+                Product product = productRepository.findById(item.getProduct().getId()).orElse(null);
+                ProductSize productSize = productSizeRepository.findById(item.getProductSize().getId()).orElse(null);
                 orderItem.setOrder(order);
-                orderItem.setProduct(item.getProduct());
-                orderItem.setProductSize(item.getProductSize());
+                orderItem.setProduct(product);
+                orderItem.setProductSize(productSize);
                 orderItem.setProductPrice(item.getProduct().getPrice());
                 orderItem.setQuantity(item.getQuantity());
                 listOderItem.add(orderItem);
@@ -146,62 +225,71 @@ public class OrderService {
             }
 
             List<OrderItem> listSaved = orderItemRepository.saveAll(listOderItem);
-            cartItemRepository.deleteAll(listCartItem);
-        } else {
-            int productSizeId = checkoutDTO.getProductSizeId();
-            OrderItem orderItem = new OrderItem();
-            ProductSize productSize = productSizeRepository.findById(productSizeId).orElse(null);
-            Product product = productSize.getProduct();
-            orderItem.setOrder(order);
-            orderItem.setProduct(product);
-            orderItem.setProductSize(productSize);
-            orderItem.setProductPrice(product.getPrice());
-            orderItem.setQuantity(checkoutDTO.getQuantity());
-            orderItemRepository.save(orderItem);
+            listOrderItemDTOs = listSaved.stream()
+                    .map(item -> modelMapper.map(item, OrderItemDTO.class))
+                    .collect(Collectors.toList());
+
+            orderDTO = modelMapper.map(order, OrderDTO.class);
+            orderDTO.setListOrderItemDTO(listOrderItemDTOs);
+            orderDTO.setTempTotal(cartResponseDTO.getTotal());
+            orderDTO.setTotal(total);
+            orderDTO.setDiscount(discount);
+
+            checkoutOrderResponse.setOrder(orderDTO);
+            transactionManager.commit(transactionStatus);
+
+            return checkoutOrderResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
+            transactionManager.rollback(transactionStatus);
+
+            return new SimpleReponseDTO("500", "Có lỗi xảy ra ");
         }
-        return order;
 
     }
 
-    public Order reCreate(CheckoutDTO checkoutDTO) {
+    // public Order reCreate(CheckoutRequestDTO checkoutDTO) {
 
-       
-        Order order = orderRepository.findById(checkoutDTO.getOrderId()).orElse(null);
-        if (checkoutDTO.getPaymentRequestDTO() == null) {
-            order.setOrderState(orderStateRepository.findById("PENDING_APPROVAL").orElse(null));
-        } else {
-            order.setOrderState(orderStateRepository.findById("WAIT_PAYMENT").orElse(null));
-        }
+    // Order order =
+    // orderRepository.findById(checkoutDTO.getOrderId()).orElse(null);
+    // if (checkoutDTO.getPaymentRequestDTO() == null) {
+    // order.setOrderState(orderStateRepository.findById("PENDING_APPROVAL").orElse(null));
+    // } else {
+    // order.setOrderState(orderStateRepository.findById("WAIT_PAYMENT").orElse(null));
+    // }
 
-        List<OrderItem> listOderItem = order.getOrderItems();
-         long total = order.getTotal().longValue();
-        PaymentMethod paymentMethod = paymentMethodRepository.findById(checkoutDTO.getPaymentMethod()).orElse(null);
+    // List<OrderItem> listOderItem = order.getOrderItems();
+    // long total = order.getTotal().longValue();
+    // PaymentMethod paymentMethod =
+    // paymentMethodRepository.findById(checkoutDTO.getPaymentMethod()).orElse(null);
 
-        if (!checkoutDTO.getVoucher().equals("")) {
-            Voucher voucher = voucherRepository.findByNameAndActiveIsTrue(checkoutDTO.getVoucher()).orElse(null);
-            if (voucher != null) {
-                long discount = (long) (total * (voucher.getSalePercent() / 100));
-                total = total - discount;
-                order.setVoucher(voucher);
-            }
-        }
-        User user = userRepository.findById(checkoutDTO.getUserId()).orElse(null);
-        Address address = addressRepository.findById(checkoutDTO.getAddressId()).orElse(null);
+    // if (!checkoutDTO.getVoucher().equals("")) {
+    // Voucher voucher =
+    // voucherRepository.findByNameAndActiveIsTrue(checkoutDTO.getVoucher()).orElse(null);
+    // if (voucher != null) {
+    // long discount = (long) (total * (voucher.getSalePercent() / 100));
+    // total = total - discount;
+    // order.setVoucher(voucher);
+    // }
+    // }
+    // User user = userRepository.findById(checkoutDTO.getUserId()).orElse(null);
+    // Address address =
+    // addressRepository.findById(checkoutDTO.getAddressId()).orElse(null);
 
-        order.setAddress(address);
-        order.setUpdateAt(new Date());
-        order.setPaymentMethod(paymentMethod);
-        order.setTotal(BigInteger.valueOf(total));
+    // order.setAddress(address);
+    // order.setUpdateAt(new Date());
+    // order.setPaymentMethod(paymentMethod);
+    // order.setTotal(BigInteger.valueOf(total));
 
-        order.setUser(user);
+    // order.setUser(user);
 
-        // System.out.println(order.toString());
-        // order = orderRepository.findById(1).orElse(order);
-        // System.out.println(order.getAddress().getReceiverName());
-        order = orderRepository.save(order);
-        return order;
+    // // System.out.println(order.toString());
+    // // order = orderRepository.findById(1).orElse(order);
+    // // System.out.println(order.getAddress().getReceiverName());
+    // order = orderRepository.save(order);
+    // return order;
 
-    }
+    // }
 
     public Page<Order> getOders(String orderStateId, String sortBy, String sortOrder, int page, int size) {
         Sort sort = Sort.by(sortBy);

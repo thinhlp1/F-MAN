@@ -8,7 +8,7 @@ app.controller("ForgetController", function ($scope, $http, $routeParams, $locat
         let isValidForm = true;
 
         let email = $routeParams.email;
-       
+
 
         if (password != confirmPassword) {
             setInvalid('confirmPassword', $scope.passwordForm.confirmPassword, false);
@@ -23,29 +23,38 @@ app.controller("ForgetController", function ($scope, $http, $routeParams, $locat
                 method: 'POST',
                 url: "/auth/forget",
                 data: {
-                    email : email,
+                    email: email,
                     newPassword: password
                 }
             };
-            
+
             console.log("REQUEST");
             console.log(request);
 
             $http(request)
                 .then(function (response) {
-                    console.log(response.data);  
+                    console.log(response.data);
                     $scope.success_message = "Mật khẩu đã được đổi";
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OK',
+                        text: 'Mật khẩu đã được đổi',
+                    })
                     $scope.err_message = "";
-                    setTimeout(function(){
+                    setTimeout(function () {
                         $scope.$apply(function () {
                             window.location = "/auth/account#!login"
                         });
-                   }, 1500);
+                    }, 1500);
                 })
                 .catch(function (error) {
                     console.error(error);
                     $scope.err_message = "Đổi mật khẩu không thành công. Vui lòng thử lại";
-
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Có lỗi xảy ra',
+                        text: 'Vui lòng thử lại',
+                    })
                 });
         }
 
