@@ -17,13 +17,7 @@ public class AccessDeniesHander implements AccessDeniedHandler {
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public void handle(HttpServletRequest request, HttpServletResponse response,
             AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        System.out.println("ER");
         if (!isApiRequest(request)) {
-            System.out.println("URL");
-            System.out.println("URL");
-
-            System.out.println("URL");
-
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.sendRedirect("/error/access-denies");
         } else {

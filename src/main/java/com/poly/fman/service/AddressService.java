@@ -11,8 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mysql.cj.callback.FidoAuthenticationCallback;
-import com.poly.fman.dto.AddressDTO;
-import com.poly.fman.dto.CartItemDTO2;
+import com.poly.fman.dto.model.AddressDTO;
+import com.poly.fman.dto.model.AddressDTO2;
+import com.poly.fman.dto.model.CartItemDTO2;
 import com.poly.fman.entity.Address;
 import com.poly.fman.entity.User;
 import com.poly.fman.repository.AddressRepository;
@@ -75,7 +76,7 @@ public class AddressService {
         return this.addressRepository.findByUserIdAndIsDefaultTrue(userId).orElse(null);
     }
 
-    public Address create(AddressDTO addressDTO, Integer userId) {
+    public Address create(AddressDTO2 addressDTO, Integer userId) {
         User user = this.userService.getUserById(userId);
         addressDTO.setUser(user);
         addressDTO.setUserId(user.getId());
@@ -90,7 +91,7 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    public Address update(AddressDTO addressDTO, Integer addressId, Integer userId) {
+    public Address update(AddressDTO2 addressDTO, Integer addressId, Integer userId) {
         // User user = this.userService.getUserById(userId);
         // addressDTO.setUser(user);
         // addressDTO.setUserId(user.getId());

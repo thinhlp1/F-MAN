@@ -40,6 +40,11 @@ app.controller("ChangePasswordController", function ($scope, $http, $routeParams
                         console.log(response.data);
                         $scope.success_message = "Mật khẩu đã được đổi";
                         $scope.err_message = "";
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'OK',
+                            text: 'Mật khẩu đã được đổi',
+                        })
                         setTimeout(function () {
                             $scope.$apply(function () {
                                 window.location = "/home"
@@ -50,6 +55,11 @@ app.controller("ChangePasswordController", function ($scope, $http, $routeParams
                         console.error(error);
                         if (error.status == 500){
                             $scope.err_message = "Đổi mật khẩu không thành công. Vui lòng thử lại";
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Có lỗi xảy ra',
+                                text: 'Vui lòng thử lại',
+                            })
                         }else if (error.status == 401){
                             $scope.err_message = "Mật khẩu không đúng";
                         }

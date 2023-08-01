@@ -1,6 +1,6 @@
 package com.poly.fman.controller.admin;
 
-import com.poly.fman.dto.VoucherDTO;
+import com.poly.fman.dto.model.VoucherDTO;
 import com.poly.fman.entity.Voucher;
 import com.poly.fman.service.VoucherService;
 import com.poly.fman.service.common.DateUtils;
@@ -131,11 +131,11 @@ public class DiscountController {
         return "admin/layout/Discount/discount_add";
     }
 
-    @RequestMapping("/update-form/{id}")
+    @GetMapping("/update-form/{id}")
     public String updateForm(@PathVariable("id") int id, Model model) {
-        Voucher voucher = voucherService.getVoucher(id);
-        System.out.println("=======> Đây là id của voucher: " + voucher.getId());
-        model.addAttribute("voucher", voucher);
+//        Voucher voucher = voucherService.getVoucher(id);
+//        System.out.println("=======> Đây là id của voucher: " + voucher.getId());
+//        model.addAttribute("voucher", voucher);
         return "admin/layout/Discount/discount_update";
     }
 

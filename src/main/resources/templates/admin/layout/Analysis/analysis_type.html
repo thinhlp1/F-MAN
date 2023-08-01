@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <a class="btn btn-blue-primary"
+           href="${pageContext.request.contextPath}/admin/analysis/date">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+            Quay lại
+        </a>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <!-- <label for="sort_type" class="fs-5 me-2 fw-bold">Thống kê theo loại</label> -->
+        <input class="form-control" list="datalistOptions" id="exampleDataList"
+               placeholder="Nhập sản phẩm...">
+        <datalist id="datalistOptions">
+            <option value="San Francisco">
+            <option value="New York">
+            <option value="Seattle">
+            <option value="Los Angeles">
+            <option value="Chicago">
+        </datalist>
+        <button class="btn-blue-primary w-50 h-100">Thống Kê</button>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover table-striped">
+        <thead class="table-header-custom">
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Loại</th>
+            <th scope="col">Số Lượng Trung Bình</th>
+            <th scope="col">Tổng Doanh Thu</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>Nike</td>
+            <td>2333</td>
+            <td>
+                20.000.000vnđ
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-center pagination-custom">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link fs-4" href="#">
+                    <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+                </a>
+            </li>
+            <li class="page-item"><a class="page-link fs-4" href="#">1</a></li>
+            <li class="page-item">
+                <a class="page-link fs-4" href="#">
+                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</div>

@@ -20,7 +20,7 @@ app.controller("ConfirmOTPController", function ($scope, $http, $routeParams, $l
             if (count === 0) {
                 clearInterval(countdownInterval);
                 reloadButton.style.display = "block"; // Hiển thị nút "Reload"
-                document.getElementById("resend").style.display = "none";
+                document.getElementById("reloadButton").style.display = "none";
             }
         }, 1000);
     }
@@ -47,6 +47,11 @@ app.controller("ConfirmOTPController", function ($scope, $http, $routeParams, $l
         ).catch(function (response) {
             console.log(response);
             document.getElementById("err_message").innerHTML = "Có lỗi xảy ra trong quá trình gửi mail"
+            Swal.fire({
+                icon: 'error',
+                title: 'Có lỗi xảy ra',
+                text: 'Có lỗi xảy ra trong quá trình gửi mail Vui lòng thử lại',
+            })
 
         });
     }
@@ -121,9 +126,18 @@ app.controller("ConfirmOTPController", function ($scope, $http, $routeParams, $l
                             ).catch(function (response) {
                                 if (response.status == 400) {
                                     document.getElementById("err_message").innerHTML = "Thông tin đăng ký không hợp lệ. Vui lòng đăng ký lại"
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Có lỗi xảy ra',
+                                        text: 'Thông tin đăng ký không hợp lệ. Vui lòng đăng ký lại',
+                                    })
                                 } else {
                                     document.getElementById("err_message").innerHTML = "Đăng ký không thành công. Vui lòng đăng ký lại"
-
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Có lỗi xảy ra',
+                                        text: 'Đăng ký không thành công. Vui lòng đăng ký lại',
+                                    })
                                 }
                             });
                         }

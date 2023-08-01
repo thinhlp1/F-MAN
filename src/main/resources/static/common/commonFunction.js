@@ -117,27 +117,12 @@ function formatDate(inputDate) {
     return age >= 18;
 }
 
+function formatCurrencyToVND(amount) {
+    // Sử dụng hàm toLocaleString để định dạng số nguyên
+    const formattedAmount = amount.toLocaleString('vi-VN');
+  
+    // Thêm ký hiệu VNĐ vào sau số
+    return formattedAmount + ' VNĐ';
+  }
+  
 
-// const nodemailer = require('nodemailer');
-
-// async function sendOTP(to, otp) {
-//   let transporter = createTransport({
-//     host: 'smtp.gmail.com',
-//     port: 587,
-//     secure: false,
-//     auth: {
-//       user: 'thinhlppc03231@gmail.com',
-//       pass: '12082003az9'
-//     }
-//   });
-
-//   let info = await transporter.sendMail({
-//     from: 'Tutor Online',
-//     to: to,
-//     subject: 'Your OTP',
-//     text: `Your OTP is ${otp}.`,
-//     html: `<p>Your OTP is ${otp}.</p>`
-//   });
-
-//   console.log('Message sent: %s', info.messageId);
-// }

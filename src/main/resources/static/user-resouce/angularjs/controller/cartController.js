@@ -1,148 +1,246 @@
 // Define your AngularJS module and controller
-app.controller('CartController', function ($scope, $http) {
+app.controller('CartController', function ($scope, $http, $location) {
     // Your other controller logic here...
 
     $scope.listCartItem = []; // Initialize listCartItem with data from the server or any other source
+    $scope.cart;
+    
+    function initCheckBox() {
 
-    // Your other functions and logic for the controller here
-
-    $scope.toggleAllProducts = function () {
-        angular.forEach($scope.listCartItem, function (item) {
-            item.checked = $scope.allChecked;
-        });
-    };
-
-    $scope.updateSubTotal = function (item) {
-        item.subTotal = item.product.price * item.quantity;
-        // You can format the subtotal to a string with the desired format here
-        item.subTotalStringVND = item.subTotal + ' VND';
-        $scope.calculateTotalPrice();
-    };
-
-    $scope.calculateTotalPrice = function () {
-        $scope.cart.totalPrice = 0;
-        angular.forEach($scope.listCartItem, function (item) {
-            if (item.checked) {
-                $scope.cart.totalPrice += item.subTotal;
-            }
-        });
-        // You can format the total price to a string with the desired format here
-        $scope.cart.totalPriceStringVND = $scope.cart.totalPrice + ' VND';
-    };
-
-    $scope.changeQuantity = function (cartId, itemId, index, action) {
-        var quantityField = document.getElementById("qty_" + index);
-        var currentQuantity = parseInt(quantityField.value);
-
-        if (action === "increase") {
-            if (quantityField.value >= 99) {
-                return;
-            }
-            currentQuantity++;
-        } else if (action === "decrease") {
-            if (quantityField.value <= 1) {
-                return;
-            }
-            currentQuantity--;
-        }
-
-        // Your AJAX request using $http instead of $.ajax
-        $http({
-            method: 'GET',
-            url: "/user/carts/changeQuantity/" + cartId + "?cartItemId=" + itemId + "&quantity=" + currentQuantity
-        }).then(function successCallback(response) {
-            // Xử lý phản hồi từ Controller (nếu có)
-            console.log(response.data);
-            if (action === "increase") {
-                quantityField.value = currentQuantity;
-            } else if (action === "decrease") {
-                quantityField.value = currentQuantity;
-            }
-            document.getElementById("subTotal_" + itemId).innerHTML = response.data.subTotal;
-            document.getElementById("total").innerHTML = "Tổng tiền: " + response.data.total;
-        }, function errorCallback(error) {
-            // Xử lý lỗi (nếu có)
-            console.log(error);
-            var popover = document.getElementById("quantityPopup_" + itemId);
-            popover.setAttribute('data-bs-trigger', 'manual');
-            popover.setAttribute('data-content', "Sản phẩm đã hết hàng");
-            var bsPopover = new bootstrap.Popover(popover);
-            bsPopover.show();
-            var listText = document.getElementsByClassName("popover");
-            var arrayText = Array.from(listText);
-
-            arrayText.forEach(function (item) {
-                popover.addEventListener('blur', function (event) {
-                    item.classList.remove("show");
-                });
+        var popoverList = document.querySelectorAll("button[id^='quantityPopup_']");
+        console.log(popoverList);
+        // alert("có " + popoverList.length);
+        popoverList.forEach(function (popover) {
+            // console.log(document.getElementById(popover.id))
+            $('#' + popover.id).click(function (event) {
+                event.preventDefault();
             });
         });
-    };
 
-    $scope.removeProduct = function (cartId, itemId) {
-        var itemList = document.querySelectorAll('tr[id^="item_"]');
+        // Lấy tham chiếu đến checkbox chọn tất cả
+        var checkAll = document.getElementById("checkAllProducts");
 
-        itemList.forEach(function (item) {
-            var id = item.id;
+        // Lấy tất cả các checkbox khác
+        var checkboxes = document.querySelectorAll("input[id^='checkProduct_']");
 
-            if (id.split('_')[1] == itemId) {
-                $http({
+        // Xử lý sự kiện khi checkbox chọn tất cả thay đổi
+        checkAll.addEventListener("change", function () {
+            var isChecked = checkAll.checked;
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        // Xử lý sự kiện khi các checkbox khác thay đổi
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener("change", function () {
+                var allChecked = checkboxes.length === document.querySelectorAll("input[id^='checkProduct_']:checked").length;
+                checkAll.checked = allChecked;
+            });
+        });
+
+
+    }
+
+    function showPopover(id){
+        var popover = document.getElementById("quantityPopup_" + id);
+        popover.setAttribute('data-bs-trigger', 'manual');
+        popover.setAttribute('data-content', "Sản phẩm đã hết hàng");
+        var bsPopover = new bootstrap.Popover(popover);
+        console.log(bsPopover)
+        bsPopover.show();
+        setTimeout(function(){
+            bsPopover.hide()
+        },2000)
+    }
+
+    function addItemToCart(item) {
+        const cartJSON = sessionStorage.getItem('cart');
+        let cart;
+        if (cartJSON) {
+            cart = JSON.parse(cartJSON);
+        } else {
+            cart = {
+                listCartItem: [],
+            };
+        }
+
+        const existingItem = cart.listCartItem.find((cartItem) => cartItem.productSizeId === item.productSizeId);
+
+        if (existingItem) {
+            // Nếu đã tồn tại mục với cùng id, tăng số lượng lên 1
+            existingItem.quantity += 1;
+        } else {
+            // Nếu chưa tồn tại mục với cùng id, thêm mục mới vào danh sách listItem
+            cart.listCartItem.push(item);
+        }
+        const updatedCartJSON = JSON.stringify(cart);
+
+        sessionStorage.setItem('cart', updatedCartJSON);
+    }
+
+    $scope.decreaseItemQuantityById = function (id) {
+        const cartJSON = sessionStorage.getItem('cart');
+        if (!cartJSON) {
+            return;
+        }
+        const cart = JSON.parse(cartJSON);
+
+        const cartItemIndex = cart.listCartItem.findIndex((item) => item.productSizeId === id);
+
+        if (cartItemIndex !== -1) {
+            if (cart.listCartItem[cartItemIndex].quantity > 1) {
+                cart.listCartItem[cartItemIndex].quantity -= 1;
+                const updatedCartJSON = JSON.stringify(cart);
+                sessionStorage.setItem('cart', updatedCartJSON);
+                $scope.loadCart();
+            }
+        }
+    }
+
+    $scope.increaseItemQuantityById = function (id) {
+
+        const cartJSON = sessionStorage.getItem('cart');
+        if (!cartJSON) {
+            return;
+        }
+        const cart = JSON.parse(cartJSON);
+        const cartItemIndex = cart.listCartItem.findIndex((item) => item.productSizeId === id);
+        if (cartItemIndex !== -1) {
+            let carItem = cart.listCartItem[cartItemIndex];
+            if (carItem.quantity < 99) {
+                let request = {
                     method: 'GET',
-                    url: "/user/carts/product-remove/" + cartId + "?cartItemId=" + itemId
-                }).then(function successCallback(response) {
-                    // Xử lý phản hồi từ Controller (nếu có)
-                    console.log(response.data);
-                    item.parentNode.removeChild(item);
-                    document.getElementById("total").innerHTML = "Tổng tiền: " + response.data.total;
-                    var cart = document.getElementById('cartQuantity');
-                    var cartQuantity = parseFloat(cart.innerHTML);
-                    cart.innerHTML = cartQuantity - 1;
-                }, function errorCallback(error) {
-                    // Xử lý lỗi (nếu có)
+                    url: "/user/carts/check-in-stock?productSizeId=" + carItem.productSizeId + "&quantity=" + (carItem.quantity + 1),
+                    data: JSON.stringify(cart)
+                };
+                $http(request).then(
+                    function (response) {
+                        cart.listCartItem[cartItemIndex].quantity += 1;
+
+                        const updatedCartJSON = JSON.stringify(cart);
+                        sessionStorage.setItem('cart', updatedCartJSON);
+                        $scope.loadCart();
+                    }
+                ).catch(function (error) {
                     console.log(error);
+                    if (error.status == 500) {
+                        showPopover(id);
+                    }
                 });
             }
-        });
-    };
+        }
+    }
 
-    $scope.checkout = function (cartId) {
+
+    $scope.removeItem = function (id) {
+        const cartJSON = sessionStorage.getItem('cart');
+        if (!cartJSON) {
+            return;
+        }
+        const cart = JSON.parse(cartJSON);
+
+        const cartItemIndex = cart.listCartItem.findIndex((item) => item.productSizeId === id);
+
+        if (cartItemIndex !== -1) {
+            cart.listCartItem.splice(cartItemIndex, 1);
+            const updatedCartJSON = JSON.stringify(cart);
+            sessionStorage.setItem('cart', updatedCartJSON);
+            $scope.loadCart();
+
+        }
+    }
+
+
+    // Đối tượng mục mới bạn muốn thêm vào danh sách (ví dụ)
+    // const newItem = { productId: "AQ4134-400", productSizeId: 14, quantity: 3 };
+    // const newItem2 = { productId: "DV4022-004", productSizeId: 3, quantity: 3 };
+    // addItemToCart(newItem2);
+    // addItemToCart(newItem);
+    // decreaseItemQuantityById(4);
+    // increaseItemQuantityById(4);
+
+
+    $scope.checkout = function (){
         var selectedItems = [];
 
         var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-
+    
         if (checkboxes.length == 0) {
-            alert("Vui lòng chọn ít nhất 1 sản phẩm");
+            Swal.fire({
+                icon: 'info',
+                title: 'Bạn chưa chọn sản phẩm nè',
+            })
             return;
         }
-
+    
         var checkboxesArray = Array.from(checkboxes);
-        if (checkboxesArray[0].id === "checkAllProducts") {
+        if (checkboxesArray[0].id === "checkAllProducts"){
             checkboxesArray.shift();
         }
 
+        const cartJSON = sessionStorage.getItem('cart');
+        let cart;
+        if (cartJSON) {
+            cart = JSON.parse(cartJSON);
+        } else {
+            cart = {
+                listCartItem: [],
+            };
+        }
+       
         checkboxesArray.forEach(function (checkbox) {
-            var itemName = checkbox.value;
-            selectedItems.push(itemName);
+            let itemId = checkbox.value;
+            selectedItems.push(itemId);
         });
 
-        console.log("SELECTED ITEMS: ", selectedItems);
-        console.log("/user/carts/checkout/" + cartId + "?itemList=" + selectedItems);
+        console.log("checkout?listCartItem=" + selectedItems);
+        $location.path("checkout/" + selectedItems);
+      
+    }
 
-        // You can use AngularJS's $http service to make the AJAX request instead of using window.location.href
-        $http({
-            method: 'GET',
-            url: "/user/carts/checkout/" + cartId + "?itemList=" + selectedItems
-        }).then(function successCallback(response) {
-            // Handle the response from the server (if needed)
-            console.log(response.data);
-            // Handle the redirection to the checkout page (if needed)
-            // window.location.href = "/user/carts/checkout/" + cartId + "?itemList=" + selectedItems;
-        }, function errorCallback(error) {
-            // Handle errors (if needed)
+    $scope.loadCart = function () {
+        const cartJSON = sessionStorage.getItem('cart');
+        let cart;
+        let userId;
+        if (cartJSON) {
+            cart = JSON.parse(cartJSON);
+        } else {
+            cart = {
+                listCartItem: [],
+            };
+        }
+
+        userId = getCookie("userId");
+        cart.userId = parseInt(userId);
+
+
+        let request = {
+            method: 'POST',
+            url: "/user/carts/get-cart-items/" + userId,
+            data: JSON.stringify(cart)
+        };
+
+        $http(request).then(
+            function (response) {
+                $scope.listCartItem = response.data.listCartItems;
+                $scope.totalPrice = response.data.totalStringVND;
+                setTimeout(function name(params) {
+                    initCheckBox();
+                },100)
+            }
+        ).catch(function (error) {
             console.log(error);
+            if (error.status == 500) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Có lỗi xảy với giỏ hàng của bạn. Xin lỗi vị sự bất tiện này',
+                })
+            }
+
         });
-    };
 
-    // Other functions and logic for the controller...
-
+    }
+    $scope.loadCart();
 });

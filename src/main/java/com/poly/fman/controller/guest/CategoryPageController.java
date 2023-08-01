@@ -74,10 +74,10 @@ public class CategoryPageController {
     }
 
 
-    @ModelAttribute("list_productType")
-    public List<ProductType> getListProductType() {
-        return productTypeService.getAll();
-    }
+//    @ModelAttribute("list_productType")
+//    public List<ProductType> getListProductType() {
+//        return productTypeService.getAll();
+//    }
 
     @ModelAttribute("list_brand")
     public List<Brand> getListBrand() {

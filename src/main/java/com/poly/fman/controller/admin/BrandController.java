@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.poly.fman.service.common.ParamService;
 import com.poly.fman.service.common.SessionService;
-import com.poly.fman.dto.BrandDTO;
+import com.poly.fman.dto.model.BrandDTO;
 import com.poly.fman.entity.Brand;
 import com.poly.fman.service.BrandService;
 

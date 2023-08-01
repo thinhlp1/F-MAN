@@ -1,6 +1,6 @@
 package com.poly.fman.service;
 
-import com.poly.fman.dto.ProductDTO2;
+import com.poly.fman.dto.model.ProductDTO2;
 import com.poly.fman.entity.Product;
 import com.poly.fman.repository.ProductRepository;
 import jakarta.persistence.EntityManager;

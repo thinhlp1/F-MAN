@@ -1,0 +1,30 @@
+<div class="back mb-3">
+    <a class="btn btn-blue-primary" href="#!category">
+        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        Quay Lại
+    </a>
+</div>
+<div class="row">
+    <form>
+        <div class="col-12">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="category_id" maxlength="15"  ng-model="form.id"
+                       readonly="true"
+                       placeholder="ID Danh Mục"/>
+                <label for="category_id">ID</label>
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="category_name" maxlength="50" ng-model="form.name"
+                       placeholder="Tên Danh Mục"/>
+                <label for="category_name">Tên danh mục</label>
+            </div>
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-blue-primary btn-lg" ng-click="update()">
+                Cập nhật
+            </button>
+        </div>
+    </form>
+</div>

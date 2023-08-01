@@ -1,0 +1,291 @@
+<style>
+    ul {
+        list-style: none;
+    }
+
+    ul span {
+        font-size: 15px;
+    }
+
+    tr td {
+        height: 130px !important;
+    }
+
+    .td_p {
+        margin-top: 35px;
+    }
+
+</style>
+<!--BACK-->
+<div class="back mb-3">
+    <a class="btn btn-blue-primary" href="#!order">
+        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        Quay Lại
+    </a>
+</div>
+<section class="order_details ">
+    <div class="container">
+
+        <div class="row order_d_inner">
+            <div class="col-lg-4">
+                <div class="details_item">
+                    <h4 style="font-family: Roboto">Thông tin hóa đơn</h4>
+                    <ul class="list">
+                        <li><span>Mã hóa đơn</span> : HD001</li>
+                        <li><span>Ngày tạo</span> : 20/20/2020</li>
+                        <li><span>Tổng tiền</span> : 200.000.000 vnd</li>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="details_item">
+                    <h4 style="font-family: Roboto">Thông tin hóa đơn</h4>
+                    <ul class="list">
+                        <li><span>Thanh toán</span> : COD</li>
+                        <li><span>Voucher</span> : Giam 50%
+                        </li>
+                        <li><span>Trạng thái :</span><span
+                                id="span_state">Success</span>
+
+                        <li id="orderNoteLi" class="${empty order.note ? 'd-none' : no}">
+                            <span>Lý do :</span><span id="orderNote">Khoong thich nhan hang</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="details_item">
+                    <h4 style="font-family: Roboto">Địa chỉ nhận hàng</h4>
+                    <ul class="list">
+                        <li><span>Tên</span> : Nguyen Phuoc TAi</li>
+                        <li><span>Số điện thoại</span> : 0202020202</li>
+                        <li><span>Địa chỉ</span> : Capuchinohoho</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="order_details_table">
+            <h2 style="font-family: Roboto">Thông tin hóa đơn chi tiết</h2>
+            <div class="table-responsive">
+                <div class="row mx-0 container-fluid">
+                    <div class="col-10">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Sản phẩm</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Thành tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <img alt="" style="width: 90px; height: 100px; border-radius: 30px;"
+                                             th:src="@{admin-resouce/plugins/images/products/p2.png}">
+                                        <p class="ml-3">Giay xin</p>
+                                    </div>
+                                </td>
+                                <td>
+
+                                    <p class="td_p">45</p>
+                                </td>
+                                <td>
+                                    <p class="td_p" id="itemQuantity_${item.id}"
+                                       value="${item.quantity}">2
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="td_p">1.100001...</p>
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div class="col-2">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Tồn kho</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <p class="td_p" id="stockQuantity_${item.id}"
+                                       value="${item.productSize.quantity}">
+                                        100</p>
+                                </td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="row mx-0 mt-5">
+                    <div class=" col ">
+                        <div>
+                            <h4 style="font-family: Roboto">Tạm tính: 100000000</h4>
+                        </div>
+                        <!-- <c:if test="${tempTotal != ''}"> -->
+                        <div>
+                            <h4 style="font-family: Roboto">Giảm giá: 200000</h4>
+                        </div>
+                        <!-- </c:if> -->
+                        <div>
+                            <h4 style="font-family: Roboto">Tổng tiền: 330000000
+                            </h4>
+                        </div>
+                    </div>
+                    <div class=" col d-flex align-items-end justify-content-end">
+
+                        <!--                        <c:if test="${order.orderState.id eq 'PENDING_APPROVAL'}">-->
+                        <!--                            <a id="btn-cancel" data-bs-toggle="modal"-->
+                        <!--                               data-bs-target="#cancelModel"-->
+                        <!--                               class="btn btn-danger ms-3 text-white mr-3"> Hủy-->
+                        <!--                            </a>-->
+
+                        <!--                            <a id="btn-approve" onclick="approve()"-->
+                        <!--                               class="btn btn-blue-primary ms-3 text-white">-->
+                        <!--                                Duyệt-->
+                        <!--                            </a>-->
+                        <!--                        </c:if>-->
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="cancelModel" tabindex="-1" role="dialog"
+     aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Hủy đơn</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="">
+                    <p class="text-danger"> Điền lý do hủy đơn </p>
+                    <textarea style="width: 100%;" name="note" id="note" rows="5"
+                              placeholder="Ghi chú"></textarea>
+                </div>
+                <div class=" d-flex justify-content-end my-2 mx-2">
+                    <a id="btn-cancel" onclick="cancel()" type="button"
+                       class="btn btn-danger ms-3 text-white mr-3" style="display: block;"> Xác
+                        nhận hủy đơn
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    function checkQuantity() {
+        var listStockQuantity = document.querySelectorAll('p[id^="stockQuantity_"]');
+        var rs;
+        try {
+            listStockQuantity.forEach(function (item) {
+
+                id = item.id.split('_')[1]
+                var stockQuantiy = parseInt(item.getAttribute("value"));
+                var itemQuantity = parseInt(document.getElementById("itemQuantity_" + id).getAttribute("value"));
+                console.log(stockQuantiy);
+                console.log(itemQuantity);
+                if (stockQuantiy < itemQuantity) {
+                    rs = (confirm("Số lượng tồn kho không đủ cho đơn hàng này. Chắc chắn duyệt"))
+                    throw new Error("Break the loop.")
+                }
+            })
+        } catch (error) {
+
+        }
+        if (rs === undefined) {
+            return true;
+        } else {
+            return rs;
+        }
+    }
+
+    function cancel() {
+        var note = document.getElementById("note").value;
+        if (note === "") {
+            note = "Không có lý do";
+        }
+        $.ajax({
+            type: "POST",
+            url: "/admin/orders/cancel/${order.id}",
+            data: note,
+            dataType: "text",
+            contentType: "text/plain",
+            success: function (response) {
+                // Xử lý phản hồi từ Controller (nếu có)
+                console.log(response);
+                document.getElementById("btn-approve").classList.add("d-none");
+                document.getElementById("btn-cancel").classList.add("d-none");
+                document.getElementById("span_state").innerHTML = "Đã hủy";
+                document.getElementById("quantityOrderApprove").innerHTML = parseInt(document.getElementById("quantityOrderApprove").innerHTML) - 1;
+                $('#cancelModel').modal('hide');
+                document.getElementById("orderNoteLi").classList.remove("d-none");
+                document.getElementById("orderNote").innerHTML = note;
+
+
+            },
+            error: function (xhr, status, error) {
+                // Xử lý lỗi (nếu có)
+                console.log(error);
+                alert("Hủy đơn không thành công");
+            }
+        });
+    }
+
+    function approve() {
+        if (checkQuantity() == false) {
+
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/admin/orders/approve/${order.id}",
+            success: function (response) {
+                // Xử lý phản hồi từ Controller (nếu có)
+                console.log(response);
+                document.getElementById("btn-approve").classList.add("d-none");
+                document.getElementById("btn-cancel").classList.add("d-none");
+                document.getElementById("span_state").innerHTML = "Đang vận chuyển";
+                document.getElementById("quantityOrderApprove").innerHTML = parseInt(document.getElementById("quantityOrderApprove").innerHTML) - 1;
+                var listStockQuantity = document.querySelectorAll('p[id^="stockQuantity_"]');
+                listStockQuantity.forEach(function (item) {
+                    id = item.id.split('_')[1]
+                    var stockQuantiy = parseInt(item.getAttribute("value"));
+                    var itemQuantity = parseInt(document.getElementById("itemQuantity_" + id).getAttribute("value"));
+                    if (stockQuantiy - itemQuantity < 0) {
+                        item.innerHTML = "0";
+                    } else {
+                        item.innerHTML = stockQuantiy - itemQuantity;
+                    }
+
+                })
+            },
+            error: function (xhr, status, error) {
+                // Xử lý lỗi (nếu có)
+                console.log(error);
+                alert("Duyệt đơn không thành công");
+            }
+        });
+    }
+</script>

@@ -1,0 +1,56 @@
+<div class="back mb-3">
+    <a class="btn btn-blue-primary" href="#!discount">
+        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        Quay lại
+    </a>
+</div>
+<form action="/admin/discounts/create" modelAttribute="voucher" method="post">
+    <div class="row">
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="name" path="name"/>
+                <label for="name">Tên mã giảm giá</label>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <div class="form-floating mb-3">
+                    <input minlength="1" maxlength="3" type="number" class="form-control" id="sale_percent"
+                           path="salePercent"/>
+                    <label for="sale_percent">Phần trăm giảm giá</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <div class="form-floating mb-3">
+                    <input type="datetime-local" class="form-control" id="start-date" path="startAt"/>
+                    <label for="start-date">Ngày bắt đầu</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <div class="form-floating mb-3">
+                    <input type="datetime-local" class="form-control" id="end-date" path="endAt"/>
+                    <label for="end-date">Ngày kết thúc</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="min-price" path="minPrice"/>
+                        <label for="min-price">Giá thấp nhất</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-end">
+            <button id="submitButton" class="btn btn-blue-primary btn-lg" type="submit">
+                Update
+            </button>
+        </div>
+    </div>
+</form>
