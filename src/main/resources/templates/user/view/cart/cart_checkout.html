@@ -84,7 +84,7 @@
                                         <div>
                                             <h6 style="font-family: sans-serif">Thông tin người nhận</h6>
                                         </div>
-                                        <div>
+                                        <div id="changeAddressGrp">
                                             <h6 data-toggle="modal" data-target="#addressModel" class="font-weight-bold"
                                                 style="font-family: sans-serif; cursor: pointer;"><i aria-hidden="true"
                                                     class="fa fa-angle-double-right"></i>
@@ -111,7 +111,7 @@
                                                 value="{{address.address}}" type="text"
                                                 readonly="true">{{address.address}}</textarea>
                                         </div>
-                                        <div class="form-group mb-5">
+                                        <div class="form-group mb-5" id="voucherGrp">
                                             <label for="voucher">Mã giảm giá</label>
                                             <div class="row" style="height: 20px;">
                                                 <div class="col-9">
@@ -120,7 +120,7 @@
                                                         type="text">
                                                     <p id="voucher_message" class="text-danger">{{voucher_message}}</p>
                                                 </div>
-                                                <div class="col-2">
+                                                <div class="col-2" id="btnApply">
                                                     <a type="button" ng-click="applyVoucher()" class="btn btn-primary"
                                                         style="color: white;">Áp
                                                         dụng</a>

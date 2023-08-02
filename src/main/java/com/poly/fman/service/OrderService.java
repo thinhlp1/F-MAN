@@ -139,7 +139,7 @@ public class OrderService {
 
     }
 
-    public ReCheckoutReponseDTO reCheckout(Integer orderId) {
+    public ReCheckoutReponseDTO getRecheckout(Integer orderId) {
 
         OrderDTO order = getOrderDTO(orderId);
 
@@ -248,48 +248,12 @@ public class OrderService {
 
     }
 
-    // public Order reCreate(CheckoutRequestDTO checkoutDTO) {
+    public void updateRecheckout(Integer orderId) {
 
-    // Order order =
-    // orderRepository.findById(checkoutDTO.getOrderId()).orElse(null);
-    // if (checkoutDTO.getPaymentRequestDTO() == null) {
-    // order.setOrderState(orderStateRepository.findById("PENDING_APPROVAL").orElse(null));
-    // } else {
-    // order.setOrderState(orderStateRepository.findById("WAIT_PAYMENT").orElse(null));
-    // }
+        Order order = orderRepository.findById(orderId).orElse(null);
+        order.setUpdateAt(new Date());
 
-    // List<OrderItem> listOderItem = order.getOrderItems();
-    // long total = order.getTotal().longValue();
-    // PaymentMethod paymentMethod =
-    // paymentMethodRepository.findById(checkoutDTO.getPaymentMethod()).orElse(null);
-
-    // if (!checkoutDTO.getVoucher().equals("")) {
-    // Voucher voucher =
-    // voucherRepository.findByNameAndActiveIsTrue(checkoutDTO.getVoucher()).orElse(null);
-    // if (voucher != null) {
-    // long discount = (long) (total * (voucher.getSalePercent() / 100));
-    // total = total - discount;
-    // order.setVoucher(voucher);
-    // }
-    // }
-    // User user = userRepository.findById(checkoutDTO.getUserId()).orElse(null);
-    // Address address =
-    // addressRepository.findById(checkoutDTO.getAddressId()).orElse(null);
-
-    // order.setAddress(address);
-    // order.setUpdateAt(new Date());
-    // order.setPaymentMethod(paymentMethod);
-    // order.setTotal(BigInteger.valueOf(total));
-
-    // order.setUser(user);
-
-    // // System.out.println(order.toString());
-    // // order = orderRepository.findById(1).orElse(order);
-    // // System.out.println(order.getAddress().getReceiverName());
-    // order = orderRepository.save(order);
-    // return order;
-
-    // }
+    }
 
     public Page<Order> getOders(String orderStateId, String sortBy, String sortOrder, int page, int size) {
         Sort sort = Sort.by(sortBy);
