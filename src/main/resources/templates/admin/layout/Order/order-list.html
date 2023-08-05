@@ -1,216 +1,38 @@
-<div class="d-flex justify-content-between mb-3">
-    <div class="sort-fillter align-items-center">
-        <span class="dropdown mb-5">
-            <button class="btn bg-transparent border shadow dropdown-toggle" type="button"
-                    id="btn-sortBy" data-bs-toggle="dropdown" aria-expanded="false">
-                Sắp xếp theo
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="sort" id="sortBy">
-                <li><a class="dropdown-item" value="createAt" type="button" id="createAt"
-                       onclick="setValueSortBy('createAt','Ngày tạo')">Ngày tạo</a>
-                </li>
-                <li><a class="dropdown-item" value="total" type="button" id="total"
-                       onclick="setValueSortBy('total','Tổng tiền')">Tổng tiền</a>
-                </li>
-
-            </ul>
-        </span>
-        <span class="dropdown mb-5">
-
-        <button class="btn bg-transparent border shadow dropdown-toggle" type="button"
-                id="btn-sortOrder" data-bs-toggle="dropdown" aria-expanded="false">
-            Chiều
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="sort" id="sortOrder">
-            <li><a class="dropdown-item" value="asc" type="button" id="asc"
-                   onclick="setValuesortOrder('asc','Tăng dần')">Tăng dần</a>
-            </li>
-            <li><a class="dropdown-item" value="desc" type="button" id="desc"
-                   onclick="setValuesortOrder('desc','Giảm dần')">Giảm dần</a>
-            </li>
-
-        </ul>
-    </span>
-        <span class="dropdown mb-5 mx-3">
-        <button class="btn bg-transparent border shadow dropdown-toggle" type="button"
-                id="btn-orderState" data-bs-toggle="dropdown" aria-expanded="false">
-            Trạng thái
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="orderState" id="orderState">
-            <li><a class="dropdown-item" value="ALL" type="button" id="ALL"
-                   onclick="setValueOrderState('ALL','Tất cả')">Tất cả</a>
-            </li>
-            <!--            <c:forEach var="item" items="${orderStates}">-->
-                <li><a class="dropdown-item" value="${item.id}" type="button"
-                       id="${item.id}"
-                       onclick="setValueOrderState('${item.id}','${item.name}')">${item.name}</a>
-                </li>
-            <!--            </c:forEach>-->
+<div ng-controller="OrderController" ng-init="loadList()">
+    <div id="grid"></div>
 
 
+    <div class="modal fade" id="category" aria-hidden="true" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        XÓA
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
-        </ul>
-    </span>
-
-    </div>
-
-</div>
-
-<div class="table-responsive">
-    <table class="table table-hover table-striped">
-        <thead class="table-header-custom">
-        <tr>
-            <th scope="col">STT</th>
-            <th scope="col">Mã đơn</th>
-            <th scope="col">Khách hàng</th>
-            <th scope="col">Ngày đặt</th>
-            <th scope="col">Địa chỉ</th>
-            <th scope="col">Đơn giá ( VNĐ )</th>
-            <th scope="col">Trạng thái</th>
-            <th scope="col">Thao tác</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>ID02</td>
-            <td>Order name</td>
-            <td>20/12/2222</td>
-            <td>Receiver, Number phone, Address
-            </td>
-            <td>200000000</td>
-            <td>Success</td>
-            <td>
-                <a class="text-dark"
-                   href="#!order-detail/1">
-                    <button class="border-0 bg-transparent">
-                        <i class="fa fa-eye" aria-hidden="true"></i>
-                    </button>
-                </a>
-
-
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="d-flex justify-content-center pagination-custom">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link fs-4" type="button" onclick="paginationEdge('first')">
-                    <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-                </a>
-            </li>
-
-<!--            <c:forEach var="i" begin="0" end="${totalPages - 1 < 0 ? 0 : totalPages - 1}">-->
-                <li class="page-item"><a id="page_${i + 1}"
-                                         name="${(i == currentPage) ? 'page_active' : 'no'}"
-                                         class="${(i == currentPage) ? 'active' : 'no'} page-link fs-4 "
-                                         type="button" onclick="pagination(this)">${i + 1}</a></li>
-<!--            </c:forEach>-->
-
-            <li class="page-item">
-                <a class="page-link fs-4" onclick="paginationEdge('last')" type="button">
-                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-                </a>
-            </li>
-        </ul>
+                </div>
+                <div class="modal-body text-center">
+                    <img class="img-fluid mb-3" width="300px" height="300px"
+                        th:src="@{/admin-resouce/plugins/images/large/cat-screaming-no.jpg}">
+                    <h4>Bạn có chắc chắc muốn danh mục <span class="text-danger fw-bold">{{ id }}</span>
+                        ?</h4>
+                </div>
+                <div class="modal-footer">
+                    <div class="row g-3 w-100">
+                        <div class="col-6">
+                            <button class="btn btn-outline-danger w-100" data-bs-dismiss="modal"
+                                aria-label="Close">Không
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button ng-click="delete(id)" class="btn btn-blue-primary w-100">Có
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-
-    filt();
-
-    function filt() {
-
-        var orderStateDropdown = document.getElementById("orderState");
-        document.getElementById("btn-orderState").innerHTML = document.getElementById('${orderStateId}').innerHTML;
-        orderStateDropdown.setAttribute("value", '${orderStateId}');
-
-        var sortByDropDown = document.getElementById("sortBy");
-        document.getElementById("btn-sortBy").innerHTML = document.getElementById('${sortBy}').innerHTML;
-        sortByDropDown.setAttribute("value", '${sortBy}');
-
-        var sortOrderDropDown = document.getElementById("sortOrder");
-        document.getElementById("btn-sortOrder").innerHTML = document.getElementById('${sortOrder}').innerHTML;
-        sortOrderDropDown.setAttribute("value", '${sortOrder}');
-
-
-        console.log('${sortOrder}')
-        console.log(sortOrderDropDown.getAttribute("value"))
-    }
-
-    function setValueSortBy(sortBy, name) {
-        var sortByDropDown = document.getElementById("sortBy");
-        document.getElementById("btn-sortBy").innerHTML = name;
-        sortByDropDown.setAttribute("value", sortBy);
-        filtOrder();
-    }
-
-    function setValuesortOrder(sortOrder, name) {
-        var sortOrderDropDown = document.getElementById("sortOrder");
-        document.getElementById("btn-sortOrder").innerHTML = name;
-        sortOrderDropDown.setAttribute("value", sortOrder);
-        filtOrder();
-    }
-
-    function pagination(page) {
-        var itemList = document.querySelectorAll('a[id^="page_"]');
-        console.log("PAGEEE:" + page.innerHTML)
-        itemList.forEach(function (item) {
-            item.setAttribute("name", "");
-        })
-        page.setAttribute("name", "page_active");
-        filtOrder();
-    }
-
-    function setValueOrderState(orderState, name) {
-        var orderStateDropdown = document.getElementById("orderState");
-        document.getElementById("btn-orderState").innerHTML = name;
-        orderStateDropdown.setAttribute("value", orderState);
-        filtOrder();
-    }
-
-
-    function paginationEdge(eage) {
-        var itemList = document.querySelectorAll('a[id^="page_"]');
-        if (eage === "first") {
-            pagination(itemList[0])
-        } else {
-            pagination(itemList[itemList.length - 1])
-        }
-    }
-
-    // function filtOrder() {
-    //
-    //     var sortBy;
-    //     var sortOrder;
-    //     var orderState;
-    //     var page = document.getElementsByName("page_active")[0].innerHTML;
-    //
-    //     var orderStateDropdown = document.getElementById("orderState");
-    //     orderState = orderStateDropdown.getAttribute("value")
-    //     var sortByDropDown = document.getElementById("sortBy");
-    //     sortBy = sortByDropDown.getAttribute("value");
-    //     var sortOrderDropDown = document.getElementById("sortOrder");
-    //     sortOrder = sortOrderDropDown.getAttribute("value");
-    //
-    //     if (sortBy == null) {
-    //         sortBy = '';
-    //     }
-    //
-    //     if (sortOrder == null) {
-    //         sortOrder = '';
-    //     }
-    //     if (orderState == null || orderState === "ALL") {
-    //         orderState = '';
-    //     }
-    //
-    //     var pageSize = ${ size };
-    //     console.log("PAGEE: " + page);
-    //     var url = "${pageContext.request.contextPath}/admin/orders/all?orderStateId=" + orderState + "&sortBy=" + sortBy + "&sortOrder=" + sortOrder + "&page=" + (page) + "&size=" + pageSize
-    //     window.location.href = url
-    //     // console.log(url);
-    //
-    // }
-</script>

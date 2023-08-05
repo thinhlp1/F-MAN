@@ -2,6 +2,7 @@ package com.poly.fman.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,6 +82,35 @@ public class OrderService {
         return orderRepository.findById(id).orElse(null);
     }
 
+    public OrderDTO convertDTO(Order order) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        OrderDTO orderDTO = new OrderDTO();
+        List<OrderItem> listOderItem = order.getOrderItems();
+        List<OrderItemDTO> listOrderItemDTOs = new ArrayList();
+        listOrderItemDTOs = listOderItem.stream()
+                .map(item -> modelMapper.map(item, OrderItemDTO.class))
+                .collect(Collectors.toList());
+
+        Long tempTotal = (long) 0;
+        Long discount = (long) 0;
+
+        for (OrderItem orderItem : listOderItem) {
+            tempTotal += orderItem.getProduct().getPrice().intValue() * orderItem.getQuantity();
+        }
+
+        if (order.getVoucher() != null) {
+            discount = (long) (tempTotal * order.getVoucher().getSalePercent() / 100);
+        }
+
+        orderDTO = modelMapper.map(order, OrderDTO.class);
+        orderDTO.setTempTotal(tempTotal);
+        orderDTO.setDiscount(discount);
+        orderDTO.setListOrderItemDTO(listOrderItemDTOs);
+
+        return orderDTO;
+    }
+
     public OrderDTO getOrderDTO(Integer id) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -120,6 +150,16 @@ public class OrderService {
         return transactionDTO;
     }
 
+    public List<OrderDTO> getAllOders() {
+        List<Order> listOrder = orderRepository.findAll();
+        List<OrderDTO> listOrderDTO = listOrder.stream()
+                .map(item -> convertDTO(item))
+                .collect(Collectors.toList());
+        Collections.sort(listOrderDTO, (o1, o2) -> o2.getCreateAt().compareTo(o1.getCreateAt()));
+
+        return listOrderDTO;
+    }
+
     public Page<Order> getOrdersByUser(Integer userId, String orderStateId, String sortBy, String sortOrder, int page,
             int size) {
         Sort sort = Sort.by(sortBy);
@@ -139,7 +179,7 @@ public class OrderService {
 
     }
 
-    public ReCheckoutReponseDTO reCheckout(Integer orderId) {
+    public ReCheckoutReponseDTO getRecheckout(Integer orderId) {
 
         OrderDTO order = getOrderDTO(orderId);
 
@@ -248,64 +288,11 @@ public class OrderService {
 
     }
 
-    // public Order reCreate(CheckoutRequestDTO checkoutDTO) {
+    public void updateRecheckout(Integer orderId) {
 
-    // Order order =
-    // orderRepository.findById(checkoutDTO.getOrderId()).orElse(null);
-    // if (checkoutDTO.getPaymentRequestDTO() == null) {
-    // order.setOrderState(orderStateRepository.findById("PENDING_APPROVAL").orElse(null));
-    // } else {
-    // order.setOrderState(orderStateRepository.findById("WAIT_PAYMENT").orElse(null));
-    // }
+        Order order = orderRepository.findById(orderId).orElse(null);
+        order.setUpdateAt(new Date());
 
-    // List<OrderItem> listOderItem = order.getOrderItems();
-    // long total = order.getTotal().longValue();
-    // PaymentMethod paymentMethod =
-    // paymentMethodRepository.findById(checkoutDTO.getPaymentMethod()).orElse(null);
-
-    // if (!checkoutDTO.getVoucher().equals("")) {
-    // Voucher voucher =
-    // voucherRepository.findByNameAndActiveIsTrue(checkoutDTO.getVoucher()).orElse(null);
-    // if (voucher != null) {
-    // long discount = (long) (total * (voucher.getSalePercent() / 100));
-    // total = total - discount;
-    // order.setVoucher(voucher);
-    // }
-    // }
-    // User user = userRepository.findById(checkoutDTO.getUserId()).orElse(null);
-    // Address address =
-    // addressRepository.findById(checkoutDTO.getAddressId()).orElse(null);
-
-    // order.setAddress(address);
-    // order.setUpdateAt(new Date());
-    // order.setPaymentMethod(paymentMethod);
-    // order.setTotal(BigInteger.valueOf(total));
-
-    // order.setUser(user);
-
-    // // System.out.println(order.toString());
-    // // order = orderRepository.findById(1).orElse(order);
-    // // System.out.println(order.getAddress().getReceiverName());
-    // order = orderRepository.save(order);
-    // return order;
-
-    // }
-
-    public Page<Order> getOders(String orderStateId, String sortBy, String sortOrder, int page, int size) {
-        Sort sort = Sort.by(sortBy);
-        if (sortOrder.equalsIgnoreCase("desc")) {
-            sort = sort.descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        if (orderStateId != null) {
-            OrderState orderState = orderStateRepository.findById(orderStateId).orElse(null);
-            if (orderState != null) {
-                return orderRepository.findByOrderStateId(orderStateId, pageable);
-            }
-        }
-
-        return orderRepository.findAll(pageable);
     }
 
     public boolean cancelOrder(Integer orderId, String note) {
@@ -336,7 +323,7 @@ public class OrderService {
                         ProductSize productSize = productSizeRepository.findById(orderItem.getProductSize().getId())
                                 .orElse(null);
                         if (productSize != null) {
-                            int quantityAfter = productSize.getAvailableQuantity() - orderItem.getQuantity();
+                            int quantityAfter = productSize.getQuantity() - orderItem.getQuantity();
                             quantityAfter = quantityAfter < 0 ? 0 : quantityAfter;
                             productSize.setQuantity(quantityAfter);
                             productSize.setUpdateAt(new Date());

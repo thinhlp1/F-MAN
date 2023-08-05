@@ -2,11 +2,63 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
 
 
     let checkoutResponse;
+    let total;
     let isBynow = false;
+    let isReCheckout = false;
 
 
     $scope.loadReCheckout = function () {
+        isReCheckout = true;
+        let orderId = $routeParams.orderId;
+        console.log(orderId);
 
+        let request = {
+            method: 'GET',
+            url: "/user/orders/recheckout/" + orderId,
+        };
+
+        $http(request).then(
+            function (response) {
+                console.log(response);
+                checkoutResponse = response.data;
+                $scope.listCartItem = response.data.order.listOrderItemDTO;
+                $scope.address = response.data.order.address;
+                document.getElementById("changeAddressGrp").remove()
+
+                $scope.listPaymentMethods = [
+                    response.data.order.paymentMethod
+                ];
+                $scope.selectPayment(response.data.order.paymentMethod.id)
+
+
+                if (response.data.order.voucher != null) {
+                    $scope.voucher = response.data.order.voucher.voucherCode;
+                    document.getElementById("btnApply").remove()
+                    document.getElementById("voucher").setAttribute("readonly")
+
+                } else {
+                    document.getElementById("voucherGrp").remove()
+                }
+
+                $scope.tempTotalStringVND = response.data.order.tempTotalStringVND;
+                $scope.totalStringVND = response.data.order.totalStringVND;
+                $scope.discountStringVND = response.data.order.discountStringVND;
+
+
+                // console.log($scope.address);
+            }
+        ).catch(function (error) {
+            console.log(error);
+            if (error.status == 500) {
+                Swal.fire({
+
+                    icon: 'error',
+                    title: 'Có lỗi xảy ra',
+                    text: 'Không thể thanh toán lại đơn này',
+                })
+            }
+
+        });
     }
 
     $scope.loadCheckout = function () {
@@ -76,6 +128,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
                 $scope.tempTotalStringVND = response.data.tempTotalStringVND;
                 $scope.totalStringVND = response.data.totalStringVND;
                 $scope.discountStringVND = response.data.discountStringVND;
+                total = response.data.total;
 
                 // console.log($scope.address);
             }
@@ -99,8 +152,10 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
         let path = $location.path();
         if (path.includes("re-checkout")) {
             console.log("re");
+            $scope.loadReCheckout();
 
         } else {
+            $scope.loadCheckout();
             console.log("norrmal");
         }
 
@@ -140,7 +195,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
         if (voucherCode === "" || voucherCode === undefined) {
             $scope.voucher_message = "Vui lòng nhập voucher";
         } else {
-            let total = checkoutResponse.total;
+
             let request = {
                 method: 'GET',
                 url: "/user/carts/apply-voucher" + "?voucher=" + voucherCode + "&total=" + total,
@@ -173,9 +228,52 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
 
 
 
+    $scope.reCheckout = function () {
+        let orderId = $routeParams.orderId;
 
+        let request = {
+            method: 'POST',
+            url: "/user/orders/recheckout/" + orderId,
+        };
+
+        $http(request).then(
+            function (response) {
+                console.log(response);
+                window.location.href = response.data.paymentReponse.url;
+
+            }
+        ).catch(function (response) {
+            console.log(response);
+            if (response.status == 500) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Không thể thanh toán đơn hàng này',
+                    text: response.data.paymentReponse.message,
+                })
+            }
+
+        });
+
+
+
+    }
 
     $scope.checkout = function () {
+
+        if (checkoutResponse === undefined) {
+            Swal.fire({
+                icon: 'error',
+                title: "Có lỗi xảy ra",
+                text: "Không thể thanh toán đơn hàng này",
+            })
+            return;
+        }
+
+        if (isReCheckout) {
+            $scope.reCheckout();
+            return;
+        }
+
         let voucherCode = "";
 
         if (isVoucherValid) {
@@ -197,7 +295,8 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
                     "quantity": $routeParams.quantity,
                 }
             ]
-        } else {
+        }
+        else {
             let listId = $routeParams.listCartItem;
             let listItemId = [];
             listItemId = listId.split(",");

@@ -12,10 +12,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
+    boolean existsByName(String name);
     List<Voucher> findByActiveOrderByCreateAtDesc(boolean active);
 
     Optional<Voucher> findByNameAndActiveIsTrue(String voucherName);
-    public Page<Voucher> findAllByActiveIsTrue(Pageable pageable);
+    List<Voucher> findAllByActiveIsTrue();
 
     Voucher findByIdAndActiveIsTrue(String id);
 

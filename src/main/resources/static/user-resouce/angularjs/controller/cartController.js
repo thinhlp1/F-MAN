@@ -77,6 +77,8 @@ app.controller('CartController', function ($scope, $http, $location) {
         const updatedCartJSON = JSON.stringify(cart);
 
         sessionStorage.setItem('cart', updatedCartJSON);
+        showCartQuantity();
+
     }
 
     $scope.decreaseItemQuantityById = function (id) {
@@ -147,16 +149,16 @@ app.controller('CartController', function ($scope, $http, $location) {
             const updatedCartJSON = JSON.stringify(cart);
             sessionStorage.setItem('cart', updatedCartJSON);
             $scope.loadCart();
-
+            showCartQuantity();
         }
     }
 
 
     // Đối tượng mục mới bạn muốn thêm vào danh sách (ví dụ)
-    // const newItem = { productId: "AQ4134-400", productSizeId: 14, quantity: 3 };
-    // const newItem2 = { productId: "DV4022-004", productSizeId: 3, quantity: 3 };
-    // addItemToCart(newItem2);
-    // addItemToCart(newItem);
+    const newItem = { productId: "AQ4134-400", productSizeId: 14, quantity: 3 };
+    const newItem2 = { productId: "DV4022-004", productSizeId: 3, quantity: 25 };
+    addItemToCart(newItem2);
+    addItemToCart(newItem);
     // decreaseItemQuantityById(4);
     // increaseItemQuantityById(4);
 
@@ -224,6 +226,7 @@ app.controller('CartController', function ($scope, $http, $location) {
         $http(request).then(
             function (response) {
                 $scope.listCartItem = response.data.listCartItems;
+                
                 $scope.totalPrice = response.data.totalStringVND;
                 setTimeout(function name(params) {
                     initCheckBox();

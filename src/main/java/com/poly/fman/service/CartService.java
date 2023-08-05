@@ -81,7 +81,7 @@ public class CartService {
             cartItemResponse.setProductSize(productSizeDTO);
 
             int quantity = cartItemRequest.getQuantity();
-            if (checkInStock(productSize.getAvailableQuantity(), quantity)) {
+            if (productSize.getAvailableQuantity() < quantity) {
                 quantity = productSize.getAvailableQuantity();
             }
 
@@ -303,17 +303,6 @@ public class CartService {
             return new SimpleReponseDTO("404", "Voucher không hợp lệ");
         }
         return new SimpleReponseDTO("404", "Voucher không hợp lệ");
-    }
-
-    public boolean checkInStock2(Integer cartItemId, int quantity) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
-        if (cartItem != null) {
-            int quantityInStock = cartItem.getProductSize().getAvailableQuantity();
-            if (quantity > quantityInStock) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean checkInStock(Integer productSizeId, int quantity) {

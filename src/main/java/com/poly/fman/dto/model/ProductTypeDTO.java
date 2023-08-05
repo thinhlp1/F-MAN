@@ -13,13 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductTypeDTO {
 
-	@NotNull(message = "{NotNull.productType.id}")
 	@NotBlank(message = "{NotBlank.productType.id}")
 	private String id;
 
 	private byte active;
 
-	@NotNull(message = "{NotNull.productType.name}")
 	@NotBlank(message = "{NotBlank.productType.name}")
 	private String name;
 }

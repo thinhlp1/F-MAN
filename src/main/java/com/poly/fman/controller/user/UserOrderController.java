@@ -71,6 +71,8 @@ public class UserOrderController {
         model.addAttribute("size", size);
         model.addAttribute("userId", userId);
 
+        System.out.println("OKEE");
+
         return "user/view/order/order_list";
     }
 
@@ -104,13 +106,45 @@ public class UserOrderController {
         }
     }
 
-    
-    @PostMapping("/recheckout/{orderId}")
+    @GetMapping("/recheckout/{orderId}")
     @ResponseBody
     public ResponseEntity<ResponseDTO> recheckout(@PathVariable("orderId") Integer orderId) {
         try {
-            ReCheckoutReponseDTO recheckoutReponseDTO = orderService.reCheckout(orderId);
+            ReCheckoutReponseDTO recheckoutReponseDTO = orderService.getRecheckout(orderId);
             return ResponseEntity.ok(recheckoutReponseDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Có lỗi xảy ra"));
+        }
+    }
+
+    @PostMapping("/recheckout/{orderId}")
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> confirmRecheckout(@PathVariable("orderId") Integer orderId) {
+        try {
+            OrderDTO orderDTO = orderService.getOrderDTO(orderId);
+            CheckoutPaymentReponse checkoutPaymentReponse = new CheckoutPaymentReponse();
+            PaymentReponse paymentReponse = new PaymentReponse();
+            try {
+                if (orderDTO.getPaymentMethod().getId().equals("VISA")) { // should be check bankCode
+                    paymentReponse = checkoutPaymentService.createPaymentVnpay("NCB",
+                            orderDTO.getTotal(), orderDTO.getId());
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                return ResponseEntity.ok(new SimpleReponseDTO("500", "Không thể thanh toán hóa đơn này"));
+            }
+            if (paymentReponse != null) {
+                checkoutPaymentReponse.setPaymentReponse(paymentReponse);
+                checkoutPaymentReponse
+                        .setOrderId(orderDTO.getId());
+
+            } else {
+                return ResponseEntity.ok(new SimpleReponseDTO("500", "Không thể thanh toán hóa đơn này"));
+
+            }
+
+            return ResponseEntity.ok(checkoutPaymentReponse);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Có lỗi xảy ra"));
@@ -177,6 +211,9 @@ public class UserOrderController {
         System.out.println(DateUtils.toDate(vnpPayDate, "yyyyMMddHHmmss"));
 
         Transaction transaction = checkoutPaymentService.createTransaction(transactionDTO);
+        orderService.updateRecheckout(orderId);
+            
+
         model.addAttribute("transaction", transaction);
         return "user/view/order/checkout_result";
     }

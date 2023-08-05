@@ -5,30 +5,30 @@
       <html class="no-js" lang="zxx">
 
 
-        <head>
-          <!-- Mobile Specific Meta -->
-          <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-          <!-- Author Meta -->
-          <meta content="CodePixar" name="author">
-          <!-- Meta Description -->
-          <meta content="" name="description">
-          <!-- Meta Keyword -->
-          <meta content="" name="keywords">
-          <!-- meta character set -->
-          <meta charset="UTF-8">
-          <!-- Site Title -->
-          <title>Thông Tin Tài Khoản</title>
-          <jsp:include page="${pageContext.request.contextPath}/views/user/abstract/css.jsp" />
-          <style>
-            .avatar {
-              width: 150px;
-              height: 150px;
-              border-radius: 50%;
-              background-size: cover;
-              background-position: center;
-            }
-          </style>
-        </head>
+      <head>
+        <!-- Mobile Specific Meta -->
+        <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+        <!-- Author Meta -->
+        <meta content="CodePixar" name="author">
+        <!-- Meta Description -->
+        <meta content="" name="description">
+        <!-- Meta Keyword -->
+        <meta content="" name="keywords">
+        <!-- meta character set -->
+        <meta charset="UTF-8">
+        <!-- Site Title -->
+        <title>Thông Tin Tài Khoản</title>
+        <jsp:include page="${pageContext.request.contextPath}/views/user/abstract/css.jsp" />
+        <style>
+          .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+          }
+        </style>
+      </head>
 
       <body>
         <!-- Start Header Area -->
@@ -114,7 +114,7 @@
                         <span class="card-title m-0">Địa chỉ mặc định:</span>
                         <p class="card-text text-dark">
                           <c:if test="${listAddressSize == 0}">
-                              <span class="text-dark font-weight-bold">Chưa nhập địa chỉ</span>
+                            <span class="text-dark font-weight-bold">Chưa nhập địa chỉ</span>
                           </c:if>
                           <c:if test="${listAddressSize > 0}">
                             Tên:

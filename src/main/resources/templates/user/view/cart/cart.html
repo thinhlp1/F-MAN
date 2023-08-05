@@ -87,7 +87,7 @@
                                     <!-- Hiển thị số lượng sản phẩm -->
                                     <div class="product_count">
                                         <input class="input-text qty" id="qty_{{item.productSize.id}}" maxlength="12"
-                                            ng-disabled="item.quantity <= 0" ng-model="item.quantity"
+                                            ng-disabled="item.quantity <= 0" ng-model="item.quantity" readonly
                                             value="{{item.quantity}}">
                                         <button class="increase items-count" id="quantityPopup_{{item.productSize.id}}"
                                             data-toggle="popover" data-content=""

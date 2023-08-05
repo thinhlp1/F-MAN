@@ -1,6 +1,8 @@
 package com.poly.fman.controller.admin;
 
+import com.poly.fman.dto.model.ProductTypeDTO;
 import com.poly.fman.dto.model.VoucherDTO;
+import com.poly.fman.entity.ProductType;
 import com.poly.fman.entity.Voucher;
 import com.poly.fman.service.VoucherService;
 import com.poly.fman.service.common.DateUtils;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,116 +22,86 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin("*")
 @Controller
 @AllArgsConstructor
-@RequestMapping("/admin/discounts")
 public class DiscountController {
-
     private final VoucherService voucherService;
 
-    @ModelAttribute("items")
-    public Page<Voucher> getListVoucher(
-            @RequestParam("p") Optional<Integer> p,
-            @RequestParam("field") Optional<String> field,
-            @RequestParam("state") Optional<String> state,
-            Model model) {
-        // Khởi tạo một đối tượng page
-        Page<Voucher> page;
-        // Và biến pageSize để render số lượng element trong 1 page
-        int pageSize = 5;
-        // Kiểm tra điều kiện nếu người dùng lọc theo những voucher không active
-        Pageable pageable = PageRequest.of(p.orElse(0), pageSize, Sort.by(field.orElse("createAt")).descending());
-        if (state.equals("upcommingVoucher")) {
-            Date currentDate = new Date(); // Lấy giá trị ngày hiện tại
-            DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00");
-            System.out.println("====Ngày hiện tại là: " + DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00"));
-            page = voucherService.getUpcomingVouchers(currentDate, pageable);
-        } else if (state.equals("outDatedVoucher")) {// Lọc ra các voucher hết hạn (endAt <= currentDate)
-            Date currentDate = new Date(); // Lấy giá trị ngày hiện tại
-            DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00");
-            System.out.println("====Ngày hiện tại là: " + DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00"));
-            page = voucherService.getExpiredVouchers(currentDate, pageable);
-        }
-        page = voucherService.getListVoucher(pageable);
-        model.addAttribute("field", field.orElse("createAt"));
-        model.addAttribute("state", state.orElse("")); // Bổ sung tham số state vào model
-        return page;
+    @GetMapping("/admin/discounts/list")
+    @ResponseBody
+    public ResponseEntity<List<Voucher>> getListVoucher() {
+        return ResponseEntity.ok(voucherService.getListVoucherActiveTrue());
     }
 
-    @GetMapping("/")
-    public String getDiscounts(@RequestParam("p") Optional<Integer> p,
-            @RequestParam("field") Optional<String> field,
-            @RequestParam("state") Optional<String> state, Model model) {
-        int pageSize = 5;
-        Pageable pageable = PageRequest.of(p.orElse(0), pageSize,
-                Sort.by(Sort.Direction.DESC, field.orElse("createAt")));
-        Page<Voucher> items = voucherService.getListVoucher(pageable);
-
-        model.addAttribute("items", items);
-        model.addAttribute("state", state.orElse(""));
+    @GetMapping("/admin/discounts/")
+    public String getDiscounts() {
         return "admin/layout/Discount/discount_list";
     }
 
-    @PostMapping("/")
-    public String getDiscountsFilterAndSort(@RequestParam("p") Optional<Integer> p,
-            @RequestParam("field") Optional<String> field,
-            @RequestParam("state") String state, Model model) {
-        int pageSize = 5;
-        Pageable pageable = PageRequest.of(p.orElse(0), pageSize,
-                Sort.by(Sort.Direction.DESC, field.orElse("createAt")));
-        Page<Voucher> items = null;
-        if (state.contains("upcommingVoucher")) {
-            Date currentDate = new Date(); // Lấy giá trị ngày hiện tại
-            DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00");
-            items = voucherService.getUpcomingVouchers(currentDate, pageable);
-        } else if (state.contains("outDatedVoucher")) {// Lọc ra các voucher hết hạn (endAt <= currentDate)
-            Date currentDate = new Date(); // Lấy giá trị ngày hiện tại
-            DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00");
-            items = voucherService.getExpiredVouchers(currentDate, pageable);
-        }
-
-        model.addAttribute("items", items);
-        return "admin/layout/Discount/discount_list";
-    }
-
-    @PostMapping("/filter")
-    public String getDiscountsFilter(@RequestParam(value = "state", defaultValue = "presentVoucher") String state,
-            @RequestParam(value = "p") Optional<Integer> p,
-            @RequestParam(value = "field") Optional<String> field,
-            Model model) {
-        int pageSize = 5;
-        Pageable pageable = PageRequest.of(p.orElse(0), pageSize,
-                Sort.by(Sort.Direction.DESC, field.orElse("createAt")));
-
-        Page<Voucher> items = null;
-        // Xử lý logic của bộ lọc dựa trên giá trị của state (upcommingVoucher hoặc
-        // outDatedVoucher)
-        if (state.equals("upcommingVoucher")) {
-            Date currentDate = new Date(); // Lấy giá trị ngày hiện tại
-            DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00");
-            System.out.println("====Ngày hiện tại là: " + DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00"));
-            items = voucherService.getUpcomingVouchers(currentDate, pageable);
-        } else if (state.equals("outDatedVoucher")) {// Lọc ra các voucher hết hạn (endAt <= currentDate)
-            Date currentDate = new Date(); // Lấy giá trị ngày hiện tại
-            DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00");
-            System.out.println("====Ngày hiện tại là: " + DateUtils.toString(currentDate, "yyyy-MM-dd HH:mm" + ":00"));
-            items = voucherService.getExpiredVouchers(currentDate, pageable);
-        }
-
-        // Thực hiện các xử lý khác và trả về kết quả
-        model.addAttribute("items", items);
-        model.addAttribute("field", field.orElse("createAt"));
-        model.addAttribute("state", state);
-        return "admin/layout/Discount/discount_list";
-    }
-
-    @GetMapping("/create")
-    public String createForm(Model model) {
-        Voucher voucher = new Voucher();
-        model.addAttribute("voucher", voucher);
+    @GetMapping("/admin/discounts/create")
+    public String createForm() {
         return "admin/layout/Discount/discount_add";
+    }
+
+    @GetMapping("/admin/discounts/update-form")
+    public String updateForm() {
+        return "admin/layout/Discount/discount_update";
+    }
+
+    @GetMapping("/admin/discounts/{id}")
+    @ResponseBody
+    public ResponseEntity<Voucher> getCategory(@PathVariable("id") int id) {
+        if (!voucherService.existVoucherById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(voucherService.getVoucherById(id));
+    }
+
+    @PostMapping("/admin/discounts/create")
+    public ResponseEntity<VoucherDTO> create(@RequestBody VoucherDTO voucherDTO) {
+
+        // Kiểm tra tên mã đã tồn tại
+//        String checkVoucher = voucherService.voucherIsExisted(voucherDTO.getName());
+//        if (checkVoucher != null) {
+//            if (checkVoucher.equals("voucherIsExisted")) {
+//                model.addAttribute("message", "Tên mã đã tồn tại");
+//                return "admin/layout/Discount/discount_add";
+//            }
+//        }
+
+//        if (result.hasErrors()) {
+//            return "admin/layout/Discount/discount_add";
+//        } else {
+//            voucher = voucherService.create(voucherDTO);
+//            model.addAttribute("voucher", voucher);
+//        }
+        if(voucherService.existVoucherByName(voucherDTO.getName())){
+            return ResponseEntity.badRequest().build();
+        }
+        voucherService.create(voucherDTO);
+        return ResponseEntity.ok(voucherDTO);
+    }
+
+    @PutMapping("/admin/discounts/{id}")
+    public ResponseEntity<VoucherDTO> updateVoucher(@PathVariable("id") int id, @RequestBody VoucherDTO voucherDto){
+        if(!voucherService.existVoucherById(id)){
+            ResponseEntity.notFound().build();
+        }
+        voucherService.update(voucherDto, id);
+        return ResponseEntity.ok(voucherDto);
+    }
+
+    @DeleteMapping("/admin/discounts/delete/{id}")
+    public ResponseEntity<Voucher> delete(@PathVariable("id") int id) {
+        if (!voucherService.existVoucherById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        voucherService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/update-form/{id}")
@@ -139,59 +112,38 @@ public class DiscountController {
         return "admin/layout/Discount/discount_update";
     }
 
-    @GetMapping("/details/{id}")
-    public String details() {
-        return "admin/layout/Discount/discount_details";
-    }
+//    @GetMapping("/details/{id}")
+//    public String details() {
+//        return "admin/layout/Discount/discount_details";
+//    }
 
-    @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int id) {
-        voucherService.delete(id);
-        return "redirect:/admin/discounts/";
-    }
+//    @PostMapping("/delete/{id}")
+//    public String delete(@PathVariable("id") int id) {
+//        voucherService.delete(id);
+//        return "redirect:/admin/discounts/";
+//    }
 
-    @PostMapping("/create")
-    public String create(@Validated @ModelAttribute("voucher") VoucherDTO voucherDTO, BindingResult result,
-            Model model) {
-        Voucher voucher = new Voucher();
+//
 
-        // Kiểm tra tên mã đã tồn tại
-        String checkVoucher = voucherService.voucherIsExisted(voucherDTO.getName());
-        if (checkVoucher != null) {
-            if (checkVoucher.equals("voucherIsExisted")) {
-                model.addAttribute("message", "Tên mã đã tồn tại");
-                return "admin/layout/Discount/discount_add";
-            }
-        }
-
-        if (result.hasErrors()) {
-            return "admin/layout/Discount/discount_add";
-        } else {
-            voucher = voucherService.create(voucherDTO);
-            model.addAttribute("voucher", voucher);
-        }
-        return "redirect:/admin/discounts/update-form/" + voucher.getId();
-    }
-
-    @PostMapping("/update/{id}")
-    public String update(@PathVariable("id") int id, @Validated @ModelAttribute("voucher") VoucherDTO voucherDTO,
-            BindingResult result, Model model) {
-
-        // Kiểm tra tên mã đã tồn tại
-        String checkVoucher = voucherService.voucherIsExisted(voucherDTO.getName());
-        if (checkVoucher != null) {
-            if (checkVoucher.equals("voucherIsExisted")) {
-                model.addAttribute("message", "Tên mã đã tồn tại");
-                return "admin/layout/Discount/discount_update";
-            }
-        }
-
-        if (result.hasErrors()) {
-            return "admin/layout/Discount/discount_update";
-        }
-        Voucher voucher = voucherService.update(voucherDTO, id);
-        model.addAttribute("voucher", voucher);
-
-        return "redirect:/admin/discounts/update-form/" + voucher.getId();
-    }
+//    @PostMapping("/update/{id}")
+//    public String update(@PathVariable("id") int id, @Validated @ModelAttribute("voucher") VoucherDTO voucherDTO,
+//            BindingResult result, Model model) {
+//
+//        // Kiểm tra tên mã đã tồn tại
+//        String checkVoucher = voucherService.voucherIsExisted(voucherDTO.getName());
+//        if (checkVoucher != null) {
+//            if (checkVoucher.equals("voucherIsExisted")) {
+//                model.addAttribute("message", "Tên mã đã tồn tại");
+//                return "admin/layout/Discount/discount_update";
+//            }
+//        }
+//
+//        if (result.hasErrors()) {
+//            return "admin/layout/Discount/discount_update";
+//        }
+//        Voucher voucher = voucherService.update(voucherDTO, id);
+//        model.addAttribute("voucher", voucher);
+//
+//        return "redirect:/admin/discounts/update-form/" + voucher.getId();
+//    }
 }

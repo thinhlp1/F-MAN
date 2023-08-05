@@ -74,23 +74,24 @@ app.config(function ($routeProvider) {
     // DISCOUNT
     .when("/discount", {
       templateUrl: "/admin/discounts/",
+      controller: "DiscountController"
     })
     .when("/discount-add", {
       templateUrl: "/admin/discounts/create",
+      controller: "DiscountController"
     })
-    .when("/discount-update/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/discounts/update-form/" + $routeParams.id;
-      },
+    .when("/discount-update", {
+      templateUrl: "/admin/discounts/update-form",
+      controller: "DiscountController"
     })
 
     // ORDER
     .when("/order", {
-      templateUrl: "/admin/orders/all",
+      templateUrl: "/admin/orders/",
     })
     .when("/order-detail/:id", {
       templateUrl: ($routeParams) => {
-        return "/admin/orders/details/" + $routeParams.id;
+        return "/admin/orders/view/details/" + $routeParams.id;
       },
     })
     .when("/order-approve", {

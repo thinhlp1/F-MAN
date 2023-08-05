@@ -32,7 +32,7 @@ public class Voucher implements Serializable {
 	private int id;
 
 	@Column(name = "active")
-	private boolean active;
+	private byte active;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_at")
