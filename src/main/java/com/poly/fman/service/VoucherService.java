@@ -1,6 +1,8 @@
 package com.poly.fman.service;
 
+import com.poly.fman.dto.model.ProductTypeDTO;
 import com.poly.fman.dto.model.VoucherDTO;
+import com.poly.fman.entity.ProductType;
 import com.poly.fman.entity.Voucher;
 import com.poly.fman.repository.VoucherRepository;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +24,7 @@ public class VoucherService {
     private ModelMapper modelMapper;
     private VoucherRepository voucherRepository;
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm";
+
     {
         new ModelMapper();
     }
@@ -30,14 +34,22 @@ public class VoucherService {
     // return list;
     // }
 
-    public Voucher getVoucher(int id) {
+    public Voucher getVoucherById(int id) {
         Voucher voucher = voucherRepository.findById(id).get();
         return voucher;
     }
 
-    public Page<Voucher> getListVoucher(Pageable pageable) {
-        Page<Voucher> page = voucherRepository.findAllByActiveIsTrue(pageable);
-        return page;
+    public boolean existVoucherById(int id) {
+        return voucherRepository.existsById(id);
+    }
+
+    public boolean existVoucherByName(String name) {
+        return voucherRepository.existsByName(name);
+    }
+
+    public List<Voucher> getListVoucherActiveTrue() {
+        List<Voucher> list = voucherRepository.findAllByActiveIsTrue();
+        return list;
     }
 
     public Page<Voucher> getUpcomingVouchers(Date currentDate, Pageable pageable) {
@@ -76,9 +88,11 @@ public class VoucherService {
         voucher.setEndAt(endDate);
         voucher.setCreateAt(new Date());
         voucher.setName(voucher.getName().toUpperCase());
-        voucher.setActive(true);
+        voucher.setActive((byte) 1);
         return voucherRepository.save(voucher);
     }
+
+
 
     public Voucher update(VoucherDTO voucherDTO, int id) {
         // Chuyển đổi LocalDateTime sang Date
@@ -88,7 +102,7 @@ public class VoucherService {
         DateTimeFormatter.ofPattern(DATE_FORMAT);
         Date startDate = Date.from(startAt.atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(endAt.atZone(ZoneId.systemDefault()).toInstant());
-        Voucher voucher = this.getVoucher(id);
+        Voucher voucher = this.getVoucherById(id);
         voucher.setName(voucherDTO.getName());
         voucher.setSalePercent(voucherDTO.getSalePercent());
         voucher.setMinPrice(voucherDTO.getMinPrice());
@@ -98,9 +112,15 @@ public class VoucherService {
         return voucherRepository.save(voucher);
     }
 
+//    public ProductType update(VoucherDTO voucherDto) {
+//        ProductType productType = modelMapper.map(productTypeDTO, ProductType.class);
+//        productType.setActive((byte) 1);
+//        return productTypeRespository.save(productType);
+//    }
+
     public Voucher delete(int id) {
-        Voucher voucher = this.getVoucher(id);
-        voucher.setActive(false);
+        Voucher voucher = this.getVoucherById(id);
+        voucher.setActive((byte)0);
         voucher.setDeleteAt(new Date());
         return voucherRepository.save(voucher);
     }
