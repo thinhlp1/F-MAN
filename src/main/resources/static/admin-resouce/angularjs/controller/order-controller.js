@@ -1,20 +1,43 @@
 app.controller(
     "OrderController",
-    function ($scope, $http, DataService, FormService, $routeParams) {
+    function ($scope, $http, DataService, $routeParams) {
         const ODER_URL = "http://localhost:8080/admin/orders";
         const ORDER_LIST_URL = `${ODER_URL}/list`;
+        const ORDER_APPROVE_LIST_URL = `${ODER_URL}/approve-list`;
+
         const ORDER_DETAILS_URL = `${ODER_URL}/details`;
 
 
         //Khởi tạo các biến toàn cục
         $scope.id = "";
         $scope.data = DataService.getData(); //Chứa danh sách tất cả đối tượng (Category)
-        $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
         $scope.order;
+        $scope.uri = "";
         /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
 
+        $scope.loadApproveList = () => {
+            return $http
+                .get(ORDER_APPROVE_LIST_URL)
+                .then((resp) => {
+                    console.log(resp);
+                    //Lấy dữ liệu từ server và gán vào DataService
+                    DataService.setData(resp.data);
+                    //Gán dữ liệu vào $scope.data trên biến toàn cục
+                    $scope.data = DataService.getData();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    notification(
+                        "ERROR " + err.status + ": Lỗi tải dữ liệu",
+                        3000,
+                        "right",
+                        "top",
+                        "error",
+                    );
+                });
+        };
+
         $scope.load = () => {
-            console.log(ORDER_LIST_URL);
             return $http
                 .get(ORDER_LIST_URL)
                 .then((resp) => {
@@ -154,13 +177,16 @@ app.controller(
 
 
         //Khởi tạo table GRIDJS
-        $scope.initGrid = () => {
+        $scope.initGrid = (data) => {
             //Kiểm tra có tồn tại thẻ gốc có id = 'grid' để đặt table hay không
             //Nếu tồn tại xóa tất cả element bên trong
+            console.log(data);
             const container = document.getElementById("grid");
+            container.innerHTML = "";
             if (container) {
                 while (container.firstChild) {
                     container.removeChild(container.firstChild);
+
                 }
 
                 // Khởi tạo Grid.js
@@ -203,6 +229,7 @@ app.controller(
                         {
                             id: "address",
                             name: "Địa chỉ",
+                            // with: 
                             data: (row) => row.address.receiverName + " - " + row.address.numberPhone + " - " + row.address.address,
                             sort: false
 
@@ -252,7 +279,7 @@ app.controller(
                                         "button",
                                         {
                                             className: "border-0 bg-transparent",
-                                            onClick: () => window.location = "/admin/index#!order-detail/" + `${row.cells[0].data}`
+                                            onClick: () => window.location = "/admin/index#!order-detail/" + $scope.uri + `${row.cells[0].data}`
                                         },
                                         gridjs.html('<i class="fa fa-eye" aria-hidden="true"></i>'),
                                     ),
@@ -262,7 +289,7 @@ app.controller(
 
                         },
                     ],
-                    data: $scope.data, //Data được truyền vào (JSON, ARRAY)
+                    data: data, //Data được truyền vào (JSON, ARRAY)
                     sort: true, //cho phép thêm plugin sắp xếp vào bảng
                     pagination: {
                         //cho phép thêm plugin phân trang vào bảng
@@ -294,15 +321,91 @@ app.controller(
                     },
                 }).render(container);
             }
+            // $scope.grid.render();
+            console.log($scope.grid);
         };
 
-        //updateTable dùng để cập nhật lại dữ liệu cho bảng GRIDJS mỗi khi thêm, sửa hoặc xóa
-        $scope.updateTable = (data) => {
-            // Cập nhật lại dữ liệu trên Grid.js
-            $scope.grid.config.plugin.remove("pagination");
-            $scope.grid.config.plugin.remove("search");
-            $scope.grid.updateConfig({ data: data }).forceRender();
-        };
+
+
+        $scope.insertFilterDataFilter = function (orderStateId) {
+            let taskBar = document.getElementsByClassName("gridjs-search").item(0);
+            // Tạo phần tử button với các thuộc tính và nội dung tương ứng
+            const dropdownSpan = document.createElement("span");
+            dropdownSpan.className = "dropdown";
+
+            const button = document.createElement("button");
+            button.className = "btn bg-transparent dropdown-toggle mx-4";
+            button.type = "button";
+            button.id = "btn-orderState";
+            button.setAttribute("data-bs-toggle", "dropdown");
+            button.setAttribute("aria-expanded", "false");
+            button.setAttribute("style", "padding: 9px 20px; background-color: #fff !important; border: 1px solid #d2d6dc");
+            button.innerHTML = "Trạng thái";
+
+            // Tạo phần tử ul (unordered list) với class "dropdown-menu"
+            const dropdownMenu = document.createElement("ul");
+            dropdownMenu.className = "dropdown-menu";
+            dropdownMenu.setAttribute("aria-labelledby", "sort");
+            dropdownMenu.style.margin = "0px";
+
+            // Tạo các phần tử li và a cho dropdownMenu
+            const createDropdownItem = (onClickFunction, text, value) => {
+                const li = document.createElement("li");
+                li.setAttribute("value", value)
+                const a = document.createElement("a");
+                a.className = "dropdown-item";
+
+                a.onclick = onClickFunction;
+                a.textContent = text;
+                li.appendChild(a);
+                return li;
+            };
+            const li = createDropdownItem(() => { filterOrdersByOrderStateId("ALL") }, "Tất cả", "ALL");
+
+            const li1 = createDropdownItem(() => { filterOrdersByOrderStateId("PENDING_APPROVAL") }, "Đang chờ duyệt", "PENDING_APPROVAL");
+            const li2 = createDropdownItem(() => { filterOrdersByOrderStateId("WAIT_PAYMENT") }, "Đang chờ thanh toán", "WAIT_PAYMENT");
+            const li3 = createDropdownItem(() => { filterOrdersByOrderStateId("ORDER_IS_SHIPPING") }, "Đang vận chuyển", "ORDER_IS_SHIPPING");
+            const li4 = createDropdownItem(() => { filterOrdersByOrderStateId("ORDER_CANCEL") }, "Đơn đã hủy", "ORDER_CANCEL");
+
+            // const li2 = createDropdownItem(()=>{filterOrdersByOrderStateId("ORDER_CANCEL")}, "Name");
+
+            // Thêm các phần tử li vào phần tử ul (dropdownMenu)
+            dropdownMenu.appendChild(li);
+
+            dropdownMenu.appendChild(li1);
+            dropdownMenu.appendChild(li2);
+
+            dropdownMenu.appendChild(li3);
+
+            dropdownMenu.appendChild(li4);
+
+
+            // Thêm các phần tử con vào dropdownSpan
+            dropdownSpan.appendChild(button);
+            dropdownSpan.appendChild(dropdownMenu);
+
+            dropdownMenu.setAttribute("value", orderStateId)
+
+
+            taskBar.append(dropdownSpan)
+
+
+        }
+
+
+        function filterOrdersByOrderStateId(orderStateId) {
+            // Sử dụng hàm filter để lọc các phần tử có id của orderState bằng với orderStateId cần tìm
+            let filteredOrders;
+            if (orderStateId === "ALL"){
+                filteredOrders = $scope.data;
+            }else{
+                filteredOrders = $scope.data.filter((order) => order.orderState.id === orderStateId);
+
+            }
+            // $scope.initGrid(filteredOrders)
+            $scope.updateTable(filteredOrders)
+            $scope.insertFilterDataFilter(orderStateId);
+        }
 
         function convertCurrencyStringToInteger(currencyString) {
             // Loại bỏ tất cả các ký tự không phải số từ chuỗi
@@ -321,11 +424,36 @@ app.controller(
             return new Date(`${year}-${month}-${day}T${hours}:${minutes}`);
         }
 
+        $scope.back = function () {
+            let uri = $routeParams.approve;
+            if (uri !== undefined) {
+                uri = "-" + uri.replace("/", "");
+            } else {
+                uri = "";
+            }
+            window.location = "/admin/index#!order" + uri
+        }
+        //updateTable dùng để cập nhật lại dữ liệu cho bảng GRIDJS mỗi khi thêm, sửa hoặc xóa
+        $scope.updateTable = (data) => {
+            // Cập nhật lại dữ liệu trên Grid.js
+            $scope.grid.config.plugin.remove("pagination");
+            $scope.grid.config.plugin.remove("search");
+            $scope.grid.updateConfig({ data: data }).forceRender();
+        };
+
+        $scope.loadAppList = function () {
+            $scope.uri = "approve/"
+            $scope.loadApproveList().then(() => {
+                $scope.initGrid($scope.data);
+            });
+            
+        }
 
         //Call Function
         $scope.loadList = function () {
             $scope.load().then(() => {
-                $scope.initGrid();
+                $scope.initGrid($scope.data);
+                $scope.insertFilterDataFilter();
             });
         }
     },

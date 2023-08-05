@@ -160,6 +160,16 @@ public class OrderService {
         return listOrderDTO;
     }
 
+     public List<OrderDTO> getApproveOrder() {
+        List<Order> listOrder = orderRepository.findAllByOrderStateId("PENDING_APPROVAL");
+        List<OrderDTO> listOrderDTO = listOrder.stream()
+                .map(item -> convertDTO(item))
+                .collect(Collectors.toList());
+        Collections.sort(listOrderDTO, (o1, o2) -> o2.getCreateAt().compareTo(o1.getCreateAt()));
+
+        return listOrderDTO;
+    }
+
     public Page<Order> getOrdersByUser(Integer userId, String orderStateId, String sortBy, String sortOrder, int page,
             int size) {
         Sort sort = Sort.by(sortBy);

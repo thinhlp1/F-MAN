@@ -89,7 +89,7 @@ app.config(function ($routeProvider) {
     .when("/order", {
       templateUrl: "/admin/orders/",
     })
-    .when("/order-detail/:id", {
+    .when("/order-detail/:approve?/:id", {
       templateUrl: ($routeParams) => {
         return "/admin/orders/view/details/" + $routeParams.id;
       },

@@ -33,6 +33,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     public Page<Order> findByOrderStateId( String orderStateId, Pageable pageable);
 
+    public List<Order> findAllByOrderStateId(String orderStateId);
+
     @Query("SELECT COUNT(o) FROM Order o WHERE o.updateAt >= :startDate AND o.updateAt <= :endDate AND o.orderState.id IN :orderStateIds")
     Long countOrdersByDateRangeAndStates(Date startDate, Date endDate, List<String> orderStateIds);
 
