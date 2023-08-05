@@ -27,7 +27,7 @@ public class CategoryController {
     private final ProductTypeService productTypeService;
     private final SessionService session;
     private final ParamService paramService;
-
+        
     @GetMapping("/admin/categorys/")
     public String viewListCategory() {
         return "admin/layout/Category/category-list";

@@ -2,6 +2,7 @@ package com.poly.fman.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,6 +82,35 @@ public class OrderService {
         return orderRepository.findById(id).orElse(null);
     }
 
+    public OrderDTO convertDTO(Order order) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        OrderDTO orderDTO = new OrderDTO();
+        List<OrderItem> listOderItem = order.getOrderItems();
+        List<OrderItemDTO> listOrderItemDTOs = new ArrayList();
+        listOrderItemDTOs = listOderItem.stream()
+                .map(item -> modelMapper.map(item, OrderItemDTO.class))
+                .collect(Collectors.toList());
+
+        Long tempTotal = (long) 0;
+        Long discount = (long) 0;
+
+        for (OrderItem orderItem : listOderItem) {
+            tempTotal += orderItem.getProduct().getPrice().intValue() * orderItem.getQuantity();
+        }
+
+        if (order.getVoucher() != null) {
+            discount = (long) (tempTotal * order.getVoucher().getSalePercent() / 100);
+        }
+
+        orderDTO = modelMapper.map(order, OrderDTO.class);
+        orderDTO.setTempTotal(tempTotal);
+        orderDTO.setDiscount(discount);
+        orderDTO.setListOrderItemDTO(listOrderItemDTOs);
+
+        return orderDTO;
+    }
+
     public OrderDTO getOrderDTO(Integer id) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -118,6 +148,16 @@ public class OrderService {
         }
         TransactionDTO transactionDTO = modelMapper.map(transaction, TransactionDTO.class);
         return transactionDTO;
+    }
+
+    public List<OrderDTO> getAllOders() {
+        List<Order> listOrder = orderRepository.findAll();
+        List<OrderDTO> listOrderDTO = listOrder.stream()
+                .map(item -> convertDTO(item))
+                .collect(Collectors.toList());
+        Collections.sort(listOrderDTO, (o1, o2) -> o2.getCreateAt().compareTo(o1.getCreateAt()));
+
+        return listOrderDTO;
     }
 
     public Page<Order> getOrdersByUser(Integer userId, String orderStateId, String sortBy, String sortOrder, int page,
@@ -255,23 +295,6 @@ public class OrderService {
 
     }
 
-    public Page<Order> getOders(String orderStateId, String sortBy, String sortOrder, int page, int size) {
-        Sort sort = Sort.by(sortBy);
-        if (sortOrder.equalsIgnoreCase("desc")) {
-            sort = sort.descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        if (orderStateId != null) {
-            OrderState orderState = orderStateRepository.findById(orderStateId).orElse(null);
-            if (orderState != null) {
-                return orderRepository.findByOrderStateId(orderStateId, pageable);
-            }
-        }
-
-        return orderRepository.findAll(pageable);
-    }
-
     public boolean cancelOrder(Integer orderId, String note) {
         Order order = orderRepository.findById(orderId).orElse(null);
         OrderState orderState = orderStateRepository.findById("ORDER_CANCEL").orElse(null);
@@ -300,7 +323,7 @@ public class OrderService {
                         ProductSize productSize = productSizeRepository.findById(orderItem.getProductSize().getId())
                                 .orElse(null);
                         if (productSize != null) {
-                            int quantityAfter = productSize.getAvailableQuantity() - orderItem.getQuantity();
+                            int quantityAfter = productSize.getQuantity() - orderItem.getQuantity();
                             quantityAfter = quantityAfter < 0 ? 0 : quantityAfter;
                             productSize.setQuantity(quantityAfter);
                             productSize.setUpdateAt(new Date());

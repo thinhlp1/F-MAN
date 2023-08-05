@@ -29,7 +29,13 @@ app.controller("LoginController", function ($scope, $http) {
             $http(request).then(
                 function (response) {
                     console.log("Đăng nhập thành công");
-                    window.location = "/home";
+                    console.log(response.data.roleAccess);
+                    if (response.data.roleAccess === "User"){
+                        
+                        window.location = "/home";
+                    }else{
+                        window.location = "/admin/index";
+                    }
 
                 }
             ).catch(function (response) {

@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.poly.fman.dto.model.OrderDTO;
+import com.poly.fman.dto.model.ResponseDTO;
 import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.entity.Order;
 import com.poly.fman.entity.OrderItem;
 import com.poly.fman.entity.OrderState;
+import com.poly.fman.entity.ProductType;
 import com.poly.fman.repository.OrderStateRepository;
 import com.poly.fman.service.OrderService;
 import com.poly.fman.service.common.CommonUtils;
@@ -38,32 +41,17 @@ public class OrderController {
     private final OrderStateRepository orderStateRepository;
     private final HttpSession httpSession;
 
-    @GetMapping("/all")
-    public String getOrders(Model model,
-            @RequestParam(required = false) String orderStateId,
-            @RequestParam(defaultValue = "createAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortOrder,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-//        Page<Order> orderPage = orderService.getOders(orderStateId, sortBy, sortOrder, page - 1, size);
-//        List<OrderState> orderStates = orderStateRepository.findAll();
-//        List<Order> listOrder = orderPage.getContent();
-//
-//        if (orderStateId == null || orderStateId.equals("")) {
-//            orderStateId = "ALL";
-//        }
-//
-//        model.addAttribute("orders", orderPage.getContent());
-//        model.addAttribute("currentPage", orderPage.getNumber());
-//        model.addAttribute("totalPages", orderPage.getTotalPages());
-//        model.addAttribute("orderStates", orderStates);
-//        model.addAttribute("sortBy", sortBy);
-//        model.addAttribute("orderStateId", orderStateId);
-//        model.addAttribute("sortOrder", sortOrder);
-//        model.addAttribute("size", size);
-
+    @GetMapping("/")
+    public String viewListOrder() {
         return "admin/layout/Order/order-list";
+    }
+
+    @GetMapping("/list")
+    @ResponseBody
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        List<OrderDTO> listOrder = orderService.getAllOders();
+
+        return ResponseEntity.ok(listOrder);
     }
 
     @GetMapping("/approve")
@@ -74,45 +62,44 @@ public class OrderController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-//        Page<Order> orderPage = orderService.getOders(orderStateId, sortBy, sortOrder, page - 1, size);
-//        List<OrderState> orderStates = orderStateRepository.findAll();
-//        List<Order> listOrder = orderPage.getContent();
-//
-//        if (orderStateId == null || orderStateId.equals("")) {
-//            orderStateId = "ALL";
-//        }
-//
-//        model.addAttribute("orders", orderPage.getContent());
-//        model.addAttribute("currentPage", orderPage.getNumber());
-//        model.addAttribute("totalPages", orderPage.getTotalPages());
-//        model.addAttribute("orderStates", orderStates);
-//        model.addAttribute("sortBy", sortBy);
-//        model.addAttribute("orderStateId", orderStateId);
-//        model.addAttribute("sortOrder", sortOrder);
-//        model.addAttribute("size", size);
+        // Page<Order> orderPage = orderService.getOders(orderStateId, sortBy,
+        // sortOrder, page - 1, size);
+        // List<OrderState> orderStates = orderStateRepository.findAll();
+        // List<Order> listOrder = orderPage.getContent();
+        //
+        // if (orderStateId == null || orderStateId.equals("")) {
+        // orderStateId = "ALL";
+        // }
+        //
+        // model.addAttribute("orders", orderPage.getContent());
+        // model.addAttribute("currentPage", orderPage.getNumber());
+        // model.addAttribute("totalPages", orderPage.getTotalPages());
+        // model.addAttribute("orderStates", orderStates);
+        // model.addAttribute("sortBy", sortBy);
+        // model.addAttribute("orderStateId", orderStateId);
+        // model.addAttribute("sortOrder", sortOrder);
+        // model.addAttribute("size", size);
 
         return "admin/layout/Order/order-approve";
     }
 
-    @GetMapping("/details/{orderId}")
-    public String getOrder(@PathVariable("orderId") Integer orderId, Model model) {
-//        Order order = orderService.getOrder(orderId);
-//
-//        List<OrderItem> listOderItem = order.getOrderItems();
-//        Long tempTotal = (long) 0;
-//        Long discount = (long) 0;
-//
-//        for (OrderItem orderItem : listOderItem) {
-//            tempTotal += orderItem.getProductPrice().intValue() * orderItem.getQuantity();
-//        }
-//
-//        if (order.getVoucher() != null) {
-//            discount = (long) (tempTotal * order.getVoucher().getSalePercent() / 100);
-//        }
-//        model.addAttribute("tempTotal", CommonUtils.convertToCurrencyString(tempTotal, " VNĐ"));
-//        model.addAttribute("discount", CommonUtils.convertToCurrencyString(discount, " VNĐ"));
-//        model.addAttribute("order", order);
+    @GetMapping("/view/details/{orderId}")
+    public String getOrderTemplate(@PathVariable("orderId") Integer orderId) {
+
         return "admin/layout/Order/order-details";
+    }
+
+    @GetMapping("/details/{orderId}")
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> getOrder(@PathVariable("orderId") Integer orderId) {
+        OrderDTO orderDTO = orderService.getOrderDTO(orderId);
+        if (orderDTO == null) {
+            return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Không thể xem chi tiết đơn hàng này"));
+
+        } else {
+            return ResponseEntity.ok(orderDTO);
+
+        }
     }
 
     @PostMapping("/approve/{orderId}")
@@ -121,24 +108,24 @@ public class OrderController {
 
         boolean rs = orderService.approveOrder(orderId);
 
-        if (rs){
-               return ResponseEntity.ok(new SimpleReponseDTO("200", "Approve success!"));
-        }else{
-               return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Approve Failed!"));
+        if (rs) {
+            return ResponseEntity.ok(new SimpleReponseDTO("200", "Đơn hàng đã được duyệt!"));
+        } else {
+            return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Đơn hàng duyệt không thành công!"));
         }
 
-     
     }
 
     @PostMapping("/cancel/{orderId}")
     @ResponseBody
-    public ResponseEntity<SimpleReponseDTO> cancelOrder(@PathVariable("orderId") Integer orderId,@RequestBody String note, Model model) {
-        boolean rs = orderService.cancelOrder(orderId,note);
+    public ResponseEntity<SimpleReponseDTO> cancelOrder(@PathVariable("orderId") Integer orderId,
+            @RequestBody String note, Model model) {
+        boolean rs = orderService.cancelOrder(orderId, note);
 
-       if (rs){
-               return ResponseEntity.ok(new SimpleReponseDTO("200", "Cancel success!"));
-        }else{
-               return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Cancel Failed!"));
+        if (rs) {
+            return ResponseEntity.ok(new SimpleReponseDTO("200", "Cancel success!"));
+        } else {
+            return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Cancel Failed!"));
         }
 
     }

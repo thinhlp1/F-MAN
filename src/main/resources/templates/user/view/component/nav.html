@@ -2,12 +2,10 @@
 
 
 
-<div th:fragment="nav"
-    th:with="userId=${session.userId == null} ? 0 : ${session.userId},  
-    cartQuantity=${session.cartQuantity == null} ? 0 : ${session.cartQuantity}">
+<div th:fragment="nav" th:with="userId=${session.userId == null} ? 0 : ${session.userId}">
 
 
-    <header class="header_area sticky-header">
+    <header class="header_area sticky-header" >
         <div class="main_menu">
             <nav class="navbar navbar-expand-lg navbar-light main_box">
                 <div class="container">
@@ -26,7 +24,7 @@
                         <ul class="nav navbar-nav menu_nav ml-auto">
                             <li class="nav-item"><a class="nav-link" th:href="@{/home}">Trang chủ </a></li>
                             <li class="nav-item"><a class="nav-link" th:href="@{/category/}">Danh mục</a></li>
-                            
+
                             <!-- <li class="nav-item"><p class="nav-link" th:text="${#httpServletRequest.getCookies().token.value}
                                 " ></p></li> -->
                             <th:block th:if="${userId == 0}">
@@ -39,7 +37,7 @@
                                 <li class="nav-item">
                                     <a th:href="@{/auth/account#!register}" class="nav-link">Đăng kí</a>
                                 </li>
-                             
+
                             </th:block>
                             <th:block th:if="${userId != 0}">
                                 <li class="nav-item">
@@ -62,7 +60,7 @@
                                         <span class=""><img style="height: 20px !important"
                                                 th:src="@{/user-resouce/img/bag.png}" alt=""></span>
                                         <p class="position-absolute bg-danger rounded-circle text-center text-white"
-                                            id="cartQuantity" th:text="${cartQuantity}"
+                                            id="cartQuantity" 
                                             style="width: 18px; height: 18px; top: -12px; right: -13px; vertical-align: center; font-size: 14px">
                                         </p>
                                     </a>
@@ -88,7 +86,24 @@
             </div>
         </div>
     </header>
+    <script>
 
+        let cartQuantity;
+        let cartQuantityElm = document.getElementById("cartQuantity")
+        const cartJSON = sessionStorage.getItem('cart');
+        if (!cartJSON) {
+            cartQuantity = 0;
+        } else {
+            let cart = JSON.parse(cartJSON);
+            if (cart.listCartItem) {
+                cartQuantity = cart.listCartItem.length;
+            } else {
+                cartQuantity = 0;
+
+            }
+        }
+        cartQuantityElm.innerHTML = cartQuantity;
+    </script>
 </div>
 
 </html>

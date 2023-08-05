@@ -62,10 +62,10 @@ public class OrderDTO implements ModelDTO,ResponseDTO {
     }
 
     public String getCreateAtString() {
-        return DateUtils.toString(createAt, "dd/mm/yyyy HH:mm");
+        return DateUtils.toString(createAt, "dd/MM/yyyy HH:mm");
     }
 
     public String getUpdateAtString() {
-        return DateUtils.toString(updateAt, "dd/mm/yyyy HH:mm");
+        return DateUtils.toString(updateAt, "dd/MM/yyyy HH:mm");
     }
 }
