@@ -87,11 +87,11 @@ app.config(function ($routeProvider) {
 
     // ORDER
     .when("/order", {
-      templateUrl: "/admin/orders/all",
+      templateUrl: "/admin/orders/",
     })
     .when("/order-detail/:id", {
       templateUrl: ($routeParams) => {
-        return "/admin/orders/details/" + $routeParams.id;
+        return "/admin/orders/view/details/" + $routeParams.id;
       },
     })
     .when("/order-approve", {

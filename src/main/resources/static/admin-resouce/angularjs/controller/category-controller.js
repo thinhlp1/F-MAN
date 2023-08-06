@@ -1,6 +1,14 @@
 app.controller(
   "CategoryController",
-  function ($scope, $http, DataService, FormService, $location, $timeout) {
+  function (
+    $scope,
+    $http,
+    DataService,
+    FormService,
+    ErrorService,
+    $location,
+    $timeout,
+  ) {
     const CATEGORY_URL = "http://localhost:8080/admin/categorys";
     const CATEGORY_LIST_URL = `${CATEGORY_URL}/list`;
 
@@ -8,6 +16,7 @@ app.controller(
     $scope.id = "";
     $scope.data = DataService.getData(); //Chứa danh sách tất cả đối tượng (Category)
     $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
+    $scope.errors = ErrorService.getError();
     /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
 
     $scope.reset = () => {
@@ -65,11 +74,14 @@ app.controller(
         .post(CATEGORY_URL + "/create", category)
         .then((resp) => {
           $scope.data.push(category);
+          $scope.errors = {};
           notification("Thêm thành công", 3000, "right", "top", "success");
           console.log("Thêm thành công", resp);
         })
         .catch((err) => {
           console.log(err);
+          ErrorService.setError(err.data.errors);
+          $scope.errors = ErrorService.getError();
           notification(
             "ERROR " + err.status + ": Thêm thất bại",
             3000,
@@ -142,11 +154,10 @@ app.controller(
         // Khởi tạo Grid.js
         $scope.grid = new gridjs.Grid({
           /*
-                                                                                                     - column là table header chứa tất cả các cột của bảng
-                                                                                                     - @: id: map với key của đối tượng json trả về
-                                                                                                     - @: name: tên cột sẽ hiển thị ra view
-                                                                                                    */
-
+                   - column là table header chứa tất cả các cột của bảng
+                   - @: id: map với key của đối tượng json trả về
+                   - @: name: tên cột sẽ hiển thị ra view
+                  */
           columns: [
             {
               id: "id",
@@ -177,7 +188,7 @@ app.controller(
                 //cell là ô hiện tại
 
                 //tạo ra một thẻ div ở cột 'Action' dùng để chưa 3 nút (Edit, Delete, View)
-                // gridjs.h() là khởi tạo một element, 3 tham số chủ yếu (tên thẻ, {className, event}, tội dung thẻ)
+                // gridjs.h() là khởi tạo một element, 3 tham số chủ yếu (tên thẻ, {className, event}, nội dung thẻ)
                 //Tham số thứ nhất là tên thẻ
                 //Tham số thứ hai là một đối tượng chứa attribute và event
                 //Tham số thứ ba là nội dung của thẻ ở vd dưới nội dung là một thẻ i lồng vào button

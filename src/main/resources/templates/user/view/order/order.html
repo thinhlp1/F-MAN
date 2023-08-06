@@ -173,7 +173,7 @@
                                 </a>
                             </div>
                             <div th:if="${order.orderState.id eq 'WAIT_PAYMENT'}">
-                                <a id="btn-cancel" th:href="@{/user/carts/recheckout/__${orderId}__}"
+                                <a id="btn-cancel" th:href="@{/user/carts/#!/re-checkout/__${orderId}__}"
                                     class="btn ms-3 text-white mr-3"
                                     style="background: rgb(255, 162, 0); color: white;">Tiếp tục thanh toán</a>
                             </div>
