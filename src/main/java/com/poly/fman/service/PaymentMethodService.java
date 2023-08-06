@@ -24,7 +24,7 @@ public class PaymentMethodService {
         new ModelMapper();
     }
 
-    public PaymentMethod getPayment(String id) {
+    public PaymentMethod getPaymentById(String id) {
         PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id);
         return payment;
     }
@@ -42,7 +42,7 @@ public class PaymentMethodService {
 
     public String paymentIsExisted(String id, String name, String account_number) {
         PaymentMethod payment;
-        payment = this.getPayment(id);
+        payment = this.getPaymentById(id);
         // if(payment == null) {
         //     payment = this.paymentRepositry.findByName(name).orElse(null);
         //     if(payment == null){
@@ -73,16 +73,15 @@ public class PaymentMethodService {
     }
 
     public PaymentMethod update(PaymentMethodDTO paymentDTO, String id) {
-        PaymentMethod payment = this.getPayment(id);
+        PaymentMethod payment = this.getPaymentById(id);
         payment.setName(paymentDTO.getName());
         payment.setImage(paymentDTO.getImage());
         payment.setAccount_number(paymentDTO.getAccount_number());
-        payment.setActive(paymentDTO.getActive());
         return paymentRepositry.save(payment);
     }
 
     public PaymentMethod delete(String id) {
-        PaymentMethod payment = this.getPayment(id);
+        PaymentMethod payment = this.getPaymentById(id);
         payment.setActive((byte) 0);
         return paymentRepositry.save(payment);
     }

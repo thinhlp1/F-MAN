@@ -1,5 +1,7 @@
+
+
 app.controller("PaymentMethodController",
-    function ($scope, $http, DataService, FormService, $location, $timeout) {
+    function ($scope, $http, DataService, FormService, ErrorService, $location, $timeout) {
         const PAYMENT_URL = "http://localhost:8080/admin/payments";
         const PAYMENT_LIST_URL = `${PAYMENT_URL}/list`;
 
@@ -14,23 +16,24 @@ app.controller("PaymentMethodController",
             $scope.form = {};
         };
 
-        $scope.getImage  = () => {
-            const imageUrl = '/images/viec-lam-tai-huyen-tri-ton-an-giang-3.jpg'; // Thay đổi tên file hình ảnh tùy theo yêu cầu của bạn
-
-            return $http.get(imageUrl, { responseType: 'arraybuffer' })
-                .then((response) => {
-                    const imageBlob = new Blob([response.data], { type: 'image/jpeg' });
-                    const imageUrl = URL.createObjectURL(imageBlob);
-                    $scope.image = imageUrl;
-                })
-                .catch((error) => {
-                    console.error(error);
-                    // Xử lý lỗi nếu cần thiết
-                    $scope.error = 'Error loading image';
-                });
-        };
+        // $scope.getImage  = () => {
+        //     const imageUrl = '/images/viec-lam-tai-huyen-tri-ton-an-giang-3.jpg'; // Thay đổi tên file hình ảnh tùy theo yêu cầu của bạn
+        //
+        //     return $http.get(imageUrl, { responseType: 'arraybuffer' })
+        //         .then((response) => {
+        //             const imageBlob = new Blob([response.data], { type: 'image/jpeg' });
+        //             const imageUrl = URL.createObjectURL(imageBlob);
+        //             $scope.image = imageUrl;
+        //         })
+        //         .catch((error) => {
+        //             console.error(error);
+        //             // Xử lý lỗi nếu cần thiết
+        //             $scope.error = 'Error loading image';
+        //             console.log($scope.error)
+        //         });
+        // };
         // Gọi hàm để lấy hình ảnh khi controller được khởi tạo
-        $scope.getImage();
+        // $scope.getImage();
         $scope.load = () => {
             return $http
                 .get(PAYMENT_LIST_URL)
@@ -65,7 +68,7 @@ app.controller("PaymentMethodController",
 
                 $timeout(() => {
                     $scope.isLoading = false; // Đánh dấu là phần xử lý bất đồng bộ đã hoàn thành
-                    $location.path("/discount-update");
+                    $location.path("/payment-update");
                 });
             } catch (err) {
                 console.log(err);
@@ -80,29 +83,35 @@ app.controller("PaymentMethodController",
         };
 
         $scope.update = () => {
-            var item = angular.copy($scope.form);
+            var fileInput = document.getElementById("imgInp");
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append('photo_file', file);
+            formData.append('payment_id', $scope.form.id);
+            formData.append('payment_name', $scope.form.name);
+            formData.append('card_number', $scope.form.account_number);
             const url = `${PAYMENT_URL}/${$scope.form.id}`;
-            $http
-                .put(url, item)
-                .then((resp) => {
-                    var index = $scope.data.findIndex(
-                        (item) => item.id === $scope.form.id,
-                    );
-                    $scope.data[index] = resp.data;
-                    $scope.load();
-                    console.log(resp.data);
-                    notification("Cập nhật thành công", 3000, "right", "top", "success");
-                })
-                .catch((err) => {
-                    notification(
-                        "ERROR " + err.status + ": Cập nhật thất bại",
-                        3000,
-                        "right",
-                        "top",
-                        "error",
-                    );
-                    console.log(err);
-                });
+            $http.put(url, formData, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).then((resp) => {
+                var index = $scope.data.findIndex(
+                    (item) => item.id === $scope.form.id,
+                );
+                $scope.data[index] = resp.data;
+                $scope.load();
+                console.log(resp.data);
+                notification("Cập nhật thành công", 3000, "right", "top", "success");
+            }).catch((err) => {
+                notification(
+                    "ERROR " + err.status + ": Cập nhật thất bại",
+                    3000,
+                    "right",
+                    "top",
+                    "error",
+                );
+                console.log(err);
+            });
         };
         //
         $scope.delete = (id) => {
@@ -155,9 +164,10 @@ app.controller("PaymentMethodController",
                             id: "image",
                             name: "Hình Ảnh",
                             formatter: (cell) => {
-                                const imagesPath = "src\\main\\resources\\static\\admin-resouce\\plugins\\images";
-                                const imageUrl = imagesPath + cell;
-                                return `<img src="${imageUrl}" alt="Hình ảnh" style="max-width: 100px; max-height: 100px;" />`;
+                                const url = "../../../admin-resouce/plugins/images/" + cell;
+                                return gridjs.html(
+                                    `<img src="${url}" style="width: 100px; height: 100px">`,
+                                );
                             }
                         },
                         {
@@ -287,8 +297,6 @@ app.controller("PaymentMethodController",
         $scope.create = () => {
             var fileInput = document.getElementById("imgInp");
             var file = fileInput.files[0];
-            // var payment = angular.copy($scope.form);
-
             var formData = new FormData();
             formData.append('photo_file', file);
             formData.append('payment_id', $scope.form.id);
@@ -302,7 +310,7 @@ app.controller("PaymentMethodController",
 
             $http.post(PAYMENT_URL + "/create", formData, {
                 transformRequest: angular.identity,
-                headers: { 'Content-Type': undefined }
+                headers: {'Content-Type': undefined}
             }).then((resp) => {
                 $scope.data.push(resp.data);
                 notification("Thêm thành công", 3000, "right", "top", "success");

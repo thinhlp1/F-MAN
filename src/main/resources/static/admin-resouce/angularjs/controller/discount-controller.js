@@ -1,5 +1,5 @@
 app.controller("DiscountController",
-    function ($scope, $http, DataService, FormService, $location, $timeout) {
+    function ($scope, $http, DataService, FormService,ErrorService, $location, $timeout) {
         const DISCOUNT_URL = "http://localhost:8080/admin/discounts";
         const DISCOUNT_LIST_URL = `${DISCOUNT_URL}/list`;
 
@@ -7,6 +7,8 @@ app.controller("DiscountController",
         $scope.id = "";
         $scope.data = DataService.getData(); //Chứa danh sách tất cả đối tượng (Discount)
         $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
+
+        $scope.errors = ErrorService.getError();
         /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
 
 
@@ -76,13 +78,41 @@ app.controller("DiscountController",
                         (item) => item.id === $scope.form.id,
                     );
                     $scope.data[index] = resp.data;
+                    $scope.errors = {};
                     $scope.load();
                     console.log(resp.data);
                     notification("Cập nhật thành công", 3000, "right", "top", "success");
                 })
                 .catch((err) => {
+                    ErrorService.setError(err.data.errors);
+                    $scope.errors = ErrorService.getError();
                     notification(
                         "ERROR " + err.status + ": Cập nhật thất bại",
+                        3000,
+                        "right",
+                        "top",
+                        "error",
+                    );
+                    console.log(err);
+                });
+        };
+
+        $scope.restore = () => {
+            const url = `${DISCOUNT_URL}/restore/${$scope.form.id}`;
+            $http
+                .put(url)
+                .then((resp) => {
+                    var index = $scope.data.findIndex(
+                        (item) => item.id === $scope.form.id,
+                    );
+                    $scope.data[index] = resp.data;
+                    $scope.load();
+                    console.log(resp.data);
+                    notification("Hoàn tác thành công", 3000, "right", "top", "success");
+                })
+                .catch((err) => {
+                    notification(
+                        "ERROR " + err.status + ": Hoàn tác thất bại",
                         3000,
                         "right",
                         "top",
@@ -338,11 +368,14 @@ app.controller("DiscountController",
                 .post(DISCOUNT_URL + "/create", voucher)
                 .then((resp) => {
                     $scope.data.push(voucher);
+                    $scope.errors = {};
                     notification("Thêm thành công", 3000, "right", "top", "success");
                     console.log("Thêm thành công", resp);
                 })
                 .catch((err) => {
                     console.log(err);
+                    ErrorService.setError(err.data.errors);
+                    $scope.errors = ErrorService.getError();
                     notification(
                         "ERROR " + err.status + ": Thêm thất bại",
                         3000,
@@ -360,8 +393,6 @@ app.controller("DiscountController",
             $scope.grid.config.plugin.remove("search");
             $scope.grid.updateConfig({ data: data }).forceRender();
         };
-
-
 
         //Call Function
         $scope.load().then(() => {
