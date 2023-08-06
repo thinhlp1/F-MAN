@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The persistent class for the payment_method database table.
  * 
@@ -35,6 +37,7 @@ public class PaymentMethod implements Serializable {
 	private String account_number;
 
 	// bi-directional many-to-one association to Order
+	
 	@OneToMany(mappedBy = "paymentMethod")
 	private List<Order> orders;
 

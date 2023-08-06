@@ -25,7 +25,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,11 +37,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import java.util.Optional;
 
+
+@CrossOrigin("*")
 @Controller
 @AllArgsConstructor
 @RequestMapping("/admin/products")
@@ -60,6 +62,12 @@ public class ProductController {
 		return "admin/layout/Product/product-list";
 	}
 
+	@GetMapping("/list") 
+	@ResponseBody
+	public ResponseEntity<List<Product>> getAllProduct() {
+		return ResponseEntity.ok(productService.getAllActive());	
+	}
+	
 //	@ModelAttribute("items")
 //	public Page<Product> getList(
 //			@RequestParam("p") Optional<Integer> p,

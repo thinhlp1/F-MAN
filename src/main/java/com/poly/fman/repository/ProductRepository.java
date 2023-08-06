@@ -13,11 +13,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.poly.fman.entity.Product;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+
 
 public interface ProductRepository extends JpaRepository<Product, String> {
 
     public Optional<Page<Product>> findAllByActiveIsTrue(Pageable pageable);
+
+public Optional<List<Product>> findAllByActiveIsTrue();
 
     public Optional<Page<Product>> findAllByActiveIsFalse(Pageable pageable);
 
