@@ -119,9 +119,11 @@ app.config(function ($routeProvider) {
     // PAYMENT
     .when("/payment", {
       templateUrl: "/admin/payments/",
+      controller: "PaymentMethodController"
     })
     .when("/payment-add", {
       templateUrl: "/admin/payments/create",
+      controller: "PaymentMethodController"
     })
     .when("/payment-update/:id", {
       templateUrl: ($routeParams) => {

@@ -12,6 +12,8 @@ import com.poly.fman.repository.PaymentMethodRepository;
 
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class PaymentMethodService {
@@ -23,18 +25,19 @@ public class PaymentMethodService {
     }
 
     public PaymentMethod getPayment(String id) {
-        PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id).orElse(null);
+        PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id);
         return payment;
     }
 
     public PaymentMethodDTO getPaymentDTO(String id) {
-        PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id).orElse(null);
+        PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id);
         PaymentMethodDTO paymentDTO = modelMapper.map(payment, PaymentMethodDTO.class);
         return paymentDTO;
     }
 
-    public Page<PaymentMethod> getListPayment(Pageable pageable) {
-        return paymentRepositry.findAllByActiveIsTrue(pageable).orElse(null);
+    public List<PaymentMethod> getListPayment() {
+        List<PaymentMethod> list = paymentRepositry.findAllByActiveIsTrue();
+        return list;
     }
 
     public String paymentIsExisted(String id, String name, String account_number) {
@@ -59,8 +62,13 @@ public class PaymentMethodService {
         return null;
     }
 
+    public boolean existPaymentById(String id) {
+        return paymentRepositry.existsById(id);
+    }
+
     public PaymentMethod create(PaymentMethodDTO paymentDTO) {
         PaymentMethod payment = modelMapper.map(paymentDTO, PaymentMethod.class);
+        payment.setActive((byte) 1);
         return paymentRepositry.save(payment);
     }
 

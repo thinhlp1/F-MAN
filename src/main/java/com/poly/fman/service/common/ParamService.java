@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +22,7 @@ public class ParamService {
 
     @Autowired
     HttpServletRequest request;
+
 
     /**
      * Đọc chuỗi giá trị của tham số
@@ -125,7 +128,28 @@ public class ParamService {
 			file.transferTo(saveFile);
 			return saveFile.getName();
 		} catch (Exception e) {
+            e.printStackTrace();
 			throw new RuntimeException();
 		}
 	}
+
+    public String saveSpringBootUpdated(MultipartFile file, String path) {
+
+        // Lấy đường dẫn tới thư mục hiện tại của ứng dụng
+        String currentWorkingDir = System.getProperty("user.dir");
+
+        // Tạo đối tượng File từ đường dẫn tương đối
+        File dir = new File(currentWorkingDir, path);
+        if(!dir.exists()) {
+            dir.mkdir();
+        }
+        try {
+            File saveFile = new File(dir, file.getOriginalFilename());
+            file.transferTo(saveFile);
+            return saveFile.getName();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
 }
