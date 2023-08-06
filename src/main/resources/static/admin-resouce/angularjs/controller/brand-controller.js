@@ -81,7 +81,7 @@ app.controller(
         })
         .catch((err) => {
           console.log(err);
-          ErrorService.setError(err.data.errors);
+          ErrorService.setError(err.data.errors); 
           $scope.errors = ErrorService.getError();
           notification(
             "ERROR " + err.status + ": Thêm thất bại",

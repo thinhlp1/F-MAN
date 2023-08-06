@@ -7,6 +7,8 @@ import com.poly.fman.entity.Voucher;
 import com.poly.fman.service.VoucherService;
 import com.poly.fman.service.common.DateUtils;
 
+import com.poly.fman.service.common.SessionService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -30,6 +32,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class DiscountController {
     private final VoucherService voucherService;
+
+    private final SessionService session;
 
     @GetMapping("/admin/discounts/list")
     @ResponseBody
@@ -62,7 +66,7 @@ public class DiscountController {
     }
 
     @PostMapping("/admin/discounts/create")
-    public ResponseEntity<VoucherDTO> create(@RequestBody VoucherDTO voucherDTO) {
+    public ResponseEntity<VoucherDTO> create(@RequestBody @Valid VoucherDTO voucherDTO) {
 
         // Kiểm tra tên mã đã tồn tại
 //        String checkVoucher = voucherService.voucherIsExisted(voucherDTO.getName());
@@ -104,46 +108,12 @@ public class DiscountController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/update-form/{id}")
-    public String updateForm(@PathVariable("id") int id, Model model) {
-//        Voucher voucher = voucherService.getVoucher(id);
-//        System.out.println("=======> Đây là id của voucher: " + voucher.getId());
-//        model.addAttribute("voucher", voucher);
-        return "admin/layout/Discount/discount_update";
+    @GetMapping("/admin/discounts/restore/{id}")
+    public String restore(@PathVariable("id") int id) {
+        voucherService.restore(id);
+        session.set("isRestore", true);
+        return "redirect:/admin/discounts/";
     }
 
-//    @GetMapping("/details/{id}")
-//    public String details() {
-//        return "admin/layout/Discount/discount_details";
-//    }
 
-//    @PostMapping("/delete/{id}")
-//    public String delete(@PathVariable("id") int id) {
-//        voucherService.delete(id);
-//        return "redirect:/admin/discounts/";
-//    }
-
-//
-
-//    @PostMapping("/update/{id}")
-//    public String update(@PathVariable("id") int id, @Validated @ModelAttribute("voucher") VoucherDTO voucherDTO,
-//            BindingResult result, Model model) {
-//
-//        // Kiểm tra tên mã đã tồn tại
-//        String checkVoucher = voucherService.voucherIsExisted(voucherDTO.getName());
-//        if (checkVoucher != null) {
-//            if (checkVoucher.equals("voucherIsExisted")) {
-//                model.addAttribute("message", "Tên mã đã tồn tại");
-//                return "admin/layout/Discount/discount_update";
-//            }
-//        }
-//
-//        if (result.hasErrors()) {
-//            return "admin/layout/Discount/discount_update";
-//        }
-//        Voucher voucher = voucherService.update(voucherDTO, id);
-//        model.addAttribute("voucher", voucher);
-//
-//        return "redirect:/admin/discounts/update-form/" + voucher.getId();
-//    }
 }

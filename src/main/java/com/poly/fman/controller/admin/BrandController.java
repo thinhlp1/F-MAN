@@ -81,7 +81,12 @@ public class BrandController {
             System.out.println("Tồn tại");
             return ResponseEntity.badRequest().build();
         }
-        brandService.create(brand);
+        try {
+              brandService.create(brand);
+        } catch (Exception e) {
+           System.out.println("lõi " + e);
+        }
+      
         return ResponseEntity.ok(brand);
     }
 

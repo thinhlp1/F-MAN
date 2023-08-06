@@ -12,9 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BrandDTO implements ModelDTO {
+
+
 	@NotBlank(message = "{NotBlank.brand.id}")
 	private String id;
+	
 	private byte active;
+
+
 	@NotBlank(message = "{NotBlank.brand.name}")
 	private String name;
 	
