@@ -1,10 +1,3 @@
-<!--<c:if test="${isCreateFasle}">-->
-<!--    <div id="show-alert" class="alert alert-warning alert-dismissible fade show sticky-top"-->
-<!--         role="alert">-->
-<!--        <strong>Fail!</strong> Size đã tồn tại! Vui lòng thử lại size khác!-->
-<!--        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
-<!--    </div>-->
-<!--</c:if>-->
 <div class="back mb-3">
     <a class="btn btn-blue-primary" href="#!size">
         <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
@@ -12,46 +5,50 @@
     </a>
 </div>
 <div class="row">
-    <form action="" method="post">
+    <form ng-submit="create()">
         <div class="col-12">
             <div class="row">
                 <div class="col-6">
                     <div class="form-floating mb-3">
-                        <input type="text" path="id" class="form-control" id="size_id" maxlength="6"
+                        <input type="text" ng-model="form.id" class="form-control" id="size_id" maxlength="6"
                                     placeholder="Nhập ID"/>
                         <label for="size_id">ID (VD: SIZE35, SIZE36,...)</label>
+                        <span class="text-danger">{{errors.id}}</span>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-floating mb-3">
-                        <input type="number" path="size" class="form-control" step="0.5" id="size" maxlength="3"
+                        <input type="number" ng-model="form.size" class="form-control" step="0.5" id="size" maxlength="3"
                                     placeholder="Nhập size"/>
                         <label for="size">Size (VD: 40, 41, 42,...)</label>
+                        <span class="text-danger">{{errors.size}}</span>
                     </div>
                 </div>
 
                 <div class="col-6">
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
-                            <input type="number" path="length" class="form-control" id="size_dai" maxlength="3"
+                            <input type="number" ng-model="form.length" class="form-control" id="size_dai" maxlength="3"
                                         placeholder="Nhập chiều dài"/>
                             <label for="size_dai">Chiều dài <sup>(cm)</sup></label>
+                            <span class="text-danger">{{errors.length}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
-                            <input type="number" path="width" class="form-control" id="size_rong" maxlength="3"
+                            <input type="number" ng-model="form.width" class="form-control" id="size_rong" maxlength="3"
                                         placeholder="Nhập chiều rộng"/>
                             <label for="size_rong">Chiều rộng <sup>(cm)</sup></label>
+                            <span class="text-danger">{{errors.width}}</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-12 text-end">
-            <button class="btn btn-blue-primary btn-lg">
+            <button class="btn btn-blue-primary btn-lg" type="submit">
                 Tạo
             </button>
         </div>

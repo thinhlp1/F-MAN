@@ -1,5 +1,5 @@
 app.controller(
-  "CategoryController",
+  "SizeController",
   function (
     $scope,
     $http,
@@ -9,8 +9,8 @@ app.controller(
     $location,
     $timeout,
   ) {
-    const CATEGORY_URL = "http://localhost:8080/admin/categorys";
-    const CATEGORY_LIST_URL = `${CATEGORY_URL}/list`;
+    const SIZE_URL = "http://localhost:8080/admin/sizes";
+    const SIZE_LIST_URL = `${SIZE_URL}/list`;
 
     //Khởi tạo các biến toàn cục
     $scope.id = "";
@@ -26,7 +26,7 @@ app.controller(
 
     $scope.load = () => {
       return $http
-        .get(CATEGORY_LIST_URL)
+        .get(SIZE_LIST_URL)
         .then((resp) => {
           //Lấy dữ liệu từ server và gán vào DataService
           DataService.setData(resp.data);
@@ -48,7 +48,7 @@ app.controller(
     $scope.edit = async (id) => {
       $scope.isLoading = true; // Đánh dấu là phần xử lý bất đồng bộ đang được thực hiện
       try {
-        const resp = await $http.get(CATEGORY_URL + "/" + id);
+        const resp = await $http.get(SIZE_URL + "/" + id);
         FormService.setForm(resp.data);
         $scope.form = FormService.getForm();
         console.log($scope.form);
@@ -69,12 +69,14 @@ app.controller(
     };
 
     $scope.create = () => {
-      var category = angular.copy($scope.form);
+      const size = angular.copy($scope.form);
+      console.log(size);
       $http
-        .post(CATEGORY_URL + "/create", category)
+        .post(SIZE_URL + "/create", size)
         .then((resp) => {
-          $scope.data.push(category);
-          $scope.errors = {};
+          $scope.data.push(size);
+          ErrorService.setError({});
+          $scope.errors = ErrorService.getError();
           notification("Thêm thành công", 3000, "right", "top", "success");
           console.log("Thêm thành công", resp);
         })
@@ -101,7 +103,8 @@ app.controller(
           var index = $scope.data.findIndex(
             (item) => item.id === $scope.form.id,
           );
-          $scope.errors = {};
+          ErrorService.setError({});
+          $scope.errors = ErrorService.getError();
           $scope.data[index] = resp.data;
           $scope.load();
           console.log(resp.data);
@@ -122,8 +125,8 @@ app.controller(
     };
 
     $scope.delete = (id) => {
-      $("#category").modal("hide");
-      const url = `${CATEGORY_URL}/delete/` + id;
+      $("#size").modal("hide");
+      const url = `${SIZE_URL}/delete/` + id;
       $http
         .delete(url)
         .then((resp) => {
@@ -157,18 +160,32 @@ app.controller(
         // Khởi tạo Grid.js
         $scope.grid = new gridjs.Grid({
           /*
-                   - column là table header chứa tất cả các cột của bảng
-                   - @: id: map với key của đối tượng json trả về
-                   - @: name: tên cột sẽ hiển thị ra view
-                  */
+           - column là table header chứa tất cả các cột của bảng
+           - @: id: map với key của đối tượng json trả về
+           - @: name: tên cột sẽ hiển thị ra view
+          */
           columns: [
             {
               id: "id",
               name: "ID",
             },
             {
-              id: "name",
-              name: "Tên Thương Hiệu",
+              id: "size",
+              name: "Size",
+            },
+            {
+              id: "length",
+              name: "Chiều dài",
+              formatter: (cell) => {
+                return gridjs.html(cell + "<sub> cm</sub>");
+              },
+            },
+            {
+              id: "width",
+              name: "Chiều rộng",
+              formatter: (cell) => {
+                return gridjs.html(cell + "<sub> cm</sub>");
+              },
             },
             {
               id: "active",
@@ -227,7 +244,7 @@ app.controller(
                           console.log($scope.id);
                           //Xử lí khi click vào thì gọi thằng modal ra
                           //Modal nằm ở bên trang html
-                          $("#category").modal("show");
+                          $("#size").modal("show");
                         });
                       },
                     },

@@ -1,6 +1,8 @@
 package com.poly.fman.controller.admin;
 
 import com.poly.fman.dto.model.ProductTypeDTO;
+import com.poly.fman.dto.model.ResponseDTO;
+import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.entity.ProductType;
 import com.poly.fman.service.ProductTypeService;
 import com.poly.fman.service.common.ParamService;
@@ -31,7 +33,7 @@ public class CategoryController {
     private final ProductTypeService productTypeService;
     private final SessionService session;
     private final ParamService paramService;
-        
+
     @GetMapping("/admin/categorys/")
     public String viewListCategory() {
         return "admin/layout/Category/category-list";
@@ -53,16 +55,14 @@ public class CategoryController {
     }
 
     @GetMapping("/admin/categorys/create")
-    public String createForm(Model model) {
-        model.addAttribute("category", new ProductTypeDTO());
+    public String createForm() {
         return "admin/layout/Category/category-add";
     }
 
     @PostMapping("/admin/categorys/create")
-    public ResponseEntity<ProductTypeDTO> create(@RequestBody @Valid ProductTypeDTO productType) {
+    public ResponseEntity<ResponseDTO> create(@RequestBody @Valid ProductTypeDTO productType) {
         if (productTypeService.existProductTypeById(productType.getId())) {
-            System.out.println("Tồn tại");
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Danh mục này đã tồn tại"));
         }
         productTypeService.create(productType);
         return ResponseEntity.ok(productType);
@@ -74,10 +74,7 @@ public class CategoryController {
     }
 
     @PutMapping("/admin/categorys/{id}")
-    public ResponseEntity<ProductTypeDTO> updateCategory(@PathVariable("id") String id, @RequestBody ProductTypeDTO productType) {
-        if (!productTypeService.existProductTypeById(id)) {
-            ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ResponseDTO> updateCategory(@PathVariable("id") String id,@Valid @RequestBody ProductTypeDTO productType) {
         productTypeService.update(productType);
         return ResponseEntity.ok(productType);
     }

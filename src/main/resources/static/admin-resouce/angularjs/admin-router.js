@@ -61,28 +61,31 @@ app.config(function ($routeProvider) {
     // SIZE
     .when("/size", {
       templateUrl: "/admin/sizes/",
+      controller: "SizeController",
     })
     .when("/size-add", {
       templateUrl: "/admin/sizes/create",
+      controller: "SizeController",
     })
     .when("/size-update/:id", {
       templateUrl: ($routeParams) => {
         return "/admin/sizes/update-form/" + $routeParams.id;
       },
+      controller: "SizeController",
     })
 
     // DISCOUNT
     .when("/discount", {
       templateUrl: "/admin/discounts/",
-      controller: "DiscountController"
+      controller: "DiscountController",
     })
     .when("/discount-add", {
       templateUrl: "/admin/discounts/create",
-      controller: "DiscountController"
+      controller: "DiscountController",
     })
     .when("/discount-update", {
       templateUrl: "/admin/discounts/update-form",
-      controller: "DiscountController"
+      controller: "DiscountController",
     })
 
     // ORDER

@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SizeDTO implements ModelDTO, ResponseDTO {
 
-	@NotNull(message = "{NotNull.size.id}")
 	@NotBlank(message = "{NotBlank.size.id}")
 	private String id;
 
