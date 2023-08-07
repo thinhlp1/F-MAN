@@ -1,6 +1,8 @@
 package com.poly.fman.entity;
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +38,7 @@ public class PaymentMethod implements Serializable {
 
 	// bi-directional many-to-one association to Order
 	@OneToMany(mappedBy = "paymentMethod")
+	@JsonIgnore
 	private List<Order> orders;
 
 	public List<Order> getOrders() {

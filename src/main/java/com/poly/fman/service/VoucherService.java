@@ -124,4 +124,10 @@ public class VoucherService {
         voucher.setDeleteAt(new Date());
         return voucherRepository.save(voucher);
     }
+
+    public Voucher restore(int id) {
+        Voucher voucher = this.getVoucherById(id);
+        voucher.setActive((byte) 1);
+        return voucherRepository.save(voucher);
+    }
 }

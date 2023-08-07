@@ -12,6 +12,8 @@ import com.poly.fman.repository.PaymentMethodRepository;
 
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class PaymentMethodService {
@@ -22,24 +24,25 @@ public class PaymentMethodService {
         new ModelMapper();
     }
 
-    public PaymentMethod getPayment(String id) {
-        PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id).orElse(null);
+    public PaymentMethod getPaymentById(String id) {
+        PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id);
         return payment;
     }
 
     public PaymentMethodDTO getPaymentDTO(String id) {
-        PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id).orElse(null);
+        PaymentMethod payment = paymentRepositry.findByIdAndActiveIsTrue(id);
         PaymentMethodDTO paymentDTO = modelMapper.map(payment, PaymentMethodDTO.class);
         return paymentDTO;
     }
 
-    public Page<PaymentMethod> getListPayment(Pageable pageable) {
-        return paymentRepositry.findAllByActiveIsTrue(pageable).orElse(null);
+    public List<PaymentMethod> getListPayment() {
+        List<PaymentMethod> list = paymentRepositry.findAllByActiveIsTrue();
+        return list;
     }
 
     public String paymentIsExisted(String id, String name, String account_number) {
         PaymentMethod payment;
-        payment = this.getPayment(id);
+        payment = this.getPaymentById(id);
         // if(payment == null) {
         //     payment = this.paymentRepositry.findByName(name).orElse(null);
         //     if(payment == null){
@@ -59,22 +62,26 @@ public class PaymentMethodService {
         return null;
     }
 
+    public boolean existPaymentById(String id) {
+        return paymentRepositry.existsById(id);
+    }
+
     public PaymentMethod create(PaymentMethodDTO paymentDTO) {
         PaymentMethod payment = modelMapper.map(paymentDTO, PaymentMethod.class);
+        payment.setActive((byte) 1);
         return paymentRepositry.save(payment);
     }
 
     public PaymentMethod update(PaymentMethodDTO paymentDTO, String id) {
-        PaymentMethod payment = this.getPayment(id);
+        PaymentMethod payment = this.getPaymentById(id);
         payment.setName(paymentDTO.getName());
         payment.setImage(paymentDTO.getImage());
         payment.setAccount_number(paymentDTO.getAccount_number());
-        payment.setActive(paymentDTO.getActive());
         return paymentRepositry.save(payment);
     }
 
     public PaymentMethod delete(String id) {
-        PaymentMethod payment = this.getPayment(id);
+        PaymentMethod payment = this.getPaymentById(id);
         payment.setActive((byte) 0);
         return paymentRepositry.save(payment);
     }

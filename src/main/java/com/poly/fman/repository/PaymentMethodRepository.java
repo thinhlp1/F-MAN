@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param;
 import com.poly.fman.entity.PaymentMethod;
 
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, String> {
-    public Optional<Page<PaymentMethod>> findAllByActiveIsTrue(Pageable pageable);
 
     public Optional<PaymentMethod> findByName(String name);
 
@@ -21,7 +20,7 @@ public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, St
     //         "WHERE pm.account_number LIKE ?1 AND pm.active = ?2 ")
     // public PaymentMethod findPaymentAccountNumber(String accountNumber, Byte number);
 
-    public Optional<PaymentMethod> findByIdAndActiveIsTrue(String id);
+    public PaymentMethod findByIdAndActiveIsTrue(String id);
 
     public List<PaymentMethod> findAllByActiveIsTrue();
 }

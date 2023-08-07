@@ -4,8 +4,7 @@
         Quay lại
     </a>
 </div>
-<form action=""
-      method="post" enctype="multipart/form-data">
+<form enctype="multipart/form-data">
     <div class="row">
         <div id="imgDialog" class="col-4 mb-3">
             <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
@@ -13,31 +12,16 @@
                      src=""/>
                 <i id="icon-upload" class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
                    aria-hidden="true"></i>
-                <input accept="image/*" type="file" id="imgInp" hidden="hidden" name="photo_file"/>
+                <input accept="image/*" type="file" id="imgInp" name="photo_file"/>
             </div>
         </div>
-        <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
-        <script>
-            document.getElementById("imgDialog").onclick = (e) => {
-                document.getElementById("imgInp").click();
-            };
-            imgInp.onchange = (evt) => {
-                const [file] = imgInp.files;
-                if (file) {
-                    blah.src = URL.createObjectURL(file);
-                    console.log(file.name);
-                    document.getElementById("icon-upload").remove();
-                    document.getElementById("image-box").style.border = "none";
-                }
-            };
-        </script>
         <div class="col-8">
             <div class="row">
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="payment_id" placeholder="${payment.id}"
-                                   path="id" readonly="true"/>
+                                   ng-model="form.id" readonly="true"/>
                             <label for="payment_id">ID</label>
                         </div>
                     </div>
@@ -45,29 +29,29 @@
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="payment_name" placeholder="${payment.name}"
-                               path="name"/>
+                               ng-model="form.name"/>
                         <label for="payment_name">Tên phương thức</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="card_number"
-                               placeholder="${payment.account_number}" path="account_number"/>
+                               placeholder="${payment.account_number}" ng-model="form.account_number"/>
                         <label for="card_number">Số tài khoản</label>
                     </div>
                 </div>
-                <div class="col-12">
-                    <label class="form-label">Trạng thái</label>
-                    <div class="form-check form-switch ms-3">
-                        <input type="checkbox" class="form-check-input" id="active" path="active" value="1"/>
-                        <label class="form-check-label" for="active">Hoạt động</label>
-                    </div>
-                </div>
+<!--                <div class="col-12">-->
+<!--                    <label class="form-label">Trạng thái</label>-->
+<!--                    <div class="form-check form-switch ms-3">-->
+<!--                        <input type="checkbox" class="form-check-input" id="active" ng-model="form.active" value="1"/>-->
+<!--                        <label class="form-check-label" for="active">Hoạt động</label>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
 
         <div class="col-12 text-end">
-            <button class="btn btn-blue-primary btn-lg">Cập Nhật</button>
+            <button class="btn btn-blue-primary btn-lg" ng-click="update()">Cập Nhật</button>
         </div>
     </div>
 </form>

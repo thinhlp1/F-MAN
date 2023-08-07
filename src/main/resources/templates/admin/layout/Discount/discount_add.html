@@ -10,14 +10,16 @@
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="name" ng-model="form.name"/>
                 <label for="name">Tên mã giảm giá</label>
+                <span class="text-danger">{{errors.name}}</span>
             </div>
         </div>
         <div class="col-6">
             <div class="form-floating mb-3">
                 <div class="form-floating mb-3">
                     <input minlength="1" maxlength="3" type="number" class="form-control" id="sale_percent"
-                           ng-model="form.salePercent"/>
+                           ng-model="form.salePercent" step="0.5"/>
                     <label for="sale_percent">Phần trăm giảm giá</label>
+                    <span class="text-danger">{{errors.salePercent}}</span>
                 </div>
             </div>
         </div>
@@ -26,6 +28,7 @@
                 <div class="form-floating mb-3">
                     <input type="datetime-local" class="form-control" id="start-date" ng-model="form.startAt"/>
                     <label for="start-date">Ngày bắt đầu</label>
+                    <span class="text-danger">{{errors.startAt}}</span>
                 </div>
             </div>
         </div>
@@ -34,6 +37,7 @@
                 <div class="form-floating mb-3">
                     <input type="datetime-local" class="form-control" id="end-date" ng-model="form.endAt"/>
                     <label for="end-date">Ngày kết thúc</label>
+                    <span class="text-danger">{{errors.endAt}}</span>
                 </div>
             </div>
         </div>
@@ -43,6 +47,7 @@
                     <div class="form-floating mb-3">
                         <input type="number" class="form-control" id="min-price" ng-model="form.minPrice"/>
                         <label for="min-price">Giá thấp nhất</label>
+                        <span class="text-danger">{{errors.minPrice}}</span>
                     </div>
                 </div>
             </div>
