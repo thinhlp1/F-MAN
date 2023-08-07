@@ -118,7 +118,7 @@ app.controller('CartController', function ($scope, $http, $location) {
                 };
                 $http(request).then(
                     function (response) {
-                        cart.listCartItem[cartItemIndex].quantity += 1;
+                        cart.listCartItem[cartItemIndex].quantity = parseInt(   cart.listCartItem[cartItemIndex].quantity) + 1;
 
                         const updatedCartJSON = JSON.stringify(cart);
                         sessionStorage.setItem('cart', updatedCartJSON);

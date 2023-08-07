@@ -12,37 +12,54 @@ app.config(function ($routeProvider) {
     // PRODUCT
     .when("/product", {
       templateUrl: "/admin/products/",
+      controller: "productController",
+
     })
     .when("/product-add", {
       templateUrl: "/admin/products/create",
+      controller: "productController",
+
     })
     .when("/product-update/:id", {
       templateUrl: ($routeParams) => {
         return "/admin/products/update-form/" + $routeParams.id;
       },
+      controller: "productController",
+
     })
     .when("/product-detail/:id", {
       templateUrl: ($routeParams) => {
         return "/admin/products/details/" + $routeParams.id;
       },
+      controller: "productController",
+
     })
 
     // BRAND
     .when("/brand", {
       templateUrl: "/admin/brands/",
+      controller: "brandController",
+
     })
     .when("/brand-add", {
       templateUrl: "/admin/brands/create",
+      controller: "brandController",
+
     })
     .when("/brand-update/:id", {
       templateUrl: ($routeParams) => {
         return "/admin/brands/update-form/" + $routeParams.id;
+        
       },
+      controller: "brandController",
+
     })
     .when("/brand-detail/:id", {
       templateUrl: ($routeParams) => {
         return "/admin/brands/details/" + $routeParams.id;
       },
+      controller: "brandController",
+
     })
     
 
@@ -64,14 +81,20 @@ app.config(function ($routeProvider) {
     // SIZE
     .when("/size", {
       templateUrl: "/admin/sizes/",
+      controller: "SizeController",
+
     })
     .when("/size-add", {
       templateUrl: "/admin/sizes/create",
+      controller: "SizeController",
+
     })
     .when("/size-update/:id", {
       templateUrl: ($routeParams) => {
         return "/admin/sizes/update-form/" + $routeParams.id;
       },
+      controller: "SizeController",
+
     })
 
     // DISCOUNT
@@ -91,14 +114,20 @@ app.config(function ($routeProvider) {
         // ORDER
         .when("/order", {
             templateUrl: "/admin/orders/",
+            controller: "OrderController",
+
         })
         .when("/order-detail/:approve?/:id", {
             templateUrl: ($routeParams) => {
                 return "/admin/orders/view/details/" + $routeParams.id;
             },
+            controller: "OrderController",
+
         })
         .when("/order-approve", {
             templateUrl: "/admin/orders/approve",
+            controller: "OrderController",
+
         })
 
         // USER
@@ -133,17 +162,21 @@ app.config(function ($routeProvider) {
         })
 
         // ANALYSIS
-        .when("/analysis-date", {
-            templateUrl: "/admin/analysis/date",
-        })
+     
         .when("/analysis-revenue", {
             templateUrl: "/admin/analysis/view/revenue",
+            // controller: "AnalysisRevenueController",
+
         })
         .when("/analysis-orders", {
             templateUrl: "/admin/analysis/view/order",
+            // controller: "AnalysisOrderController",
+
         })
         .when("/analysis-sellProducts", {
             templateUrl: "/admin/analysis/view/sellProducts",
+            // controller: "AnalysisProductController",
+
         });
 
 });
