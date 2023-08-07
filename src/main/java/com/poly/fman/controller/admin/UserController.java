@@ -1,31 +1,40 @@
 package com.poly.fman.controller.admin;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.poly.fman.dto.model.BrandDTO;
+import com.poly.fman.dto.model.RoleDTO;
+import com.poly.fman.dto.model.UserDTO;
 import com.poly.fman.dto.model.UserDTO2;
+import com.poly.fman.entity.Brand;
+import com.poly.fman.entity.Role;
 import com.poly.fman.entity.User;
+import com.poly.fman.repository.RoleRepository;
 import com.poly.fman.service.UserService;
 import com.poly.fman.service.common.DateUtils;
 import com.poly.fman.service.common.ParamService;
 
 import lombok.AllArgsConstructor;
 
+@CrossOrigin("*")
 @Controller
 @AllArgsConstructor
 @RequestMapping("/admin/users")
@@ -34,120 +43,118 @@ public class UserController {
     private final UserService userService;
     private final ParamService paramService;
 
-    @ModelAttribute("items")
-    public Page<User> getListVoucher(
-            @RequestParam("p") Optional<Integer> p,
-            @RequestParam("field") Optional<String> field,
-            Model model) {
-        // Khởi tạo một đối tượng page
-        Page<User> page;
-        // Và biến pageSize để render số lượng element trong 1 page
-        int pageSize = 5;
-        // Kiểm tra điều kiện nếu người dùng lọc theo những voucher không active
-        Pageable pageable = PageRequest.of(p.orElse(0), pageSize, Sort.by(field.orElse("createAt")).descending());
-        page = userService.getListUser(pageable);
-        model.addAttribute("field", field.orElse("createAt"));
-        return page;
+   @GetMapping("/")
+    public String getUsers(){
+        return "admin/layout/User/user_list";
     }
 
-    @GetMapping("/")
-    public String getUsers(Model model) {
-        UserDTO2 userDTO = new UserDTO2();
-        model.addAttribute("user", userDTO);
-        return "admin/layout/User/user_list";
+	  @GetMapping("/list")
+	  @ResponseBody
+    public ResponseEntity<List<User>> getUsersAll(){
+		return ResponseEntity.ok(userService.getAllActive());       
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<User> getUser(@PathVariable("id") int id) {
+        if (!userService.existUserById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @GetMapping("/create")
     public String createForm(Model model) {
-        UserDTO2 userDTO = new UserDTO2();
-        System.out.println("=======>Đây là user dto id : " + userDTO.getRoleId());
-        model.addAttribute("user", userDTO);
+        model.addAttribute("user", new UserDTO());
         return "admin/layout/User/user_add";
     }
 
-    @GetMapping("/update-form/{username}")
-    public String updateForm(@PathVariable("username") String username, Model model) {
-//        UserDTO2 userDTO = userService.getUserDTO(username);
-//        model.addAttribute("user", userDTO);
+    @PostMapping("/create")
+    public ResponseEntity<UserDTO2> create(@RequestParam("photo_file") MultipartFile photoFile,
+                                                   @RequestParam("name") String name,
+                                                   @RequestParam("password") String password,
+                                                   @RequestParam("email") String email,
+                                                   @RequestParam("numberPhone") String numberPhone,
+                                                   @RequestParam("active") boolean activeUser,
+                                                   @RequestParam("roleId") String roleId
+                                                   ) {
+   try {
+            //   Save file ảnh vào thư mục images
+            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+
+            // Thêm phương thức thanh toán vào cơ sở dữ liệu
+            UserDTO2 userDTO = new UserDTO2();
+            userDTO.setName(name);
+            userDTO.setUsername(email);
+            userDTO.setEmail(email);
+            userDTO.setImage(photoFile.getOriginalFilename());
+            userDTO.setActive(activeUser);
+            userDTO.setNumberPhone(numberPhone);
+            userDTO.setCreateAt(new Date());
+            userDTO.setPassword(password);
+            userDTO.setRoleId(roleId);
+              // Kiểm tra xem usser đã tồn tại hay chưa
+            if (!userService.exstUserByEmail(email) || !userService.exstUserByPhoneNumber(numberPhone)) {
+                  ResponseEntity.notFound().build();
+            }         
+            userService.create(userDTO);
+
+            // Trả về đối tượng phương thức thanh toán đã được thêm
+            return ResponseEntity.ok(userDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+    @GetMapping("/update-form")
+    public String updateForm() {
         return "admin/layout/User/user_update";
     }
 
-    @GetMapping("/details/{username}")
-    public String details(@PathVariable("username") String username, Model model) {
-//        UserDTO2 userDTO = this.userService.getUserDTO(username);
-//        String createDate = DateUtils.toString(userDTO.getCreateAt(), "dd/MM/yyyy HH:mm:ss");
-//
-//        if (userDTO.getUpdateAt() != null) {
-//            String updateDate = DateUtils.toString(userDTO.getUpdateAt(), "dd/MM/yyyy HH:mm:ss");
-//            model.addAttribute("updateDate", updateDate);
-//        }
-//        model.addAttribute("createDate", createDate);
-//
-//        model.addAttribute("user", userDTO);
-        return "admin/layout/User/user_details";
-    }
-
-    @PostMapping("/delete/{username}")
-    public String delete(@PathVariable("username") String username) {
-        userService.delete(username);
-        return "redirect:/admin/users/";
-    }
-
-    @PostMapping("/create")
-    public String create(@Validated @ModelAttribute("user") UserDTO2 userDTO, BindingResult result,
-            @RequestParam("photo_file") MultipartFile img,
-            Model model) {
-        // Kiểm tra tên đăng nhập, email, số điện thoại đã tồn tại
-        String checkUser = userService.userIsExisted(userDTO.getUsername(), userDTO.getEmail(),
-                userDTO.getNumberPhone());
-        if (checkUser != null) {
-            if (checkUser.equals("usernameIsExisted")) {
-                model.addAttribute("message", "Tên đăng nhập đã tồn tại");
-                return "admin/layout/User/user_add";
-            } else if (checkUser.equals("emailIsExisted")) {
-                model.addAttribute("messageEmail", "Email đã tồn tại, hãy chọn email khác");
-                return "admin/layout/User/user_add";
-            } else if (checkUser.equals("numberPhoneIsExisted")) {
-                model.addAttribute("messagePhone", "Số điện thoại đã tồn tại");
-                return "admin/layout/User/user_add";
-            }
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO2> updateCategory(@PathVariable("id") int id,
+                                                   @RequestParam("photo_file") MultipartFile photoFile,
+                                                   @RequestParam("name") String name,
+                                                   @RequestParam("password") String password,
+                                                   @RequestParam("email") String email,
+                                                   @RequestParam("numberPhone") String numberPhone,
+                                                   @RequestParam("active") boolean activeUser,
+                                                   @RequestParam("roleId") String roleId) {
+       if (!userService.exstUserByUsername(email)) {
+            ResponseEntity.notFound().build();
         }
 
-        // Kiểm tra các lỗi null, định dạng, hình ảnh
-        if (result.hasErrors() || img.isEmpty()) {
-            if (img.isEmpty()) {
-                model.addAttribute("message_img", "Vui lòng chọn hình ảnh");
-            }
-            return "admin/layout/User/user_add";
-        } else {
-            String image = paramService.save(img, "/views/admin/plugins/images/");
-            userDTO.setImage(image);
-            userDTO.setUsername(userDTO.getEmail());
-            userService.create(userDTO);
-            model.addAttribute("user", userDTO);
+            //   Save file ảnh vào thư mục images
+            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+
+            // Thêm phương thức thanh toán vào cơ sở dữ liệu
+            UserDTO2 userDTO = new UserDTO2();
+            userDTO.setName(name);
+            userDTO.setUsername(email);
+            userDTO.setEmail(email);
+            userDTO.setImage(photoFile.getOriginalFilename());
+            userDTO.setActive(activeUser);
+            userDTO.setNumberPhone(numberPhone);
+            userDTO.setCreateAt(new Date());
+            userDTO.setPassword(password);
+            userDTO.setRoleId(roleId);
+            userDTO.setImage(photoFile.getOriginalFilename());
+
+		    userService.update(userDTO, email);
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<User> delete(@PathVariable("id") int id) {
+        if (!userService.existUserById(id)) {
+            return ResponseEntity.notFound().build();
         }
-        return "redirect:/admin/users/update-form/" + userDTO.getUsername();
+        User user = new User();
+        user = userService.getUserById(id);
+        userService.delete(user.getUsername());
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/update/{username}")
-    public String update(@PathVariable("username") String username, UserDTO2 userDTO, Model model,
-            @RequestParam("photo_file") MultipartFile img) {
-        if (img.isEmpty()) {
-            userDTO.setImage(userService.getUser(username).getImage());
-        } else {
-            String image = paramService.save(img, "/views/admin/plugins/images/");
-            userDTO.setImage(image);
-        }
-        User user = userService.update(userDTO, username);
-        model.addAttribute("user", user);
-        return "redirect:/admin/users/update-form/" + user.getUsername();
-    }
-
-    @PostMapping("/reset-password/{username}")
-    public String resetPass(@PathVariable("username") String username, UserDTO2 userDTO, Model model) {
-        User user = userService.resetPassword(userDTO, username);
-        model.addAttribute("user", user);
-        return "redirect:/admin/users/update-form/" + user.getUsername();
-    }
-
+  
 }

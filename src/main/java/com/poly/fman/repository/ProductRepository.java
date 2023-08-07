@@ -2,7 +2,7 @@ package com.poly.fman.repository;
 
 
 import java.math.BigInteger;
-import java.util.Collection;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,11 +13,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.poly.fman.entity.Product;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+
 
 public interface ProductRepository extends JpaRepository<Product, String> {
 
     public Optional<Page<Product>> findAllByActiveIsTrue(Pageable pageable);
+
+public Optional<List<Product>> findAllByActiveIsTrue();
 
     public Optional<Page<Product>> findAllByActiveIsFalse(Pageable pageable);
 

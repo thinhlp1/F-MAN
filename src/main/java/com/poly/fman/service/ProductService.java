@@ -2,6 +2,7 @@ package com.poly.fman.service;
 
 import com.poly.fman.dto.model.ProductDTO2;
 import com.poly.fman.entity.Product;
+import com.poly.fman.entity.ProductType;
 import com.poly.fman.repository.ProductRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -104,7 +105,7 @@ public class ProductService {
         List<Product> results = query.getResultList();
 
         return results;
-    }
+    } 
     
     public void deleteProductActive(Product product) {
     	entityManager.createNativeQuery("UPDATE fman.product SET active = :active , delete_at = :deleteAt WHERE id = :id")
@@ -123,6 +124,9 @@ public class ProductService {
     
     public List<Product> getAll() {
         return productRespository.findAll();
+    }
+    public List<Product> getAllActive() {
+        return productRespository.findAllByActiveIsTrue().orElse(null);
     }
 
     public Integer getCountProduct() {
@@ -185,10 +189,20 @@ public class ProductService {
         return productRespository.save(product);
     }
 
-    public Product delete(String id) {
-        Product product = this.getById(id);
-        product.setActive((byte) 0);
-        return productRespository.save(product);
+    public boolean delete(String id) {
+        try {
+              Product product = this.getById(id);
+        if (product != null) {
+             product.setActive((byte) 0);
+             productRespository.save(product);
+           
+        }
+          return true;
+        } catch (Exception e) { 
+             return false;
+        }
+      
+      
     }
 
     public Product restore(String id) {

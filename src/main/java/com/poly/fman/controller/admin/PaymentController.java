@@ -81,7 +81,7 @@ public class PaymentController {
                                                    ) {
 
         try {
-            //            Save file ảnh vào thư mục images
+            //   Save file ảnh vào thư mục images
             paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
 
             // Thêm phương thức thanh toán vào cơ sở dữ liệu

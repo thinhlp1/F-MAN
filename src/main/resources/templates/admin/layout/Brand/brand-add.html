@@ -1,4 +1,4 @@
-<!--      CODE TRONG DDAAY-->
+
 <div class="back mb-3">
     <a class="btn btn-blue-primary" href="#!brand">
         <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
@@ -6,56 +6,49 @@
     </a>
 </div>
 
-<form action="${pageContext.request.contextPath}/admin/brands/create" method="post" modelAttribute="brand"
-      enctype="multipart/form-data">
-    <div class="row">
-        <div id="imgDialog" class="col-4 mb-3">
-            <div id="image-box" class="text-center position-relative w-100 h-100"
-                 style="border: dashed">
-                <img id="blah" class="img-fluid" style="max-height: 300px">
-                <i id="icon-upload"
-                   class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
-                   aria-hidden="true"></i>
-                <input accept="image/*" type='file' name="photo_file" id="imgInp" hidden="hidden">
-            </div>
-        </div>
-        <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
-        <script>
-            document.getElementById("imgDialog").onclick = (e) => {
-                document.getElementById("imgInp").click();
-            }
-            imgInp.onchange = evt => {
-                const [file] = imgInp.files
-                if (file) {
-                    blah.src = URL.createObjectURL(file)
-                    console.log(file.name);
-                    document.getElementById("icon-upload").remove();
-                    document.getElementById("image-box").style.border = "none";
-                }
-            }
-        </script>
-        <div class="col-8">
+<div class="row">
+         <form> 
             <div class="row">
-                <div class="col-12">
-                    <div class="form-floating mb-3">
-                        <input class="form-control" path="id" id="id_brand"
-                               placeholder="ID thương hiệu"/>
-                        <label for="id_brand">ID</label>
-                    </div>
-                </div>
-                <div class="col-12 mb-3">
-                    <div class="form-floating mb-3">
-                        <input class="form-control" path="name" id="name_brand"
-                               placeholder="Tên Thương Hiệu"/>
-                        <label for="name_brand">Tên Thương Hiệu</label>
+            <div class="col-4">
+                <div id="imgDialog" class="col-12 mb-3">
+                    <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
+                        <img id="blah" class="img-fluid"/>
+                        <i id="icon-upload"
+                        class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
+                        aria-hidden="true"></i>
+                        <input accept="image/*" type="file" id="imgInp" name="photo_file"/>
+        <!--                <input type="text" hidden="hidden" ng-model="form.image">-->
                     </div>
                 </div>
             </div>
-        </div>
+                <div class="col-8">
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="brand_id" maxlength="15"  ng-model="form.id"
+                                 
+                                   placeholder="ID Danh Mục"/>
+                            <label for="brand_id">ID</label>
+                            <span class="text-danger">{{errors.id}}</span>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="brand_name" maxlength="50" ng-model="form.name"
+                                   placeholder="Tên Danh Mục"/>
+                            <label for="brand_name">Tên Thương Hiệu</label>
+                            <span class="text-danger">{{errors.name}}</span>
+                        </div>
+                    </div>
+                
+                </div>
+           
+      
         <div class="col-12 text-end">
-            <button type="submit" class="btn btn-blue-primary btn-lg">
-                Tạo
+            <button class="btn btn-blue-primary btn-lg" ng-click="create()">
+                Thêm
             </button>
         </div>
-    </div>
-</form>
+
+    </form>
+</div>
+  

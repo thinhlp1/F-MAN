@@ -1,78 +1,46 @@
-<!--      CODE TRONG DDAAY-->
 <div class="back mb-3">
     <a class="btn btn-blue-primary" href="#!brand">
         <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-        Quay lại
+        Quay Lại
     </a>
 </div>
-<form action="${pageContext.request.contextPath}/admin/brands/update-form/${brand.id}" method="post"
-      modelAttribute="brand" enctype="multipart/form-data">
-    <div class="row">
-        <div id="imgDialog" class="col-4 mb-3">
-            <div id="image-box" class="text-center position-relative w-100 h-100"
-                 style="border: dashed">
-
-                <img src="${pageContext.request.contextPath}/views/admin/plugins/images/${brand.image}" id="blah"
-                     class="img-fluid" style="max-height: 300px">
-                <i id="icon-upload"
-                   class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
-                   aria-hidden="true"></i>
-                <input accept="image/*" type='file' name="photo_file" id="imgInp" hidden="hidden">
+    <form enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-4">
+                <div id="imgDialog" class="col-12 mb-3">
+                    <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
+                        <img id="blah" class="img-fluid"/>
+                        <i id="icon-upload"
+                        class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
+                        aria-hidden="true"></i>
+                        <input accept="image/*" type="file" id="imgInp" name="photo_file"/>
+        
+                    </div>
+                </div>
             </div>
-        </div>
-        <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
-        <script>
-            document.getElementById("imgDialog").onclick = (e) => {
-                document.getElementById("imgInp").click();
-            }
-            imgInp.onchange = evt => {
-                const [file] = imgInp.files
-                if (file) {
-                    blah.src = URL.createObjectURL(file)
-                    console.log(file.name);
-                    document.getElementById("icon-upload").remove();
-                    document.getElementById("image-box").style.border = "none";
-                }
-            }
-        </script>
-        <div class="col-8">
-            <div class="row">
+            <div class="col-8">
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input class="form-control" path="id" id="id_brand" readonly="true"
-                               placeholder="ID thương hiệu"/>
-                        <label for="id_brand">ID</label>
+                        <input type="text" class="form-control" id="brand_id" maxlength="15"  ng-model="form.id"
+                               readonly="true"
+                               placeholder="ID Danh Mục"/>
+                        <label for="brand_id">ID</label>
                     </div>
                 </div>
                 <div class="col-12 mb-3">
                     <div class="form-floating mb-3">
-                        <input class="form-control" path="name" id="brand_name"
-                               placeholder="Tên Thương Hiệu"/>
+                        <input type="text" class="form-control" id="brand_name" maxlength="50" ng-model="form.name"
+                               placeholder="Tên Danh Mục"/>
                         <label for="brand_name">Tên Thương Hiệu</label>
                     </div>
                 </div>
-                <div class="col-12 mb-3">
-                    <div class="form-floating mb-3">
-<!--                        <c:if test="${activeBrand == false}">-->
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="activeBrand" id="Activate_brand"
-                                       value="true">
-                                <label class="form-check-label" for="Activate_brand">Restore</label>
-                            </div>
-<!--                        </c:if>-->
-                        <!--   <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="active" id="Inactive_brand" value="false">
-                              <label class="form-check-label" for="Inactive_brand">Inactive</label>
-                          </div> -->
-                    </div>
-                </div>
             </div>
+           
         </div>
+      
         <div class="col-12 text-end">
-            <button type="submit" class="btn btn-blue-primary btn-lg">
-                Cập Nhật
+            <button type="submit" class="btn btn-blue-primary btn-lg" ng-click="update()">
+                Cập nhật
             </button>
         </div>
-    </div>
-</form>
-
+    </form>
