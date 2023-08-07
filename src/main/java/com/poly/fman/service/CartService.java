@@ -130,7 +130,7 @@ public class CartService {
 
         checkoutReponseDTO.setListCartItems(cartResponseDTO.getListCartItems());
 
-        List<AddressDTO> lisAddressDTOs = addressService.getByUserId(checkoutRequestDTO.getUserId());
+        List<AddressDTO> lisAddressDTOs = addressService.getByUserIdAndActiveIsTrue(checkoutRequestDTO.getUserId());
         List<PaymentMethod> listPaymentMethods = paymentMethodRepository.findAllByActiveIsTrue();
         List<PaymentMethodDTO> listPaymentMethodDTOs = listPaymentMethods.stream()
                 .map(payment -> modelMapper.map(payment, PaymentMethodDTO.class))

@@ -110,55 +110,6 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
-    // @PostMapping("/checkout/{cartId}")
-    // public String checkoutForm(@PathVariable("cartId") Integer cartId,
-    // @RequestBody List<String> listCartItem) {
-    // System.out.println("HEIIIIIII");
-    // System.out.println(listCartItem.size());
-    // return "user/view/cart/cart_checkout";
-    // }
-
-    @GetMapping("/checkout-bynow")
-    public String buyNowForm(@RequestParam("productSizeId") Integer productSizeId,
-            @RequestParam("quantity") Integer quantity,
-            Model model) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        // check user address
-        List<AddressDTO> listAddressDTOs = addressService.getByUserId((int) httpSession.getAttribute("userId"));
-        System.out.println(listAddressDTOs.size());
-        if (listAddressDTOs.isEmpty()) {
-            model.addAttribute("hasAddress", false);
-            return "user/view/cart/cart_checkout";
-            // return "redirect:/user/address/all?user-id=" +
-            // httpSession.getAttribute("userId");
-        }
-
-        List<CartItemDTO2> lCartItemDTOs = new ArrayList<>();
-        ProductSize productSize = productSizeRepository.findById(productSizeId).orElse(null);
-        Product product = productSize.getProduct();
-        CartItemDTO2 cartItemDTO = new CartItemDTO2();
-        cartItemDTO.setId(productSizeId);
-        // cartItemDTO.setProduct(product);
-        // cartItemDTO.setProductSize(productSize);
-        cartItemDTO.setQuantity(quantity);
-        lCartItemDTOs.add(cartItemDTO);
-
-        int subTotal = 0;
-
-        subTotal = product.getPrice().intValue() * quantity;
-
-        model.addAttribute("listItem", lCartItemDTOs);
-        model.addAttribute("listAddress", listAddressDTOs);
-        model.addAttribute("addressDefault", listAddressDTOs.get(0));
-        model.addAttribute("hasAddress", true);
-        model.addAttribute("subTotal", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        model.addAttribute("totalStr", CommonUtils.convertToCurrencyString(subTotal, " VNĐ"));
-        model.addAttribute("total", subTotal);
-        model.addAttribute("isBuyNow", true);
-        model.addAttribute("quantity", quantity);
-        model.addAttribute("productSizeId", productSizeId);
-        return "user/view/cart/cart_checkout";
-    }
 
     @PostMapping("/checkout")
     @ResponseBody

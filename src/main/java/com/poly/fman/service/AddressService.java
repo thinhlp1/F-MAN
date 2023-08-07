@@ -46,6 +46,21 @@ public class AddressService {
 
     }
 
+     public List<AddressDTO> getByUserIdAndActiveIsTrue(Integer userId) {
+        List<AddressDTO> listAddressDTOs = new ArrayList<>();
+        try {
+            List<Address> listAdress = addressRepository.findByUserIdAndActiveIsTrue(userId).orElseThrow();
+            listAddressDTOs = listAdress.stream()
+                    .map(address -> modelMapper.map(address, AddressDTO.class))
+                    .collect(Collectors.toList());
+            return listAddressDTOs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return listAddressDTOs;
+        }
+
+    }
+
     public AddressDTO getById(Integer id) {
         try {
             Address address = addressRepository.findById(id).orElseThrow();

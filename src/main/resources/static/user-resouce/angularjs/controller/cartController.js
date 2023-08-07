@@ -155,10 +155,10 @@ app.controller('CartController', function ($scope, $http, $location) {
 
 
     // Đối tượng mục mới bạn muốn thêm vào danh sách (ví dụ)
-    const newItem = { productId: "AQ4134-400", productSizeId: 14, quantity: 3 };
-    const newItem2 = { productId: "DV4022-004", productSizeId: 3, quantity: 25 };
-    addItemToCart(newItem2);
-    addItemToCart(newItem);
+    // const newItem = { productId: "AQ4134-400", productSizeId: 14, quantity: 1 };
+    // const newItem2 = { productId: "DV4022-004", productSizeId: 3, quantity: 1 };
+    // addItemToCart(newItem2);
+    // addItemToCart(newItem);
     // decreaseItemQuantityById(4);
     // increaseItemQuantityById(4);
 

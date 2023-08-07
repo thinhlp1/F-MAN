@@ -115,6 +115,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
 
         $http(request).then(
             function (response) {
+                console.log(response);
                 checkoutResponse = response.data;
                 $scope.listCartItem = response.data.listCartItems;
                 $scope.listAddress = response.data.listAddress;
@@ -258,6 +259,23 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
 
     }
 
+    $scope.removeItem = function (id) {
+        const cartJSON = sessionStorage.getItem('cart');
+        if (!cartJSON) {
+            return;
+        }
+        const cart = JSON.parse(cartJSON);
+
+        const cartItemIndex = cart.listCartItem.findIndex((item) => item.productSizeId === id);
+
+        if (cartItemIndex !== -1) {
+            cart.listCartItem.splice(cartItemIndex, 1);
+            const updatedCartJSON = JSON.stringify(cart);
+            sessionStorage.setItem('cart', updatedCartJSON);
+            showCartQuantity();
+        }
+    }
+
     $scope.checkout = function () {
 
         if (checkoutResponse === undefined) {
@@ -280,10 +298,19 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
             voucherCode = $scope.voucher;
         }
 
+        if ($scope.address === undefined){
+            Swal.fire({
+                icon: 'error',
+                title: "Chưa có địa chỉ",
+                text: "Vui lòng chọn thay đổi thông tin. Tạo địa chỉ nhận hàng mới",
+            })
+            return;
+        }
+
         let addressId = $scope.address.id;
         let paymentMethodId = $scope.selectedPaymentMethod;
         let listCheckoutItem = [];
-
+        let listItemId = [];
         let bankCode = paymentMethodId === "VISA" ? "NCB" : "";
         let userId = getCookie("userId");
 
@@ -298,7 +325,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
         }
         else {
             let listId = $routeParams.listCartItem;
-            let listItemId = [];
+           
             listItemId = listId.split(",");
 
             for (let i = 0; i < $scope.listCartItem.length; i++) {
@@ -335,6 +362,9 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
             $http(request).then(
                 function (response) {
                     console.log(response);
+                    listItemId.forEach(element => {
+                        $scope.removeItem(parseInt(element));
+                    });
                     window.location.href = "/user/orders/" + response.data.order.id;
 
                 }
@@ -360,6 +390,9 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
             $http(request).then(
                 function (response) {
                     console.log(response);
+                    listItemId.forEach(element => {
+                        $scope.removeItem(parseInt(element));
+                    });
                     window.location.href = response.data.paymentReponse.url;
 
 
