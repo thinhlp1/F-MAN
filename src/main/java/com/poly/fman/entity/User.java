@@ -1,6 +1,8 @@
 package com.poly.fman.entity;
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +65,7 @@ public class User implements UserDetails {
 
 	private String username;
 
+	@JsonIgnore
 	// bi-directional many-to-one association to Role
 	@ManyToOne
 	private Role role;

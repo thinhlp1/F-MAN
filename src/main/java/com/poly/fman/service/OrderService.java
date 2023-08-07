@@ -236,7 +236,7 @@ public class OrderService {
                     order.setVoucher(voucher);
                 }
             }
-            User user = userRepository.findByIdAndActiveIsTrue(checkoutDTO.getUserId()).orElse(null);
+            User user = userRepository.findByIdAndActiveIsTrue(checkoutDTO.getUserId());
             Address address = addressRepository.findByIdAndActiveIsTrue(checkoutDTO.getAddressId()).orElse(null);
 
             order.setAddress(address);

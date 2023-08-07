@@ -77,7 +77,7 @@ public class AddressService {
     }
 
     public Address create(AddressDTO2 addressDTO, Integer userId) {
-        User user = this.userService.getUserById(userId);
+        User user = this.userService.getUserByIdAndActiveTrue(userId);
         addressDTO.setUser(user);
         addressDTO.setUserId(user.getId());
         Address address = modelMapper.map(addressDTO, Address.class);

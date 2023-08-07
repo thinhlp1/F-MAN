@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     public Optional<User> findByUsername(String username);
 
-    public Optional<User> findByIdAndActiveIsTrue(int id);
+    public User findByIdAndActiveIsTrue(int id);
 
     // find by user name and user has active
     public Optional<User> findByUsernameAndActiveIsTrue(String username);

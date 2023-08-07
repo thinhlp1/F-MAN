@@ -107,8 +107,7 @@ public class AuthenticationServiceImlp implements AuthenticationService {
 
         public boolean changeEmail(int id, String newEmail) {
                 try {
-                        User user = userRepository.findByIdAndActiveIsTrue(id)
-                                        .orElseThrow();
+                        User user = userRepository.findByIdAndActiveIsTrue(id);
                         user.setEmail(newEmail);
                         user.setUsername(newEmail);
                         userRepository.save(user);

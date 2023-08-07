@@ -91,7 +91,7 @@ public class DiscountController {
     }
 
     @PutMapping("/admin/discounts/{id}")
-    public ResponseEntity<VoucherDTO> updateVoucher(@PathVariable("id") int id, @RequestBody VoucherDTO voucherDto){
+    public ResponseEntity<VoucherDTO> updateVoucher(@PathVariable("id") int id, @RequestBody @Valid VoucherDTO voucherDto){
         if(!voucherService.existVoucherById(id)){
             ResponseEntity.notFound().build();
         }

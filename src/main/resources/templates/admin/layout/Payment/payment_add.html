@@ -4,7 +4,7 @@
         Quay lại
     </a>
 </div>
-<form enctype="multipart/form-data">
+<form enctype="multipart/form-data" name="myForm" novalidate>
     <div class="row">
         <div id="imgDialog" class="col-4 mb-3">
             <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
@@ -12,8 +12,10 @@
                 <i id="icon-upload"
                    class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
                    aria-hidden="true"></i>
-                <input accept="image/*" type="file" id="imgInp" name="photo_file"/>
-<!--                <input type="text" hidden="hidden" ng-model="form.image">-->
+                <input accept="image/*" type="file" id="imgInp" name="photo_file" ng-model="photo_file" required="required"/>
+                <span style="color:red" ng-show="myForm.photo_file.$dirty && myForm.photo_file.$invalid">
+                    <span ng-show="myForm.photo_file.$error.required">Vui lòng chọn hình ảnh.</span>
+                </span>
             </div>
         </div>
         <div class="col-8">
@@ -22,56 +24,54 @@
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="payment_id"
-                                   placeholder="Có thể điền ký tự hoặc số" ng-model="form.id"/>
-
+                                   placeholder="Có thể điền ký tự hoặc số" name="form.id" ng-model="form.id"
+                                   required="required"/>
                             <label for="payment_id">Nhập tên ID</label>
+                            <span style="color:red" ng-show="myForm.form.id.$dirty && myForm.form.id.$invalid">
+                                <span ng-show="myForm.form.id.$error.required">Vui lòng điền id.</span>
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="payment_name"
-                               placeholder="Tên phương thức thanh toán" ng-model="form.name"/>
+                               placeholder="Tên phương thức thanh toán" name="form.name" ng-model="form.name"
+                               required="required"/>
                         <label for="payment_name">Tên phương thức thanh toán</label>
+                        <span style="color:red" ng-show="myForm.form.name.$dirty && myForm.form.name.$invalid">
+                            <span ng-show="myForm.form.name.$error.required">Vui lòng nhập tên phương thức.</span>
+                        </span>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="card_number" placeholder="Số tài khoản"
-                               ng-model="form.account_number"/>
+                               name="form.account_number" ng-model="form.account_number" required="required"/>
                         <label for="card_number">Số tài khoản</label>
+                        <span style="color:red"
+                              ng-show="myForm.form.account_number.$dirty && myForm.form.account_number.$invalid">
+                            <span ng-show="myForm.form.account_number.$error.required">Vui lòng nhập số tài khoản.</span>
+                        </span>
                     </div>
                 </div>
-<!--                <div class="col-12">-->
-<!--                    <label class="form-label">Trạng thái</label>-->
-<!--                    <div class="form-check form-switch ms-3">-->
-<!--                        <input type="checkbox" class="form-check-input" id="active" ng-model="form.active" value="1"-->
-<!--                               checked="checked"/>-->
-<!--                        <label class="form-check-label" for="active">Hoạt động</label>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="col-12">-->
+                <!--                    <label class="form-label">Trạng thái</label>-->
+                <!--                    <div class="form-check form-switch ms-3">-->
+                <!--                        <input type="checkbox" class="form-check-input" id="active" ng-model="form.active" value="1"-->
+                <!--                               checked="checked"/>-->
+                <!--                        <label class="form-check-label" for="active">Hoạt động</label>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
         </div>
 
         <div class="col-12 text-end">
-            <button class="btn btn-blue-primary btn-lg" ng-click="create()">
+            <button class="btn btn-blue-primary btn-lg" ng-click="validationController(); create() "
+                    ng-disabled="myForm.photo_file.$dirty && myForm.photo_file.$invalid || myForm.form.id.$dirty && myForm.form.id.$invalid
+            || myForm.form.name.$dirty && myForm.form.name.$invalid || myForm.form.account_number.$dirty && myForm.form.account_number.$invalid">
                 Tạo
             </button>
         </div>
     </div>
 </form>
-<!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
-<!--<script>-->
-<!--    document.getElementById("imgDialog").onclick = (e) => {-->
-<!--        document.getElementById("imgInp").click();-->
-<!--    };-->
-<!--    imgInp.onchange = (evt) => {-->
-<!--        const [file] = imgInp.files;-->
-<!--        if (file) {-->
-<!--            blah.src = URL.createObjectURL(file);-->
-<!--            console.log(file.name);-->
-<!--            document.getElementById("icon-upload").remove();-->
-<!--            document.getElementById("image-box").style.border = "none";-->
-<!--        }-->
-<!--    };-->
-<!--</script>-->

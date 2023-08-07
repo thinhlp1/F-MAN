@@ -368,7 +368,8 @@ app.controller("DiscountController",
                 .post(DISCOUNT_URL + "/create", voucher)
                 .then((resp) => {
                     $scope.data.push(voucher);
-                    $scope.errors = {};
+                    ErrorService.setError({});
+                    $scope.errors = ErrorService.getError();
                     notification("Thêm thành công", 3000, "right", "top", "success");
                     console.log("Thêm thành công", resp);
                 })

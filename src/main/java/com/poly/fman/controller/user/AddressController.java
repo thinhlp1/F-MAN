@@ -50,7 +50,7 @@ public class AddressController {
 
     @GetMapping(value = "/all", params = "user-id")
     public String getAllAddress(@RequestParam(name = "user-id") Integer userId, Model model) {
-        User user = this.userService.getUserById(userId);
+        User user = this.userService.getUserByIdAndActiveTrue(userId);
         AddressDTO2 address = new AddressDTO2();
         address.setUser(user);
         address.setUserId(user.getId());
