@@ -116,6 +116,7 @@ public class OrderService {
 
         Order order = orderRepository.findById(id).orElse(null);
         OrderDTO orderDTO = new OrderDTO();
+
         List<OrderItem> listOderItem = order.getOrderItems();
         List<OrderItemDTO> listOrderItemDTOs = new ArrayList();
         listOrderItemDTOs = listOderItem.stream()
@@ -124,6 +125,13 @@ public class OrderService {
 
         Long tempTotal = (long) 0;
         Long discount = (long) 0;
+
+        Transaction transaction = transactionRepository.findByOrderId(order.getId());
+        if (transaction != null) {
+            TransactionDTO transactionDTO = modelMapper.map(transaction, TransactionDTO.class);
+            orderDTO.setTransactionDTO(transactionDTO);
+
+        }
 
         for (OrderItem orderItem : listOderItem) {
             tempTotal += orderItem.getProduct().getPrice().intValue() * orderItem.getQuantity();
@@ -160,7 +168,7 @@ public class OrderService {
         return listOrderDTO;
     }
 
-     public List<OrderDTO> getApproveOrder() {
+    public List<OrderDTO> getApproveOrder() {
         List<Order> listOrder = orderRepository.findAllByOrderStateId("PENDING_APPROVAL");
         List<OrderDTO> listOrderDTO = listOrder.stream()
                 .map(item -> convertDTO(item))
