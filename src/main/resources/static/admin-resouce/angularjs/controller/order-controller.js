@@ -114,6 +114,25 @@ app.controller(
         }
 
 
+        $scope.loadTaskbar = function(){
+            $http
+            .get("/admin/componet-data")
+            .then((resp) => {
+                $scope.orderApproveQuantity = resp.data.orderApprove;
+                document.getElementById("quantityOrderApprove").innerHTML =    $scope.orderApproveQuantity;
+            })
+            .catch((err) => {
+                notification(
+                    "ERROR " + err.status + ": Lỗi tải dữ liệu",
+                    3000,
+                    "right",
+                    "top",
+                    "error",
+                );
+            });
+        }
+
+
         $scope.cancel = function () {
             var note = $scope.note;
             if (note === "") {
@@ -133,6 +152,8 @@ app.controller(
 
                 $('#cancelModel').modal('hide');
                 $scope.loadDetails();
+                $scope.loadTaskbar();
+
 
             }).catch(function errorCallback(response) {
                 // Xử lý lỗi (nếu có)
@@ -161,6 +182,7 @@ app.controller(
                 notification("Đơn hàng đã được duyệt", 3000, "right", "top", "success");
 
                 $scope.loadDetails();
+                $scope.loadTaskbar();
 
             }).catch(function errorCallback(err) {
                 // Xử lý lỗi (nếu có)
@@ -448,6 +470,8 @@ app.controller(
             });
             
         }
+
+        $scope.loadTaskbar();
 
         //Call Function
         $scope.loadList = function () {
