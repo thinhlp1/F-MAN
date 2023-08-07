@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import com.poly.fman.service.common.ParamService;
 import com.poly.fman.service.common.SessionService;
@@ -76,13 +76,32 @@ public class BrandController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BrandDTO> create(@RequestBody @Valid BrandDTO brand) {
-        if (brandService.existBrandById(brand.getId())) {
-            System.out.println("Tồn tại");
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<BrandDTO> create(@RequestParam("photo_file") MultipartFile photoFile,
+                                                   @RequestParam("brand_id") String brandId,
+                                                   @RequestParam("brand_name") String brandName
+                                                   ) {
+   try {
+            //   Save file ảnh vào thư mục images
+            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+
+            // Thêm phương thức thanh toán vào cơ sở dữ liệu
+            BrandDTO brandDTO = new BrandDTO();
+            brandDTO.setId(brandId);
+            brandDTO.setName(brandName);
+         
+            brandDTO.setImage(photoFile.getOriginalFilename());
+            // Kiểm tra xem phương thức thanh toán đã tồn tại hay chưa
+            if (!brandService.existBrandById(brandId)) {
+                ResponseEntity.notFound().build();
+            }
+            brandService.create(brandDTO);
+
+            // Trả về đối tượng phương thức thanh toán đã được thêm
+            return ResponseEntity.ok(brandDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException();
         }
-        brandService.create(brand);
-        return ResponseEntity.ok(brand);
     }
 
     @GetMapping("/update-form")
@@ -91,11 +110,24 @@ public class BrandController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BrandDTO> updateCategory(@PathVariable("id") String id, @RequestBody BrandDTO brand) {
+    public ResponseEntity<Brand> updateCategory(@PathVariable("id") String id, 
+                                                   @RequestParam("photo_file") MultipartFile photoFile,
+                                                   @RequestParam("brand_name") String brandName) {
         if (!brandService.existBrandById(id)) {
             ResponseEntity.notFound().build();
         }
-		brandService.update(brand);
+
+            //   Save file ảnh vào thư mục images
+            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+
+            // Thêm phương thức thanh toán vào cơ sở dữ liệu
+            Brand brand = new Brand();
+            brand = brandService.getById(id);
+            brand.setName(brandName);
+         
+            brand.setImage(photoFile.getOriginalFilename());
+
+		    brandService.update(brand);
         return ResponseEntity.ok(brand);
     }
 

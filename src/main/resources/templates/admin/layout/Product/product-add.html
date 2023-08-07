@@ -7,10 +7,7 @@
 </div>
 
 <!-- Form xử lý -->
-<form action="${pageContext.request.contextPath}/admin/products/create" method="post" modelAttribute="product"
-           enctype="multipart/form-data">
-
-
+<form>
     <div class="row">
         <div id="imgDialog" class="col-4 mb-3">
             <div id="image-box" class="text-center position-relative w-100 h-100"
@@ -23,39 +20,25 @@
             </div>
         </div>
         <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
-        <script>
-            document.getElementById("imgDialog").onclick = (e) => {
-                document.getElementById("imgInp").click();
-            }
-            imgInp.onchange = evt => {
-                const [file] = imgInp.files
-                if (file) {
-                    blah.src = URL.createObjectURL(file)
-                    console.log(file.name);
-                    document.getElementById("icon-upload").remove();
-                    document.getElementById("image-box").style.border = "none";
-                }
-            }
-        </script>
         <div class="col-8">
             <div class="row">
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" path="id" id="product_id"
+                        <input type="text" class="form-control" ng-model="form.id" id="product_id"
                                     placeholder="ID Sản Phẩm"/>
                         <label for="product_id">ID Sản Phẩm</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" path="name" id="product_name"
+                        <input type="text" class="form-control" ng-model="form.name" id="product_name"
                                     placeholder="Tên sản phẩm"/>
                         <label for="product_name">Tên sản phẩm</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <select name="id_brand" id="product_brand" class="form-select">
+                        <select ng-model="form.brand" id="product_brand" class="form-select">
                             <option value="">Chọn Thương Hiệu</option>
                                 <option value="1">Brand A</option>
                         </select>
@@ -64,7 +47,7 @@
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <select name="id_product_type" id="product_type" class="form-select">
+                        <select ng-model="form.productType" id="product_type" class="form-select">
                             <option value="">Chọn Loại Sản Phẩm</option>
                                 <option value="1">Product Type A</option>
 
@@ -74,7 +57,7 @@
                 </div>
                 <div class="col-6">
                     <div class="form-floating mb-3">
-                        <input type="number" min="200000" path="price" class="form-control" id="product_price"
+                        <input type="number" min="200000" ng-model="form.price" class="form-control" id="product_price"
                                     placeholder="Giá sản phẩm"/>
                         <label for="product_price">Giá</label>
                     </div>
@@ -141,7 +124,7 @@
                                     </div>
                                     <div class="text-end">
                                         <button id="add-row-button"
-                                                type="button" class="btn bg-transparent text-success text-end"><i
+                                        ng-click="addRowHTML()" class="btn bg-transparent text-success text-end"><i
                                                 class="fa fa-plus fs-7" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
@@ -157,7 +140,7 @@
                         </div>
                     </div>
 
-                    <script>
+                    <!-- <script>
                         const table = document.getElementById('my-table');
                         const addRowButton = document.getElementById('add-row-button');
                         const clickSize = document.getElementById('addSize');
@@ -200,6 +183,7 @@
 
                         })
                         addRowButton.addEventListener('click', function () {
+                            console.log("vao day ne")
                             // Tạo một hàng mới
                             const newRow = table.insertRow();
 
@@ -248,25 +232,23 @@
                             });
                         });
 
-                    </script>
+                    </script> -->
                 </div>
                 <!-- end modal -->
 
 
             </div>
         </div>
-
-
         <div class="col-12 mb-3">
             <div class="form-floating">
-                <form:textarea class="form-control" path="desc" placeholder="Nhập ghi chú" id="product_note"
+                <form:textarea class="form-control" ng-model="form.desc" placeholder="Nhập ghi chú" id="product_note"
                                style="height: 100px"></form:textarea>
                 <label for="product_note">Ghi chú</label>
-                <form:errors path="desc" cssClass="text-danger"/>
+               
             </div>
         </div>
         <div class="col-12 text-end">
-            <button type="submit" class="btn btn-blue-primary btn-lg">
+            <button  class="btn btn-blue-primary btn-lg"  ng-click="create()" >
                 Tạo
             </button>
         </div>

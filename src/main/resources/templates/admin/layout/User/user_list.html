@@ -1,164 +1,50 @@
-<div class="d-flex justify-content-between mb-3">
-    <div class="sort-fillter align-items-center">
-        <span class="dropdown">
-            <button class="btn bg-transparent border shadow dropdown-toggle" type="button" id="sort"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                Sắp xếp theo
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="sort">
-                <li>
-                    <a class="dropdown-item"
-                       href="${pageContext.request.contextPath}/admin/users/?field=name&p=${items.number}">
-                        Tên
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       href="${pageContext.request.contextPath}/admin/users/?field=createAt&p=${items.number}">Ngày
-                        tạo</a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       href="${pageContext.request.contextPath}/admin/users/?field=email&p=${items.number}">Email</a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       href="${pageContext.request.contextPath}/admin/users/?field=numberPhone&p=${items.number}">Số
-                        điện thoại</a>
-                </li>
-                <!-- <li>
-              <a
-                class="dropdown-item"
-                href="${pageContext.request.contextPath}/admin/users/?field=numberPhone&p=${items.number}"
-                >Địa chỉ</a
-              >
-            </li> -->
-            </ul>
-        </span>
-    </div>
+
+<div class="d-flex justify-content-end mb-3">
     <a class="btn btn-blue-primary" href="#!user-add">
         <i class="fa fa-plus-square" aria-hidden="true"></i>
         Thêm
     </a>
 </div>
-<div class="table-responsive">
-    <table class="table table-hover table-striped">
-        <thead class="table-header-custom">
-        <tr>
-            <!-- <th scope="col">ID</th> -->
-            <th scope="col">Tên Người dùng</th>
-            <th scope="col">Số điện thoại</th>
-            <th scope="col">Email</th>
-            <th scope="col">Tên tài khoản</th>
-            <th scope="col">Ngày tạo</th>
-            <th scope="col">Thao tác</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <!-- <th scope="row">1</th> -->
-            <td>Phuoc Tai</td>
-            <td>0202020202</td>
-            <td>tai@gmail.com</td>
-            <td>tai@gmail.com</td>
-            <td>20/20/2000</td>
-            <td>
-                <a class="text-dark"
-                   href="#!user-update/username">
-                    <button class="border-0 bg-transparent">
-                        <i class="fa fa-pencil" aria-hidden="true"></i>
+<div id="grid"></div>
+
+
+
+<div class="modal fade" id="user" aria-hidden="true"
+ tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-danger">
+                <i class="fa fa-exclamation-triangle"
+                   aria-hidden="true"></i>
+                XÓA
+            </h5>
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+
+        </div>
+        <div class="modal-body text-center">
+            <img class="img-fluid mb-3" width="300px" height="300px"
+                 th:src="@{/admin-resouce/plugins/images/large/cat-screaming-no.jpg}">
+            <h4>Bạn có chắc chắc muốn xóa user <span class="text-danger fw-bold">{{id}}</span>
+                ?</h4>
+        </div>
+        <div class="modal-footer">
+            <div class="row g-3 w-100">
+                <div class="col-6">
+                    <button class="btn btn-outline-danger w-100"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">Không
                     </button>
-                </a>
-                <a class="text-dark" href="#!user-detail/username">
-                    <button class="border-0 bg-transparent">
-                        <i class="fa fa-eye" aria-hidden="true"></i>
-                    </button>
-                </a>
-                <button class="border-0 bg-transparent" data-bs-toggle="modal"
-                        data-bs-target="#username">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                </button>
-                <div class="modal fade" id="username" aria-hidden="true" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-danger">
-                                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                                    XÓA
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-center">
-                                <img class="img-fluid mb-3" width="300px" height="300px"
-                                     th:src="@{admin-resouce/plugins/images/large/cat-screaming-no.jpg}"/>
-                                <h4>Bạn có chắc chắn muốn xóa không?</h4>
-                            </div>
-                            <form
-                                    action="${pageContext.request.contextPath}/admin/users/delete/${item.username}"
-                                    method="post" modelAttribute="user">
-                                <div class="modal-footer">
-                                    <div class="row g-3 w-100">
-                                        <div class="col-6">
-                                            <button class="btn btn-outline-danger w-100"
-                                                    data-bs-dismiss="modal" aria-label="Close">
-                                                Không
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-blue-primary w-100">
-                                                Có
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="d-flex justify-content-center pagination-custom">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link fs-4" href="${pageContext.request.contextPath}/admin/users/?field=${field}&p=0">
-                    First
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link fs-4"
-                   href="${pageContext.request.contextPath}/admin/users/?field=${field}&p=${items.number - 1 < 0 ? 0 : items.number - 1}">
-                    <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-                </a>
-            </li>
-            <!--            <c:forEach-->
-            <!--                    var="i"-->
-            <!--                    begin="0"-->
-            <!--                    end="${items.totalPages - 1 < 0 ? 0 : items.totalPages - 1}"-->
-            <!--            >-->
-            <!--                <li class="page-item ${i == items.number ? 'active' : ''}">-->
-            <!--                    <a-->
-            <!--                            class="page-link fs-4"-->
-            <!--                            href="${pageContext.request.contextPath}/admin/users/?field=${field}&p=${i}"-->
-            <!--                    >${i+1}</a-->
-            <!--                    >-->
-            <!--                </li>-->
-            <!--            </c:forEach>-->
-            <li class="page-item">
-                <a class="page-link fs-4"
-                   href="${pageContext.request.contextPath}/admin/users/?field=${field}&p=${items.number + 1 > (items.totalPages - 1) ? items.totalPages - 1 : items.number + 1 }">
-                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link fs-4"
-                   href="${pageContext.request.contextPath}/admin/users/?field=${field}&p=${items.totalPages - 1}">
-                    Last
-                </a>
-            </li>
-        </ul>
+                <div class="col-6">
+                    <button ng-click="delete(id)"
+                            class="btn btn-blue-primary w-100">Có
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 </div>

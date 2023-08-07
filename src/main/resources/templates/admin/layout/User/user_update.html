@@ -4,68 +4,56 @@
         Quay Lại
     </a>
 </div>
-<form action=""
-      method="post" enctype="multipart/form-data">
+<form>
     <div class="row">
-        <div id="imgDialog" class="col-4 mb-3">
-            <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
-                <img th:src="@{admin-resouce/plugins/images/products/p2.png}" id="blah"
-                     class="img-fluid w-100 h-100"/>
-                <i id="icon-upload" class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
-                   aria-hidden="true"></i>
-                <input accept="image/*" type="file" id="imgInp" hidden="hidden" name="photo_file"/>
+        <div class="col-4">
+            <div id="imgDialog" class="col-12 mb-3">
+                <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
+                    <img id="blah" class="img-fluid"/>
+                    <i id="icon-upload"
+                    class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
+                    aria-hidden="true"></i>
+                    <input accept="image/*" type="file" id="imgInp" name="photo_file"/>
+    <!--                <input type="text" hidden="hidden" ng-model="form.image">-->
+                </div>
             </div>
         </div>
-        <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
-        <script>
-            document.getElementById("imgDialog").onclick = (e) => {
-                document.getElementById("imgInp").click();
-            };
-            imgInp.onchange = (evt) => {
-                const [file] = imgInp.files;
-                if (file) {
-                    blah.src = URL.createObjectURL(file);
-                    console.log(file.name);
-                    document.getElementById("icon-upload").remove();
-                    document.getElementById("image-box").style.border = "none";
-                }
-            };
-        </script>
+
 
         <div class="col-8">
             <div class="row">
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="user_name" placeholder="${user.name}" path="name"/>
+                        <input type="text" class="form-control" id="user_name" placeholder="Họ và tên" ng-model="form.name"/>
                         <label for="user_name">Họ và tên</label>
                     </div>
                 </div>
+                
 
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="user_account" placeholder="${user.username}"
-                                   path="username" readonly="true"/>
-                            <label for="user_account">Tên đăng nhập</label>
+                            <input type="password" class="form-control" id="user_password" placeholder="Nhập Password"
+                            ng-model="form.password"/>
+                            <label for="user_password">Nhập mật khẩu</label>
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="user_email" placeholder="${user.email}"
-                                   path="email" readonly="true"/>
+                            <input type="text" class="form-control" id="user_email" placeholder="Nhập Email"
+                            ng-model="form.email" />
                             <label for="user_email">Email</label>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="user_phone" placeholder="${user.numberPhone}"
-                                   path="numberPhone" readonly="true"/>
-                            <label for="user_phone">Số điện thoại</label>
+                            <input type="text" class="form-control" id="user_numberPhone"
+                                   placeholder="Nhập số điện thoại"  ng-model="form.numberPhone" />
+                            <label for="user_numberPhone">Số điện thoại</label>
                         </div>
                     </div>
                 </div>
@@ -77,48 +65,34 @@
                         <label class="me-2">Vai trò:</label>
                         <div class="form-check form-check-inline">
                             <input type="radio" class="form-check-input" name="inlineRadioOptions" id="inlineRadio1"
-                                   value="ADMIN" path="roleId"/>
+                                         value="ADMIN"  ng-model="form.roleId" />
                             <label class="form-check-label" for="inlineRadio1">Admin</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input type="radio" class="form-check-input" name="inlineRadioOptions" id="inlineRadio2"
-                                   value="USER" path="roleId"/>
+                                         value="USER" ng-model="form.roleId"  checked="${user.roleId == null ? 'checked' : '' }" />
                             <label class="form-check-label" for="inlineRadio2">User</label>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-check form-switch">
                             <label class="form-check-label" for="flexSwitchCheckChecked">Hoạt động</label>
-                            <input type="checkbox" class="form-check-input" id="flexSwitchCheckChecked" path="active"
-                                   value="true"/>
+                            <input type="checkbox" class="form-check-input" id="flexSwitchCheckChecked" ng-model="form.active" value="1"
+                                      checked="checked" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-12 text-end">
-            <!-- <button
-              formaction="${pageContext.request.contextPath}/admin/users/reset-password/${user.username}"
-              class="btn btn-danger btn-lg text-white"
-            >
-              Reset mật khẩu
-            </button> -->
-            <button formaction="${pageContext.request.contextPath}/admin/users/reset-password/${user.username}"
-                    type="button" class="btn btn-danger btn-lg text-white" data-bs-toggle="modal"
-                    href="#confirmDeleteDialog">
-                Reset mật khẩu
-            </button>
-
-            <button formaction="${pageContext.request.contextPath}/admin/users/update/${user.username}"
-                    class="btn btn-blue-primary btn-lg">
+            <button ng-click="update()" class="btn btn-blue-primary btn-lg">
                 Cập nhật
             </button>
         </div>
     </div>
 </form>
-
 <!-- ========Modal reset mật khẩu -->
-<div class="modal fade" id="confirmDeleteDialog" aria-hidden="true" tabindex="-1">
+<!-- <div class="modal fade" id="confirmDeleteDialog" aria-hidden="true" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -153,4 +127,4 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->

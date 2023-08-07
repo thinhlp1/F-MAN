@@ -70,56 +70,54 @@ app.controller(
 
    
     $scope.create = () => {
-      var brand = angular.copy($scope.form);
+      var fileInput = document.getElementById("imgInp");
+      var file = fileInput.files[0];
+      var formData = new FormData();
+      formData.append('photo_file', file);
+      formData.append('brand_id', $scope.form.id);
+      formData.append('brand_name', $scope.form.name);
+      
       $http
-        .post(BRAND_URL + "/create", brand)
-        .then((resp) => {
-          $scope.data.push(brand);
-          $scope.errors = {};
+        .post(BRAND_URL + "/create", formData, {
+          transformRequest: angular.identity,
+          headers: {'Content-Type': undefined}
+      }).then((resp) => {
+          $scope.data.push(resp.data);
           notification("Thêm thành công", 3000, "right", "top", "success");
           console.log("Thêm thành công", resp);
-        })
-        .catch((err) => {
+      }).catch((err) => {
           console.log(err);
-          ErrorService.setError(err.data.errors);
-          $scope.errors = ErrorService.getError();
-          notification(
-            "ERROR " + err.status + ": Thêm thất bại",
-            3000,
-            "right",
-            "top",
-            "error",
-          );
-        });
+          notification("ERROR " + err.status + ": Thêm thất bại", 3000, "right", "top", "error");
+      });
     };
 
 
     $scope.update = () => {
-      var item = angular.copy($scope.form);
+      var fileInput = document.getElementById("imgInp");
+      var file = fileInput.files[0];
+      var formData = new FormData();
+      formData.append('photo_file', file);
+      formData.append('brand_name', $scope.form.name);
+
       const url = `${BRAND_URL}/${$scope.form.id}`;
       $http
-        .put(url, item)
-        .then((resp) => {
-          var index = $scope.data.findIndex(
-            (item) => item.id === $scope.form.id,
-          );
+        .put(url, formData ,{
+          transformRequest: angular.identity,
+          headers: {'Content-Type': undefined}
+      }).then((resp) => {
+           var index = $scope.data.findIndex(
+          (item) => item.id === $scope.form.id,
+      );
           $scope.data[index] = resp.data;
           $scope.load();
-          console.log(resp.data);
           notification("Cập nhật thành công", 3000, "right", "top", "success");
-        })
-        .catch((err) => {
-          notification(
-            "ERROR " + err.status + ": Cập nhật thất bại",
-            3000,
-            "right",
-            "top",
-            "error",
-          );
+          console.log("Cập nhật thành công", resp);
+      }).catch((err) => {
           console.log(err);
-        });
-
+          notification("ERROR " + err.status + ": Cập nhật thất bại", 3000, "right", "top", "error");
+      });
     };
+
 
     $scope.delete = (id) => {
       $("#category").modal("hide");
@@ -170,6 +168,16 @@ app.controller(
               id: "name",
               name: "Tên Thương Hiệu",
             },
+            {
+              id: "image",
+              name: "Hình Ảnh",
+              formatter: (cell) => {
+                  const url = "../../../admin-resouce/plugins/images/" + cell;
+                  return gridjs.html(
+                      `<img src="${url}" style="width: 50px; height: 50px">`,
+                  );
+              }
+          },
             {
               id: "active",
               name: "Trạng Thái",
@@ -227,7 +235,7 @@ app.controller(
                           console.log($scope.id);
                           //Xử lí khi click vào thì gọi thằng modal ra
                           //Modal nằm ở bên trang html
-                          $("#brand").modal("show");
+                          $("#brandus").modal("show");
                         });
                       },
                     },

@@ -15,6 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.poly.fman.service.common.DateUtils;
 
 /**
@@ -64,6 +65,7 @@ public class User implements UserDetails {
 	private String username;
 
 	// bi-directional many-to-one association to Role
+	@JsonIgnore
 	@ManyToOne
 	private Role role;
 

@@ -8,6 +8,7 @@ app.config(function ($routeProvider) {
             templateUrl: "/admin/dashboard",
         })
 
+
     // PRODUCT
     .when("/product", {
       templateUrl: "/admin/products/",
@@ -43,6 +44,8 @@ app.config(function ($routeProvider) {
         return "/admin/brands/details/" + $routeParams.id;
       },
     })
+    
+
 
         // CATEGORY
         .when("/category", {
@@ -101,20 +104,18 @@ app.config(function ($routeProvider) {
         // USER
         .when("/user", {
             templateUrl: "/admin/users/",
+
+            controller: "userController"
         })
         .when("/user-add", {
             templateUrl: "/admin/users/create",
+            controller: "userController"
         })
-        .when("/user-update/:username", {
-            templateUrl: ($routeParams) => {
-                return "/admin/users/update-form/" + $routeParams.username;
-            },
+        .when("/user-update", {
+            templateUrl: "/admin/users/update-form" ,
+            controller: "userController"
         })
-        .when("/user-detail/:username", {
-            templateUrl: ($routeParams) => {
-                return "/admin/users/details/" + $routeParams.username;
-            },
-        })
+       
 
 
         // PAYMENT

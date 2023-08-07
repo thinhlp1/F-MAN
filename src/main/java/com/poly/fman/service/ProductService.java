@@ -189,10 +189,20 @@ public class ProductService {
         return productRespository.save(product);
     }
 
-    public Product delete(String id) {
-        Product product = this.getById(id);
-        product.setActive((byte) 0);
-        return productRespository.save(product);
+    public boolean delete(String id) {
+        try {
+              Product product = this.getById(id);
+        if (product != null) {
+             product.setActive((byte) 0);
+             productRespository.save(product);
+           
+        }
+          return true;
+        } catch (Exception e) { 
+             return false;
+        }
+      
+      
     }
 
     public Product restore(String id) {

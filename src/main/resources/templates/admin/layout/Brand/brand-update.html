@@ -4,43 +4,39 @@
         Quay Lại
     </a>
 </div>
-<div class="row">
-    <form>
+    <form enctype="multipart/form-data">
         <div class="row">
             <div class="col-4">
                 <div id="imgDialog" class="col-12 mb-3">
-                    <div id="image-box" class="text-center position-relative w-100 h-100"
-                         style="border: dashed">
-                        <img id="blah" ng-src="{{form.image}}" class="img-fluid" style="max-height: 300px">
-                      
-                        <input type="file" ng-file-select="onFileSelect($files)" ng-model="form.image">
+                    <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
+                        <img id="blah" class="img-fluid"/>
+                        <i id="icon-upload"
+                        class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
+                        aria-hidden="true"></i>
+                        <input accept="image/*" type="file" id="imgInp" name="photo_file"/>
+        
                     </div>
                 </div>
-                
             </div>
             <div class="col-8">
-
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="category_id" maxlength="15"  ng-model="form.id"
+                        <input type="text" class="form-control" id="brand_id" maxlength="15"  ng-model="form.id"
                                readonly="true"
                                placeholder="ID Danh Mục"/>
-                        <label for="category_id">ID</label>
+                        <label for="brand_id">ID</label>
                     </div>
                 </div>
                 <div class="col-12 mb-3">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="category_name" maxlength="50" ng-model="form.name"
+                        <input type="text" class="form-control" id="brand_name" maxlength="50" ng-model="form.name"
                                placeholder="Tên Danh Mục"/>
-                        <label for="category_name">Tên Thương Hiệu</label>
+                        <label for="brand_name">Tên Thương Hiệu</label>
                     </div>
                 </div>
             </div>
            
         </div>
-       
-        <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
-        
       
         <div class="col-12 text-end">
             <button type="submit" class="btn btn-blue-primary btn-lg" ng-click="update()">
@@ -48,4 +44,3 @@
             </button>
         </div>
     </form>
-</div>

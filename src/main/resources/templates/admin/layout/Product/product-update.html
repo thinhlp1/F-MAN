@@ -5,18 +5,13 @@
     </a>
 </div>
 
-
 <!-- Form xử lý -->
-<form action="" method="post" enctype="multipart/form-data">
-
-
+<form>
     <div class="row">
         <div id="imgDialog" class="col-4 mb-3">
             <div id="image-box" class="text-center position-relative w-100 h-100"
                  style="border: dashed">
-                <img id="blah" class="img-fluid w-100 h-100" alt=""
-                     src="">
-
+                <img id="blah" class="img-fluid w-100 h-100">
                 <i id="icon-upload"
                    class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
                    aria-hidden="true"></i>
@@ -24,54 +19,36 @@
             </div>
         </div>
         <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
-        <script>
-            document.getElementById("imgDialog").onclick = (e) => {
-                document.getElementById("imgInp").click();
-            }
-            imgInp.onchange = evt => {
-                const [file] = imgInp.files
-                if (file) {
-                    blah.src = URL.createObjectURL(file)
-                    console.log(file.name);
-                    document.getElementById("icon-upload").remove();
-                    document.getElementById("image-box").style.border = "none";
-                }
-            }
-        </script>
         <div class="col-8">
             <div class="row">
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" readonly="true" path="id" id="product_id"
+                        <input type="text" class="form-control" ng-model="form.id" id="product_id"
                                     placeholder="ID Sản Phẩm"/>
                         <label for="product_id">ID Sản Phẩm</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" path="name" id="product_name"
+                        <input type="text" class="form-control" ng-model="form.name" id="product_name"
                                     placeholder="Tên sản phẩm"/>
                         <label for="product_name">Tên sản phẩm</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <select name="id_brand" id="product_brand" class="form-select">
-                            <option value="1">Chọn thương hiệu</option>
-<!--                            <c:forEach var="items" items="${list_brands}">-->
-                                <option value="2">Brand A</option>
-<!--                            </c:forEach>-->
+                        <select ng-model="form.brand" id="product_brand" class="form-select">
+                            <option value="">Chọn Thương Hiệu</option>
+                                <option value="1">Brand A</option>
                         </select>
                         <label for="product_brand">Thương hiệu</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <select name="id_product_type" id="product_type" class="form-select">
-                            <option value="1">Chon loai</option>
-<!--                            <c:forEach var="items" items="${list_pd_type}">-->
-                                <option value="2">Loai A</option>
-<!--                            </c:forEach>-->
+                        <select ng-model="form.productType" id="product_type" class="form-select">
+                            <option value="">Chọn Loại Sản Phẩm</option>
+                                <option value="1">Product Type A</option>
 
                         </select>
                         <label for="product_type">Loại sản phẩm</label>
@@ -79,23 +56,20 @@
                 </div>
                 <div class="col-6">
                     <div class="form-floating mb-3">
-                        <input type="text" path="price" class="form-control" id="product_price"
+                        <input type="number" min="200000" ng-model="form.price" class="form-control" id="product_price"
                                     placeholder="Giá sản phẩm"/>
                         <label for="product_price">Giá</label>
-                        <errors path="price" cssClass="text-danger"/>
                     </div>
                 </div>
 
 
                 <!-- start modal -->
                 <div class="col-6">
-                    <button type="button" id="loadingSizeProduct" class="btn btn-outline-dark w-100 h-75"
-                            data-bs-toggle="modal"
+                    <button type="button" class="btn btn-outline-dark w-100 h-75" data-bs-toggle="modal"
                             data-bs-target="#exampleModal">
                         <i class="fa fa-scribd" aria-hidden="true"></i>
                         Số lượng
                     </button>
-
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1"
                          aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -115,33 +89,43 @@
                                                 <tr>
                                                     <th scope="col">Size</th>
                                                     <th scope="col">Số lượng</th>
-                                                    <th scope="col">Tồn Kho</th>
+                                                    <th scope="col"></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-<!--                                                <c:forEach var="item" items="${listProductSize}">-->
-                                                    <tr>
-                                                        <td>
-                                                            <input class="h-100 w-100 py-2 fs-4"
-                                                                   type="text" value="${item.size.id}"
-                                                                   name="size_product" placeholder="Nhập size">
+                                                <tr>
+                                                    <td><!-- <input class="h-100 w-100 py-2 fs-4"
+                                                                                type="text" placeholder="Nhập size"> -->
 
-                                                        </td>
-                                                        <td>
-                                                            <input class="h-100 w-100 py-2 fs-4" name="quatity_product"
-                                                                   type="number"
-                                                                   placeholder="Nhập số lượng"></td>
-                                                        <td>
-                                                            <span>${item.quantity}</span>
-                                                        </td>
-                                                    </tr>
-<!--                                                </c:forEach>-->
+                                                        <div class="form-floating mb-3">
+                                                            <select name="size_product"
+                                                                    class="h-100 w-100 py-2 fs-4 form-select">
+                                                            </select>
+                                                        </div>
 
+                                                    </td>
+                                                    <td>
+                                                        <input class="h-100 w-100 py-2 fs-4" min="1"
+                                                               name="quatity_product"
+                                                               type="number"
+                                                               placeholder="Nhập số lượng"></td>
+                                                    <td>
+                                                        <button type="button"
+                                                                class="delete-row-root btn bg-transparent text-danger h-100 w-100">
+                                                            <i
+                                                                    class="fa fa-trash fs-7 "
+                                                                    aria-hidden="true"></i></button>
+                                                    </td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-
+                                    <div class="text-end">
+                                        <button id="add-row-button"
+                                                type="button" class="btn bg-transparent text-success text-end"><i
+                                                class="fa fa-plus fs-7" aria-hidden="true"></i></button>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
@@ -155,11 +139,11 @@
                         </div>
                     </div>
 
-                    <script>
+                    <!-- <script>
                         const table = document.getElementById('my-table');
                         const addRowButton = document.getElementById('add-row-button');
                         const clickSize = document.getElementById('addSize');
-                        const loadingSizeProduct = document.getElementById("loadingSizeProduct");
+
 
                         clickSize.addEventListener('click', function () {
                             const listSize = document.getElementsByName('size_product');
@@ -180,7 +164,7 @@
 
                             console.log(sizeArray);
                             $.ajax({
-                                url: "${pageContext.request.contextPath}/admin/products/update/productsize",
+                                url: "${pageContext.request.contextPath}/admin/products/create/productsize",
                                 type: "POST",
                                 contentType: "application/json",
                                 data: JSON.stringify(sizeArray),
@@ -194,80 +178,78 @@
 
                                 }
                             });
+
+
+                        })
+                        addRowButton.addEventListener('click', function () {
+                            console.log("vao day ne")
+                            // Tạo một hàng mới
+                            const newRow = table.insertRow();
+
+                            // Tạo hai ô mới cho hàng
+                            const cell1 = newRow.insertCell();
+                            const cell2 = newRow.insertCell();
+                            const cell3 = newRow.insertCell();
+
+                            // Thêm nội dung cho hai ô mới tạo
+                            // cell1.innerHTML = `<input class="h-100 w-100 py-2 fs-4" type="text" name="size_product" placeholder="Nhập size">`;
+                            cell1.innerHTML = `
+                                            <div class="form-floating mb-3">
+     								           <select name="size_product" class="form-select h-100 w-100 py-2 fs-4">
+
+    								 				<c:forEach var="items" items="${list_sizes}">
+    								 					<option value="${items.id}">${items.size}</option>
+    								 				</c:forEach>
+    											</select>
+    									  </div>
+    										`;
+                            cell2.innerHTML = `<input class="h-100 w-100 py-2 fs-4" type="number" name="quatity_product" placeholder="Nhập số lượng">`;
+
+                            // Thêm nút "Delete" cho hàng mới tạo
+                            const deleteButton = document.createElement('button');
+                            deleteButton.classList.add('delete-row-button');
+                            deleteButton.classList.add('text-danger');
+                            deleteButton.classList.add('bg-transparent');
+                            deleteButton.classList.add('w-100');
+                            deleteButton.classList.add('h-100');
+                            deleteButton.classList.add('border-0');
+                            deleteButton.innerHTML = `<i class="fa fa-trash fs-7" text-danger aria-hidden="true"></i>`;
+                            cell3.appendChild(deleteButton);
+
+                            // Gắn sự kiện click cho nút "Delete"
+                            deleteButton.addEventListener('click', function () {
+                                table.deleteRow(newRow.rowIndex);
+                            });
                         });
 
-                        // addRowButton.addEventListener('click', function () {
-                        //     // Tạo một hàng mới
-                        //     const newRow = table.insertRow();
+                        // Gắn sự kiện cho tất cả các nút "Delete" được tạo ra ban đầu
+                        const deleteButtons = document.querySelectorAll('.delete-row-button');
+                        deleteButtons.forEach(function (button) {
+                            button.addEventListener('click', function () {
+                                const row = button.parentNode.parentNode;
+                                row.parentNode.removeChild(row);
+                            });
+                        });
 
-                        //     // Tạo hai ô mới cho hàng
-                        //     const cell1 = newRow.insertCell();
-                        //     const cell2 = newRow.insertCell();
-                        //     const cell3 = newRow.insertCell();
-
-                        //     // Thêm nội dung cho hai ô mới tạo
-                        //    // cell1.innerHTML = `<input class="h-100 w-100 py-2 fs-4" type="text" name="size_product" placeholder="Nhập size">`;
-                        //     cell1.innerHTML = `
-                        //     <div class="form-floating mb-3">
-                        //        <select name="size_product" class="form-select h-100 w-100 py-2 fs-4">
-                        // 		<option value="">Chọn Size</option>
-                        // 			<c:forEach var="items" items="${list_sizes}">
-                        // 				<option value="${items.id}">${items.size}</option>
-                        // 			</c:forEach>
-                        // 		</select>
-                        //   </div>
-                        // 	`;
-                        //     cell2.innerHTML = `<input class="h-100 w-100 py-2 fs-4" type="number" name="quatity_product" placeholder="Nhập số lượng">`;
-
-                        //     // Thêm nút "Delete" cho hàng mới tạo
-                        //     const deleteButton = document.createElement('button');
-                        //     deleteButton.classList.add('delete-row-button');
-                        //     deleteButton.classList.add('text-danger');
-                        //     deleteButton.classList.add('bg-transparent');
-                        //     deleteButton.classList.add('w-100');
-                        //     deleteButton.classList.add('h-100');
-                        //     deleteButton.classList.add('border-0');
-                        //     deleteButton.innerHTML = `<i class="fa fa-trash fs-7" text-danger aria-hidden="true"></i>`;
-                        //     cell3.appendChild(deleteButton);
-
-                        //     // Gắn sự kiện click cho nút "Delete"
-                        //     deleteButton.addEventListener('click', function () {
-                        //         table.deleteRow(newRow.rowIndex);
-                        //     });
-                        // });
-
-                        // // Gắn sự kiện cho tất cả các nút "Delete" được tạo ra ban đầu
-                        // const deleteButtons = document.querySelectorAll('.delete-row-button');
-                        // deleteButtons.forEach(function (button) {
-                        //     button.addEventListener('click', function () {
-                        //         const row = button.parentNode.parentNode;
-                        //         row.parentNode.removeChild(row);
-                        //     });
-                        // });
-
-
-                    </script>
+                    </script> -->
                 </div>
                 <!-- end modal -->
 
 
             </div>
         </div>
-
-
         <div class="col-12 mb-3">
             <div class="form-floating">
-                <textarea class="form-control" path="desc" placeholder="Nhập ghi chú" id="product_note"
-                               style="height: 100px"></textarea>
+                <form:textarea class="form-control" ng-model="form.desc" placeholder="Nhập ghi chú" id="product_note"
+                               style="height: 100px"></form:textarea>
                 <label for="product_note">Ghi chú</label>
-                <errors path="desc" cssClass="text-danger"/>
+               
             </div>
         </div>
         <div class="col-12 text-end">
-            <button type="submit" class="btn btn-blue-primary btn-lg">
-                Cập nhật
+            <button  class="btn btn-blue-primary btn-lg"  ng-click="create()" >
+                Tạo
             </button>
         </div>
     </div>
 </form>
-
