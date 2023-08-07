@@ -8,41 +8,41 @@ app.config(function ($routeProvider) {
             templateUrl: "/admin/dashboard",
         })
 
-        // PRODUCT
-        .when("/product", {
-            templateUrl: "/admin/products/",
-        })
-        .when("/product-add", {
-            templateUrl: "/admin/products/create",
-        })
-        .when("/product-update/:id", {
-            templateUrl: ($routeParams) => {
-                return "/admin/products/update-form/" + $routeParams.id;
-            },
-        })
-        .when("/product-detail/:id", {
-            templateUrl: ($routeParams) => {
-                return "/admin/products/details/" + $routeParams.id;
-            },
-        })
+    // PRODUCT
+    .when("/product", {
+      templateUrl: "/admin/products/",
+    })
+    .when("/product-add", {
+      templateUrl: "/admin/products/create",
+    })
+    .when("/product-update/:id", {
+      templateUrl: ($routeParams) => {
+        return "/admin/products/update-form/" + $routeParams.id;
+      },
+    })
+    .when("/product-detail/:id", {
+      templateUrl: ($routeParams) => {
+        return "/admin/products/details/" + $routeParams.id;
+      },
+    })
 
-        // BRAND
-        .when("/brand", {
-            templateUrl: "/admin/brands/",
-        })
-        .when("/brand-add", {
-            templateUrl: "/admin/brands/create",
-        })
-        .when("/brand-update/:id", {
-            templateUrl: ($routeParams) => {
-                return "/admin/brands/update-form/" + $routeParams.id;
-            },
-        })
-        .when("/brand-detail/:id", {
-            templateUrl: ($routeParams) => {
-                return "/admin/brands/details/" + $routeParams.id;
-            },
-        })
+    // BRAND
+    .when("/brand", {
+      templateUrl: "/admin/brands/",
+    })
+    .when("/brand-add", {
+      templateUrl: "/admin/brands/create",
+    })
+    .when("/brand-update/:id", {
+      templateUrl: ($routeParams) => {
+        return "/admin/brands/update-form/" + $routeParams.id;
+      },
+    })
+    .when("/brand-detail/:id", {
+      templateUrl: ($routeParams) => {
+        return "/admin/brands/details/" + $routeParams.id;
+      },
+    })
 
         // CATEGORY
         .when("/category", {
@@ -58,32 +58,32 @@ app.config(function ($routeProvider) {
             controller: "CategoryController",
         })
 
-        // SIZE
-        .when("/size", {
-            templateUrl: "/admin/sizes/",
-        })
-        .when("/size-add", {
-            templateUrl: "/admin/sizes/create",
-        })
-        .when("/size-update/:id", {
-            templateUrl: ($routeParams) => {
-                return "/admin/sizes/update-form/" + $routeParams.id;
-            },
-        })
+    // SIZE
+    .when("/size", {
+      templateUrl: "/admin/sizes/",
+    })
+    .when("/size-add", {
+      templateUrl: "/admin/sizes/create",
+    })
+    .when("/size-update/:id", {
+      templateUrl: ($routeParams) => {
+        return "/admin/sizes/update-form/" + $routeParams.id;
+      },
+    })
 
-        // DISCOUNT
-        .when("/discount", {
-            templateUrl: "/admin/discounts/",
-            controller: "DiscountController"
-        })
-        .when("/discount-add", {
-            templateUrl: "/admin/discounts/create",
-            controller: "DiscountController"
-        })
-        .when("/discount-update", {
-            templateUrl: "/admin/discounts/update-form",
-            controller: "DiscountController"
-        })
+    // DISCOUNT
+    .when("/discount", {
+      templateUrl: "/admin/discounts/",
+      controller: "DiscountController"
+    })
+    .when("/discount-add", {
+      templateUrl: "/admin/discounts/create",
+      controller: "DiscountController"
+    })
+    .when("/discount-update", {
+      templateUrl: "/admin/discounts/update-form",
+      controller: "DiscountController"
+    })
 
         // ORDER
         .when("/order", {

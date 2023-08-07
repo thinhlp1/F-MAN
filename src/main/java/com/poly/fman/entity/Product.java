@@ -13,6 +13,7 @@ import java.util.Date;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.poly.fman.service.common.CommonUtils;
 
 
@@ -57,41 +58,54 @@ public class Product implements Serializable {
 	private Date updateAt;
 
 	//bi-directional many-to-one association to CartItem
+	@JsonIgnore
 	@OneToMany(mappedBy="product")
 	private List<CartItem> cartItems;
 
 	//bi-directional many-to-one association to OrderItem
+	@JsonIgnore
 	@OneToMany(mappedBy="product")
 	private List<OrderItem> orderItems;
 
 	//bi-directional many-to-one association to Brand
+	
+	@JsonIgnore
 	@ManyToOne
 	private Brand brand;
 
 	//bi-directional many-to-one association to ProductType
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="product_type")
 	private ProductType productType;
 
 	//bi-directional many-to-one association to ProductHistory
+	@JsonIgnore
 	@OneToMany(mappedBy="product")
 	private List<ProductHistory> productHistories;
 
 	//bi-directional many-to-one association to ProductSize
+	@JsonIgnore
 	@OneToMany(mappedBy="product")
 	private List<ProductSize> productSizes;
 
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="update_by")
 	private User updateBy;
 
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="create_by")
 	private User createBy;
 
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="delete_by")
 	private User deleteBy;
+
+
+
 
 	public List<CartItem> getCartItems() {
 		return this.cartItems;

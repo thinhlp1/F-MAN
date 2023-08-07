@@ -15,4 +15,6 @@ public interface BrandRepository extends JpaRepository<Brand, String> {
     public Optional<Brand> findByName(String name);
 
     public Optional<List<Brand>> findByNameLike(String name);
+    
+    boolean existsById(String id);
 }
