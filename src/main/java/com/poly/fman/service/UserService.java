@@ -1,6 +1,7 @@
 package com.poly.fman.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.poly.fman.dto.model.UserDTO2;
+import com.poly.fman.entity.Brand;
 import com.poly.fman.entity.Role;
 import com.poly.fman.entity.User;
 import com.poly.fman.entity.Voucher;
@@ -45,6 +47,44 @@ public class UserService {
         }
         return null;
     }
+    public User userIsExistedUser(String username, String email, String numberPhone) {
+        User user = this.getUserByUsernameAndActiveIsTrue(username);
+        if (user != null) {
+            if (user.getUsername().equalsIgnoreCase(username)) {
+                return user;
+            } else if (user.getEmail().equalsIgnoreCase(email)) {
+                return user;
+            } else if (user.getNumberPhone().equalsIgnoreCase(numberPhone)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+      public List<User> getAllActive() {
+        return userRepository.findAllByActiveIsTrue().orElse(null);
+    }
+
+    public boolean existUserById(int id) {
+        return userRepository.existsById(id);
+    }
+
+
+
+      public boolean exstUserByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+    public boolean exstUserByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean exstUserByPhoneNumber(String phoneNumber) {
+        return userRepository.existsByEmail(phoneNumber);
+    }
+
+
+
+
 
     public User getUser(String username) {
         User user = userRepository.findByUsernameAndActiveIsTrue(username).orElse(null);
@@ -105,7 +145,7 @@ public class UserService {
         User user = modelMapper.map(userDTO, User.class);
         // user.setUsername(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setCreateAt(new Date());
+      
         return userRepository.save(user);
     }
 
@@ -148,4 +188,9 @@ public class UserService {
         user.setDeleteAt(new Date());
         return userRepository.save(user);
     }
+
+
+
+
+    
 }

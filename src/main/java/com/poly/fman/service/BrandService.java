@@ -47,8 +47,8 @@ public class BrandService {
         return brandRepository.save(brand);
     }
 
-    public Brand update(BrandDTO brandDTO){
-        Brand brand = modelMapper.map(brandDTO, Brand.class);
+    public Brand update(Brand brand){
+      
         return brandRepository.save(brand);
     }
 

@@ -1,36 +1,62 @@
 app.controller(
-    "productController",
-    function(
-        $scope, $http, DataService, FormService, ErrorService
-    ){
-        const PRODUCT_URL = "http://localhost:8080/admin/products";
-        const PRODUCT_LIST_URL = "http://localhost:8080/admin/products/list";
-
-
-
-          //Khởi tạo các biến toàn cục
-    $scope.id = "";
-    $scope.data = DataService.getData(); //Chứa danh sách tất cả đối tượng (Category)
-    $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
-    $scope.errors = ErrorService.getError();
-    /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
-
-    $scope.reset = () => {
+    "userController",
+    function (
+      $scope,
+      $http,
+      DataService,
+      FormService,
+      ErrorService,
+      $location,
+      $timeout,
+    ) {
+      const USER_URL = "http://localhost:8080/admin/users";
+      const USER_LIST_URL = `${USER_URL}/list`;
+  
+      //Khởi tạo các biến toàn cục
       $scope.id = "";
-      $scope.form = {};
-    };
-
-    $scope.load = () => {
-      return $http
-        .get(PRODUCT_LIST_URL)
-        .then((resp) => {
-          //Lấy dữ liệu từ server và gán vào DataService
-          DataService.setData(resp.data);
-          //Gán dữ liệu vào $scope.data trên biến toàn cục
-          $scope.data = DataService.getData();
-          console.log($scope.data);
-        })
-        .catch((err) => {
+      $scope.data = DataService.getData(); //Chứa danh sách tất cả đối tượng (Category)
+      $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
+      $scope.errors = ErrorService.getError();
+      /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
+  
+      $scope.reset = () => {
+        $scope.id = "";
+        $scope.form = {};
+      };
+  
+      $scope.load = () => {
+        return $http
+          .get(USER_LIST_URL)
+          .then((resp) => {
+            //Lấy dữ liệu từ server và gán vào DataService
+            DataService.setData(resp.data);
+            //Gán dữ liệu vào $scope.data trên biến toàn cục
+            $scope.data = DataService.getData();
+          })
+          .catch((err) => {
+            console.log(err);
+            notification(
+              "ERROR " + err.status + ": Lỗi tải dữ liệu",
+              3000,
+              "right",
+              "top",
+              "error",
+            );
+          });
+      };
+  
+      $scope.edit = async (id) => {
+        $scope.isLoading = true; // Đánh dấu là phần xử lý bất đồng bộ đang được thực hiện
+        try {
+          const resp = await $http.get(USER_URL + "/" + id);
+          FormService.setForm(resp.data);
+          $scope.form = FormService.getForm();
+          console.log($scope.form);
+          $timeout(() => {
+            $scope.isLoading = false; // Đánh dấu là phần xử lý bất đồng bộ đã hoàn thành
+            $location.path("/user-update");
+          });
+        } catch (err) {
           console.log(err);
           notification(
             "ERROR " + err.status + ": Lỗi tải dữ liệu",
@@ -39,21 +65,28 @@ app.controller(
             "top",
             "error",
           );
-        });
-    };
-
-
-
-    $scope.create = () => {
-      var fileInput = document.getElementById("imgInp");
-      var file = fileInput.files[0];
-      var formData = new FormData();
-      formData.append('photo_file', file);
-      formData.append('brand_id', $scope.form.id);
-      formData.append('brand_name', $scope.form.name);
-      
-      $http
-        .post(PRODUCT_URL + "/create", formData, {
+        }
+      };
+  
+     
+      $scope.create = () => {
+        var fileInput = document.getElementById("imgInp");
+        var file = fileInput.files[0];
+        var formData = new FormData();
+        formData.append('photo_file', file);
+        formData.append('name', $scope.form.name);
+        formData.append('password', $scope.form.password);
+        formData.append('email', $scope.form.email);
+        formData.append('numberPhone', $scope.form.numberPhone);
+        formData.append('roleId', $scope.form.roleId);
+        formData.append('active', $scope.form.active);
+        // console.log($scope.form.roleId +" :rolde ID")
+        // console.log($scope.form.password +" :password ")
+        // console.log($scope.form.active +" :active ")
+        // console.log(typeof($scope.form.roleId) +"kieu cua role") 
+        
+        $http
+        .post(USER_URL + "/create", formData, {
           transformRequest: angular.identity,
           headers: {'Content-Type': undefined}
       }).then((resp) => {
@@ -65,16 +98,21 @@ app.controller(
           notification("ERROR " + err.status + ": Thêm thất bại", 3000, "right", "top", "error");
       });
     };
-
-
-    $scope.update = () => {
-      var fileInput = document.getElementById("imgInp");
+  
+  
+      $scope.update = () => {
+        var fileInput = document.getElementById("imgInp");
       var file = fileInput.files[0];
       var formData = new FormData();
       formData.append('photo_file', file);
-      formData.append('brand_name', $scope.form.name);
+      formData.append('name', $scope.form.name);
+      formData.append('password', $scope.form.password);
+      formData.append('email', $scope.form.email);
+      formData.append('numberPhone', $scope.form.numberPhone);
+      formData.append('roleId', $scope.form.roleId);
+      formData.append('active', $scope.form.active);
 
-      const url = `${PRODUCT_URL}/${$scope.form.id}`;
+      const url = `${USER_URL}/${$scope.form.id}`;
       $http
         .put(url, formData ,{
           transformRequest: angular.identity,
@@ -91,45 +129,34 @@ app.controller(
           console.log(err);
           notification("ERROR " + err.status + ": Cập nhật thất bại", 3000, "right", "top", "error");
       });
-    };
-
-
-    $scope.delete = (id) => {
-      $("#product").modal("hide");
-      const url = `${PRODUCT_URL}/delete/` + id;
-      $http
-        .delete(url)
-        .then((resp) => {
-          // Xóa bản ghi khỏi $scope.data
-          $scope.data = $scope.data.filter((item) => item.id !== id);
-          $scope.updateTable($scope.data);
-          notification("Xóa thành công", 3000, "right", "top", "success");
-        })
-        .catch((err) => {
-          notification(
-            "ERROR " + err.status + ": Xóa thất bại",
-            3000,
-            "right",
-            "top",
-            "error",
-          );
-          console.log("Fail", err);
-        });
-    };
-
-
-    // add row table size and quantity
-
-    $scope.addRowHTML = () => {
-
-      console.log("vao roi ne")
-     
-    };
-
-
-
-    //Khởi tạo table GRIDJS
-    $scope.initGrid = () => {
+  
+      };
+  
+      $scope.delete = (id) => {
+        $("#category").modal("hide");
+        const url = `${USER_URL}/delete/` + id;
+        $http
+          .delete(url)
+          .then((resp) => {
+            // Xóa bản ghi khỏi $scope.data
+            $scope.data = $scope.data.filter((item) => item.id !== id);
+            $scope.updateTable($scope.data);
+            notification("Xóa thành công", 3000, "right", "top", "success");
+          })
+          .catch((err) => {
+            notification(
+              "ERROR " + err.status + ": Xóa thất bại",
+              3000,
+              "right",
+              "top",
+              "error",
+            );
+            console.log("Fail", err);
+          });
+      };
+  
+      //Khởi tạo table GRIDJS
+      $scope.initGrid = () => {
         //Kiểm tra có tồn tại thẻ gốc có id = 'grid' để đặt table hay không
         //Nếu tồn tại xóa tất cả element bên trong
         const container = document.getElementById("grid");
@@ -152,22 +179,34 @@ app.controller(
               },
               {
                 id: "name",
-                name: "Tên Sản Phẩm",
+                name: "Họ Tên",
               },
               {
-                id: "active",
-                name: "Trạng Thái",
-                formatter: (cell) => {
-                  // cell là nội dụng trong một ô ở cột 'Trạng thái' (cell sẽ auto duyệt qua bằng data được truyền vào)
-                  if (cell === 1) {
-                    return "Hoạt động";
-                  } else if (cell === 0) {
-                    return "Không hoạt động";
-                  } else {
-                    return "";
-                  }
-                },
+                id: "username",
+                name: "Username",
               },
+              {
+                id: "email",
+                name: "Email",
+              },
+              {
+                id: "numberPhone",
+                name: "Số điện thoại",
+              },
+              // {
+              //   id: "active",
+              //   name: "Trạng Thái",
+              //   formatter: (cell) => {
+              //     // cell là nội dụng trong một ô ở cột 'Trạng thái' (cell sẽ auto duyệt qua bằng data được truyền vào)
+              //     if (cell === 1) {
+              //       return "Hoạt động";
+              //     } else if (cell === 0) {
+              //       return "Không hoạt động";
+              //     } else {
+              //       return "";
+              //     }
+              //   },
+              // },
               {
                 name: "Action",
                 formatter: (cell, row) => {
@@ -211,7 +250,7 @@ app.controller(
                             console.log($scope.id);
                             //Xử lí khi click vào thì gọi thằng modal ra
                             //Modal nằm ở bên trang html
-                            $("#product").modal("show");
+                            $("#user").modal("show");
                           });
                         },
                       },
@@ -234,8 +273,6 @@ app.controller(
                 },
               },
             ],
-
-
             data: $scope.data, //Data được truyền vào (JSON, ARRAY)
             sort: true, //cho phép thêm plugin sắp xếp vào bảng
             pagination: {
@@ -283,7 +320,5 @@ app.controller(
         $scope.initGrid();
       });
     },
-
-    
-
-)
+  );
+  
