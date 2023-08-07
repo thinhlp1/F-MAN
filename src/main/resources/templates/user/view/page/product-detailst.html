@@ -31,230 +31,235 @@
 
 <body>
 
-<!-- Start Header Area -->
-<div th:replace="~{/user/view/component/nav.html::nav}"></div>
-<!-- End Header Area -->
-<!-- start features Area -->
-<section class="features-area section_gap">
+    <!-- Start Header Area -->
+    <div th:replace="~{/user/view/component/nav.html::nav}"></div>
+    <!-- End Header Area -->
+    <!-- start features Area -->
+    <section class="features-area section_gap">
 
-</section>
-<div class="product_image_area" th:object="${productDetails}">
-    <div class="container">
-        <div class="row s_product_inner">
-            <div class="col-lg-6">
-                <div class="single-prd-item">
-                    <img class="img-fluid w-100"
-                         th:src="@{/admin-resouce/plugins/images/products/__${productDetails.image}__}"
-                         alt="${productDetails.image}">
-                </div>
-            </div>
-            <div class="col-lg-5 offset-lg-1">
-                <div class="s_product_text">
-                    <h3 th:text="*{name}"></h3>
-                    <h2 th:text="*{priceStringVND}"></h2>
-                    <ul class="list">
-                        <li>
-                            <a class="active" href="#">
-                                <span>Loại giày</span> :
-                                <span th:text="*{productType.name}"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <span>Thương hiệu</span>
-                                : <span th:text="*{brand.name}"></span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p th:text="*{desc}"></p>
-
-                    <div class="common-filter size-filter mb-3">
-                        <div class="head">Size giày</div>
-                        <form action="#">
-                            <ul class="list-unstyled d-flex flex-wrap">
-                                <li class="filter-list" th:each="sizes : ${productDetails.productSizes}"
-                                    th:object="${sizes}">
-                                    <th:block th:if="*{quantity > 0}">
-                                        <input class="pixel-radio" type="radio" th:id="${sizes.id}"
-                                               th:disabled="${sizes.quantity == 0}"
-                                               name="color">
-                                        <label th:for="*{id}">
-                                            <span th:text="*{size.size.intValue()}"></span>
-                                            <sub th:text="(*{getAvailableQuantity()} +' SP')"></sub>
-                                        </label>
-                                    </th:block>
-                                </li>
-                            </ul>
-                        </form>
-                    </div>
-
-                    <div class="product_count">
-                        <label for="qty">Quantity:</label>
-                        <input type="text" name="qty" id="qty" maxlength="12" value="0" readonly
-                               title="Quantity:" class="input-text qty">
-                        <button class="increase items-count" type="button"><i
-                                onclick="increaseQuantity()" class="lnr lnr-chevron-up"></i></button>
-                        <button class="reduced items-count" type="button"><i
-                                onclick="decreaseQuantity()" class="lnr lnr-chevron-down"></i></button>
-                    </div>
-
-                    <div class="card_area d-flex align-items-center">
-                        <a class="primary-btn" style="color: white;" onclick="addToCart()"
-                           type="button">Thêm vào giỏ hàng</a>
-                        <a class="primary-btn" style="color: white;" onclick="buyNow()" type="button">Mua luôn</a>
+    </section>
+    <div class="product_image_area" th:object="${productDetails}" ng-app="myApp"
+        ng-controller="ProductDetailsController">
+        <div class="container" id="productId" th:value="${productDetails.id}" >
+            <div class="row s_product_inner">
+                <div class="col-lg-6">
+                    <div class="single-prd-item">
+                        <img class="img-fluid w-100"
+                            th:src="@{/admin-resouce/plugins/images/products/__${productDetails.image}__}"
+                            alt="${productDetails.image}">
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--================End Single Product Area =================-->
+                <div class="col-lg-5 offset-lg-1">
+                    <div class="s_product_text">
+                        <h3 th:text="*{name}"></h3>
+                        <h2 th:text="*{priceStringVND}"></h2>
+                        <ul class="list">
+                            <li>
+                                <a class="active" href="#">
+                                    <span>Loại giày</span> :
+                                    <span th:text="*{productType.name}"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>Thương hiệu</span>
+                                    : <span th:text="*{brand.name}"></span>
+                                </a>
+                            </li>
+                        </ul>
+                        <p th:text="*{desc}"></p>
 
-<!--================Product Description Area =================-->
-<section class="product_description_area">
-    <div class="container">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item ">
-                <a class="nav-link active	" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                   aria-controls="home" aria-selected="true">Mô tả</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                   aria-controls="profile" aria-selected="false">Thông số</a>
-            </li>
+                        <div class="common-filter size-filter mb-3">
+                            <div class="head">Size giày</div>
+                            <form action="#">
+                                <ul class="list-unstyled d-flex flex-wrap">
+                                    <li class="filter-list mx-3" th:each="sizes : ${productDetails.productSizes}"
+                                        th:object="${sizes}">
+                                        <th:block th:if="*{quantity > 0}">
+                                            <input class="pixel-radio" type="radio" th:id="${sizes.id}"
+                                                th:disabled="${sizes.quantity == 0}"th:attr="ng-click=${'updateSize(' + sizes.quantity + ', ' + sizes.id + ', ' + sizes.getAvailableQuantity() + ')'}"
+                                                 name="color">
+                                            <label th:for="*{id}">
+                                                <span th:text="*{size.size.intValue()}"></span>
+                                                <sub th:text="(*{getAvailableQuantity()} +' SP')"></sub>
+                                            </label>
+                                        </th:block>
+                                    </li>
+                                </ul>
+                            </form>
+                        </div>
 
+                        <div class="product_count">
+                            <label for="qty">Quantity:</label>
+                            <input type="text" name="qty" id="qty" maxlength="12" value="0" readonly title="Quantity:"
+                                class="input-text qty">
+                            <button class="increase items-count" type="button"><i ng-click="increaseQuantity()"
+                                    class="fa fa-chevron-up"></i></button>
+                            <button class="reduced items-count" type="button"><i ng-click="decreaseQuantity()"
+                                    class="fa fa-chevron-down"></i></button>
+                        </div>
 
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"
-                 th:text="${productDetails.desc}">
-            </div>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="table-responsive">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td>
-                                <h5>Width</h5>
-                            </td>
-                            <td>
-                                <h5>128mm</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h5>Height</h5>
-                            </td>
-                            <td>
-                                <h5>508mm</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h5>Depth</h5>
-                            </td>
-                            <td>
-                                <h5>85mm</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h5>Weight</h5>
-                            </td>
-                            <td>
-                                <h5>52gm</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h5>Quality checking</h5>
-                            </td>
-                            <td>
-                                <h5>yes</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h5>Freshness Duration</h5>
-                            </td>
-                            <td>
-                                <h5>03days</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h5>When packeting</h5>
-                            </td>
-                            <td>
-                                <h5>Without touch of hand</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h5>Each Box contains</h5>
-                            </td>
-                            <td>
-                                <h5>60pcs</h5>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-<!--================End Product Description Area =================-->
-
-<!-- Start Product List -->
-<section>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 text-center">
-                <div class="section-title">
-                    <h1>Sản phẩm</h1>
-                    <p>Những sản phẩm cùng loại</p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-6" th:each="item : ${listProducts}" th:object="${item}">
-                <a th:href="@{/product/__${item.id}__}">
-                    <div class="single-product">
-                        <img class="img-fluid" style="max-height: 280px"
-                             th:src="@{/admin-resouce/plugins/images/products/__${item.image}__}" alt="">
-                        <div class="product-details">
-                            <h6 th:text="${item.name}"></h6>
-                            <div class="price">
-                                <h6 th:text="${item.price}"></h6>
-                            </div>
+                        <div class="card_area d-flex align-items-center">
+                            <a class="primary-btn" style="color: white;"
+                            th:attr="ng-click=${'addToCart()'}" type="button">Thêm vào
+                                giỏ hàng</a>
+                            <a class="primary-btn" style="color: white;" ng-click="buyNow()" type="button">Mua luôn</a>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>
-</section>
-<div th:replace="~{/user/view/component/footer.html::footer}">
-</div>
+    <!--================End Single Product Area =================-->
 
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
-<script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
-<script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
-<script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
-<script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
-<script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
-<script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
-<!--  <script th:src="@{/user-resouce/js/countdown.js}"></script>-->
-<script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
-<script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
-<!--gmaps Js-->
-<script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
-<script th:src="@{/user-resouce/js/main.js}"></script>
+    <!--================Product Description Area =================-->
+    <section class="product_description_area">
+        <div class="container">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item ">
+                    <a class="nav-link active	" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                        aria-controls="home" aria-selected="true">Mô tả</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                        aria-controls="profile" aria-selected="false">Thông số</a>
+                </li>
 
-<script th:src="@{/common/commonFunction.js}"></script>
+
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"
+                    th:text="${productDetails.desc}">
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <h5>Width</h5>
+                                    </td>
+                                    <td>
+                                        <h5>128mm</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Height</h5>
+                                    </td>
+                                    <td>
+                                        <h5>508mm</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Depth</h5>
+                                    </td>
+                                    <td>
+                                        <h5>85mm</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Weight</h5>
+                                    </td>
+                                    <td>
+                                        <h5>52gm</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Quality checking</h5>
+                                    </td>
+                                    <td>
+                                        <h5>yes</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Freshness Duration</h5>
+                                    </td>
+                                    <td>
+                                        <h5>03days</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>When packeting</h5>
+                                    </td>
+                                    <td>
+                                        <h5>Without touch of hand</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Each Box contains</h5>
+                                    </td>
+                                    <td>
+                                        <h5>60pcs</h5>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!--================End Product Description Area =================-->
+
+    <!-- Start Product List -->
+    <section>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="section-title">
+                        <h1>Sản phẩm</h1>
+                        <p>Những sản phẩm cùng loại</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6" th:each="item : ${listProducts}" th:object="${item}">
+                    <a th:href="@{/product/__${item.id}__}">
+                        <div class="single-product">
+                            <img class="img-fluid" style="max-height: 280px"
+                                th:src="@{/admin-resouce/plugins/images/products/__${item.image}__}" alt="">
+                            <div class="product-details">
+                                <h6 th:text="${item.name}"></h6>
+                                <div class="price">
+                                    <h6 th:text="${item.price}"></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:replace="~{/user/view/component/footer.html::footer}">
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+    <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+    <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+    <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+    <!--  <script th:src="@{/user-resouce/js/countdown.js}"></script>-->
+    <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+    <!--gmaps Js-->
+    <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+    <script th:src="@{/user-resouce/js/main.js}"></script>
+
+    <script th:src="@{/common/commonFunction.js}"></script>
+    <script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
+    <script th:src="@{/user-resouce/angularjs/controller/productDetailsController.js}"></script>
+
 
 
 </body>

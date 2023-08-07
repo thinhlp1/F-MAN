@@ -245,5 +245,5 @@ app.controller('CartController', function ($scope, $http, $location) {
         });
 
     }
-    $scope.loadCart();
+   
 });
