@@ -11,9 +11,11 @@ app.config(function ($routeProvider) {
     // PRODUCT
     .when("/product", {
       templateUrl: "/admin/products/",
+      controller: "productController",
     })
     .when("/product-add", {
       templateUrl: "/admin/products/create",
+      controller: "productController",
     })
     .when("/product-update/:id", {
       templateUrl: ($routeParams) => {
@@ -29,19 +31,15 @@ app.config(function ($routeProvider) {
     // BRAND
     .when("/brand", {
       templateUrl: "/admin/brands/",
+      controller: "brandController",
     })
     .when("/brand-add", {
       templateUrl: "/admin/brands/create",
+      controller: "brandController",
     })
-    .when("/brand-update/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/brands/update-form/" + $routeParams.id;
-      },
-    })
-    .when("/brand-detail/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/brands/details/" + $routeParams.id;
-      },
+    .when("/brand-update", {
+      templateUrl: "/admin/brands/update-form",
+      controller: "brandController",
     })
 
     // CATEGORY
@@ -67,10 +65,8 @@ app.config(function ($routeProvider) {
       templateUrl: "/admin/sizes/create",
       controller: "SizeController",
     })
-    .when("/size-update/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/sizes/update-form/" + $routeParams.id;
-      },
+    .when("/size-update", {
+      templateUrl: "/admin/sizes/update-form",
       controller: "SizeController",
     })
 

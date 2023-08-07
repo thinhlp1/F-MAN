@@ -69,23 +69,18 @@ public class SizeController {
         return ResponseEntity.ok(size);
     }
 
-    @GetMapping("/update-form/{id}")
-    public String updateForm(Model model, @PathVariable("id") String sizeId) {
-        //Khi id được truyền qua lặp tức tìm kiếm theo ID và fill lên form
-        Size size = sizeService.getById(sizeId);
-        model.addAttribute("size", size);
-        //Sau khi tạo mới một size sẽ hiển thị cho người dùng thông báo tạo thành công
-        if (session.get("isCreate") != null) {
-            model.addAttribute("isCreate", true);
-            session.remove("isCreate");
-        }
-        if (session.get("isUpdate") != null) {
-            model.addAttribute("isUpdate", true);
-            session.remove("isUpdate");
-        }
+    @GetMapping("/update-form")
+    public String updateForm() {
         return "admin/layout/Size/size_update";
     }
 
+    @PutMapping("/update-form/{id}")
+    public ResponseEntity<ResponseDTO> update(@PathVariable("id") String id,@Valid @RequestBody SizeDTO size) {
+        if(sizeService.existId(id)) {
+            sizeService.update(size);
+        }
+        return ResponseEntity.ok(size);
+    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Size> delete(@PathVariable("id") String id) {
         if(!sizeService.existId(id)){
@@ -104,30 +99,6 @@ public class SizeController {
         return "redirect:/admin/sizes/";
     }
 
-
-    @PostMapping("/update-form/{id}")
-    public String update(@Validated @ModelAttribute("size") SizeDTO size, BindingResult result, Model model) {
-        //Kiểm tra nếu lỗi sẽ quay lại trang tạo size
-        if (result.hasErrors()) {
-            return "admin/layout/Size/size_update";
-        } else {
-            //Kiểm tra xem size đã tồn tại hay chưa
-            System.out.println("Size cữ: " + sizeService.getById(size.getId()).getSize());
-            System.out.println("Size mới: " + size.getSize());
-            if ((size.getSize().floatValue() == sizeService.getById(size.getId()).getSize().floatValue()) || !(sizeService.existSize(size.getSize()))) {
-                //Lấy một cục đối tượng bên form và tiến hành setAcvite bằng true
-                //Cập nhật lại một cục đối tượng đó
-                size.setActive((byte) 1);
-                sizeService.update(size);
-                session.set("isUpdate", true);
-            } else {
-                // Nếu Size đã tồn tại thông báo cho người dùng
-                model.addAttribute("isUpdateFalse", true);
-                return "admin/layout/Size/size_update";
-            }
-        }
-        return "redirect:/admin/sizes/update-form/" + size.getId();
-    }
 
 
 }

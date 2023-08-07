@@ -75,7 +75,9 @@ public class CategoryController {
 
     @PutMapping("/admin/categorys/{id}")
     public ResponseEntity<ResponseDTO> updateCategory(@PathVariable("id") String id,@Valid @RequestBody ProductTypeDTO productType) {
-        productTypeService.update(productType);
+        if(productTypeService.existProductTypeById(id)){
+            productTypeService.update(productType);
+        }
         return ResponseEntity.ok(productType);
     }
 

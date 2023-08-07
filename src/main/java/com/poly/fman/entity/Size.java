@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * The persistent class for the size database table.
@@ -40,6 +42,7 @@ public class Size implements Serializable {
 	private Float width;
 
 	//bi-directional many-to-one association to ProductSize
+	
 	@OneToMany(mappedBy="size")
 	@JsonIgnore
 	private List<ProductSize> productSizes;

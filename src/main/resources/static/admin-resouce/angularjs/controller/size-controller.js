@@ -54,7 +54,7 @@ app.controller(
         console.log($scope.form);
         $timeout(() => {
           $scope.isLoading = false; // Đánh dấu là phần xử lý bất đồng bộ đã hoàn thành
-          $location.path("/category-update");
+          $location.path("/size-update");
         });
       } catch (err) {
         console.log(err);
@@ -95,8 +95,8 @@ app.controller(
     };
 
     $scope.update = () => {
-      var item = angular.copy($scope.form);
-      const url = `${CATEGORY_URL}/${$scope.form.id}`;
+      const item = angular.copy($scope.form);
+      const url = `${SIZE_URL}/update-form/${$scope.form.id}`;
       $http
         .put(url, item)
         .then((resp) => {
