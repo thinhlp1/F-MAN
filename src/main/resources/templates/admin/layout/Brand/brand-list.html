@@ -1,123 +1,49 @@
-<div class="d-flex justify-content-between mb-3">
-    <div class="sort-fillter align-items-center">
-        <span class="dropdown">
-            <button class="btn bg-transparent border shadow dropdown-toggle" type="button" id="sort"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-sort-amount-desc" aria-hidden="true"></i>
-                Sắp xếp theo
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="sort">
-                <li><a class="dropdown-item"
-                       href="${pageContext.request.contextPath}/admin/brands/?field=id">ID</a></li>
-                <li><a class="dropdown-item"
-                       href="${pageContext.request.contextPath}/admin/brands/?field=name">Name</a></li>
 
-            </ul>
-        </span>
-    </div>
+
     <a class="btn btn-blue-primary" href="#!brand-add">
         <i class="fa fa-plus-square" aria-hidden="true"></i>
         Thêm
     </a>
-</div>
-<div class="table-responsive">
-    <table class="table table-hover table-striped">
-        <thead class="table-header-custom">
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Tên Thương Hiệu</th>
-            <th scope="col">Hình Ảnh</th>
-            <th scope="col">Trạng Thái</th>
-            <th scope="col">Thao Tác</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">B1</th>
-            <th scope="row">Brand 1</th>
-            <th scope="row"><img alt="" height="40px"
-                                 th:src="@{admin-resouce/plugins/images/products/p2.png}">
-            </th>
-            <td>
-                <span class="badge bg-success">Hoạt động</span>
-            </td>
+    <div id="grid"></div>
+   
 
-            <td>
-                <a class="text-dark"
-                   href="#!brand-update/ADIDAS">
-                    <button class="border-0 bg-transparent">
-                        <i class="fa fa-pencil" aria-hidden="true"></i>
-                    </button>
-                </a>
-                <a class="text-dark"
-                   href="#!brand-detail/NIKE">
-                    <button class="border-0 bg-transparent">
-                        <i class="fa fa-eye" aria-hidden="true"></i>
-                    </button>
-                </a>
-                <button class="border-0 bg-transparent" data-bs-toggle="modal"
-                        data-bs-target="#show"><i class="fa fa-trash" aria-hidden="true"></i>
-                </button>
-                <div class="modal fade" id="show" aria-hidden="true"
-                     tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-danger">
-                                    <i class="fa fa-exclamation-triangle"
-                                       aria-hidden="true"></i>
-                                    XÓA
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-center">
-                                <img class="img-fluid mb-3" width="300px" height="300px"
-                                     th:src="@{admin-resouce/plugins/images/large/cat-screaming-no.jpg}">
-                                <h4>Bạn chắc chắn muốn xóa thương hiệu ${item.name} không?</h4>
-                            </div>
-                            <div class="modal-footer">
-                                <div class="row g-3 w-100">
-                                    <div class="col-6">
-                                        <button class="btn btn-outline-danger w-100"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close">Không
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <a href="#"
-                                           class="btn btn-blue-primary w-100">Có</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+<div class="modal fade" id="brand" aria-hidden="true"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa fa-exclamation-triangle"
+                       aria-hidden="true"></i>
+                    XÓA
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body text-center">
+                <img class="img-fluid mb-3" width="300px" height="300px"
+                     th:src="@{/admin-resouce/plugins/images/large/cat-screaming-no.jpg}">
+                <h4>Bạn có chắc chắc muốn xóa thương hiệu <span class="text-danger fw-bold">{{id}}</span>
+                    ?</h4>
+            </div>
+            <div class="modal-footer">
+                <div class="row g-3 w-100">
+                    <div class="col-6">
+                        <button class="btn btn-outline-danger w-100"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">Không
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button ng-click="delete(id)"
+                                class="btn btn-blue-primary w-100">Có
+                        </button>
                     </div>
                 </div>
-
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="d-flex justify-content-center pagination-custom">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link fs-4"
-                   href="${pageContext.request.contextPath}/admin/brands/?field=${field}&p=${page.number - 1 < 0 ? '0' : page.number-1}">
-                    <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-                </a>
-            </li>
-            <!--            <c:forEach var="i" begin="0" end="${page.totalPages - 1 < 0 ? 0 : page.totalPages - 1}">-->
-            <!--                <li class="page-item ${i == page.number ? 'active' : ''}"><a class="page-link fs-4"-->
-            <!--                                                                             href="${pageContext.request.contextPath}/admin/brands/?field=${field}&p=${i}">${i-->
-            <!--                    + 1}</a>-->
-            <!--                </li>-->
-            <!--            </c:forEach>-->
-            <li class="page-item">
-                <a class="page-link fs-4"
-                   href="${pageContext.request.contextPath}/admin/brands/?field=${field}&p=${page.number + 1 > page.totalPages - 1 ? page.totalPages - 1 : page.number + 1}">
-                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-                </a>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 </div>

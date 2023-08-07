@@ -3,6 +3,8 @@ package com.poly.fman.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +31,7 @@ public class OrderState implements Serializable {
 	private String name;
 
 	// bi-directional many-to-one association to Order
+	
 	@OneToMany(mappedBy = "orderState")
 	private List<Order> orders;
 

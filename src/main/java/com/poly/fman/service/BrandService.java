@@ -10,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.poly.fman.dto.model.BrandDTO;
+import com.poly.fman.dto.model.ProductTypeDTO;
 import com.poly.fman.entity.Brand;
+import com.poly.fman.entity.ProductType;
 import com.poly.fman.entity.Size;
 import com.poly.fman.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class BrandService {
 
     public Brand create(BrandDTO brandDTO){
         Brand brand = modelMapper.map(brandDTO, Brand.class);
+        brand.setActive((byte) 1);
         return brandRepository.save(brand);
     }
 
@@ -48,6 +51,9 @@ public class BrandService {
         Brand brand = modelMapper.map(brandDTO, Brand.class);
         return brandRepository.save(brand);
     }
+
+
+    
 
     public boolean delete(String id){
         try {
@@ -63,5 +69,8 @@ public class BrandService {
         }
     }
     
+    public boolean existBrandById(String id) {
+        return brandRepository.existsById(id);
+    }
   
 }

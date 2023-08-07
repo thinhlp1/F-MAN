@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * The persistent class for the brand database table.
@@ -36,6 +38,7 @@ public class Brand implements Serializable {
 	private String image;
 
 	//bi-directional many-to-one association to Product
+	@JsonIgnore
 	@OneToMany(mappedBy="brand")
 	private List<Product> products;
 
