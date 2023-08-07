@@ -89,7 +89,7 @@ app.config(function ($routeProvider) {
     .when("/order", {
       templateUrl: "/admin/orders/",
     })
-    .when("/order-detail/:id", {
+    .when("/order-detail/:approve?/:id", {
       templateUrl: ($routeParams) => {
         return "/admin/orders/view/details/" + $routeParams.id;
       },
@@ -133,12 +133,12 @@ app.config(function ($routeProvider) {
       templateUrl: "/admin/analysis/date",
     })
     .when("/analysis-revenue", {
-      templateUrl: "/admin/analysis/revenue",
+      templateUrl: "/admin/analysis/view/revenue",
     })
     .when("/analysis-orders", {
-      templateUrl: "/admin/analysis/orders",
+      templateUrl: "/admin/analysis/view/order",
     })
     .when("/analysis-sellProducts", {
-      templateUrl: "/admin/analysis/sellProducts",
+      templateUrl: "/admin/analysis/view/sellProducts",
     });
 });

@@ -1,5 +1,6 @@
 package com.poly.fman.dto.analysis;
 
+import com.poly.fman.dto.model.ProductDTO;
 import com.poly.fman.entity.Product;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DataSellProductDTO {
-    private Product product;
-    private Long quantity ;
+    private ProductDTO product;
+    private long quantity ;
 }
