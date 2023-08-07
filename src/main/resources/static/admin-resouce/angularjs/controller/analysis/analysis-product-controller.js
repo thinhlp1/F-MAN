@@ -9,6 +9,9 @@ app.controller("AnalysisProductController", function ($http, $scope, $routeParam
     var isSortOrder = "default";
     var isFiltQuartar = "all";
 
+    var yearSelected;
+
+
     var ctx;
     var isInitChart = false;
     var chart;
@@ -22,7 +25,10 @@ app.controller("AnalysisProductController", function ($http, $scope, $routeParam
                 //Lấy dữ liệu từ server và gán vào DataService
                 //Gán dữ liệu vào $scope.data trên biến toàn cục
                 let listSellProduct = resp.data.listSellProduct;
+                $scope.listData =  resp.data.listSellProduct;
                 $scope.listYear = resp.data.listYear;
+
+                console.log(listSellProduct);
 
                 listSellProduct.forEach(element => {
                     listData.push({ label: element.product.name, value: element.quantity });
@@ -46,8 +52,6 @@ app.controller("AnalysisProductController", function ($http, $scope, $routeParam
                 // Tạo mảng chứa số lượng sản phẩm bán được
                 const values = listData.map(item => item.value);
 
-                console.log(labels);
-                console.log(values);
 
                 chart = new Chart(ctx, {
                     type: 'bar',
@@ -75,8 +79,9 @@ app.controller("AnalysisProductController", function ($http, $scope, $routeParam
 
                 isInitChart = true;
                 document.getElementById("btn-renvueYear").innerHTML = year;
-                // $scope.setValuesortOrder("default", "Sắp xếp")
-                // $scope.filtDataQuarter("ALL", "Cả năm")
+                $scope.setValuesortOrder("default", "Sắp xếp")
+                yearSelected = year;
+
 
                 // chart.destroy();
 
@@ -143,6 +148,74 @@ app.controller("AnalysisProductController", function ($http, $scope, $routeParam
 
         chart.data.datasets[0].data = quarterData;
         chart.update();
+    }
+
+    $scope.exportExcel = function () {
+        var createXLSLFormatObj = [];
+
+        /* XLS Head Columns */
+        var xlsHeader = ["Thứ tự", "Mã sản phẩm", "Tên sản phẩm", "Loại sản phẩm","Số lượng bán"];
+
+
+        let listData = [];
+        let i = 1;
+        $scope.listData.forEach(element => {
+            listData.push({
+                "Thứ tự" :  i,
+                "Mã sản phẩm" : element.product.id,
+                "Tên sản phẩm" : element.product.name,
+                "Loại sản phẩm" : element.product.productType.name,
+                "Số lượng bán" : element.quantity
+            });
+            i++;
+        });
+
+        /* XLS Rows Data */
+        var xlsRows = listData;
+
+
+        createXLSLFormatObj.push(xlsHeader);
+        xlsRows.forEach(function (value) {
+            var innerRowData = [];
+
+            Object.keys(value).forEach(function (key) {
+                innerRowData.push(value[key]);
+            });
+
+            createXLSLFormatObj.push(innerRowData);
+        });
+
+
+        /* File Name */
+        var filename = "Thong ke san pham ban chay nam "+ yearSelected +".xlsx";
+
+        /* Sheet Name */
+        var ws_name = "San pham ban chay nam " + yearSelected;
+
+        var wb = XLSX.utils.book_new(),
+            ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+
+        // Tạo đối tượng tô màu cho phần tiêu đề
+        var headerStyle = {
+            fill: {
+                fgColor: { rgb: 'FFFF00' }, // Mã màu HEX cho màu vàng
+            },
+        };
+
+        // Áp dụng phong cách tô màu cho phần tiêu đề (dòng 1)
+        XLSX.utils.sheet_add_aoa(ws, [xlsHeader], { origin: 'A1' });
+        xlsHeader.forEach(function (value, index) {
+            var cellAddress = XLSX.utils.encode_cell({ r: 0, c: index });
+            ws[cellAddress] = { ...ws[cellAddress], ...headerStyle };
+        });
+
+        /* Add worksheet to workbook */
+        XLSX.utils.book_append_sheet(wb, ws, ws_name);
+
+        
+
+        /* Write workbook and Download */
+        XLSX.writeFile(wb, filename);
     }
 
     $scope.loadData(2023);

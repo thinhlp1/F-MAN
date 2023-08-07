@@ -1,4 +1,4 @@
-app.controller("AnalysisRevenueController", function ($http,$scope, $routeParams) {
+app.controller("AnalysisRevenueController", function ($http, $scope, $routeParams) {
 
     $scope.listData = [];
     $scope.listYear = [];
@@ -8,7 +8,9 @@ app.controller("AnalysisRevenueController", function ($http,$scope, $routeParams
     var isSortOrder = "default";
     var isFiltQuartar = "all";
 
-    var ctx ;
+    var yearSelected;
+
+    var ctx;
     var isInitChart = false;
     var chart;
 
@@ -28,9 +30,9 @@ app.controller("AnalysisRevenueController", function ($http,$scope, $routeParams
                 listDataSort = listData.slice();
 
                 ctx = document.getElementById('myChart');
-                
 
-                if (isInitChart){
+
+                if (isInitChart) {
                     chart.destroy();
                 }
 
@@ -43,7 +45,7 @@ app.controller("AnalysisRevenueController", function ($http,$scope, $routeParams
                             "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
                         datasets: [{
                             label: 'Doanh thu ( VNĐ )',
-                            data:  $scope.listData,
+                            data: $scope.listData,
                             borderWidth: 1
                         }]
                     },
@@ -59,6 +61,7 @@ app.controller("AnalysisRevenueController", function ($http,$scope, $routeParams
                 document.getElementById("btn-renvueYear").innerHTML = year;
                 $scope.setValuesortOrder("default", "Sắp xếp")
                 $scope.filtDataQuarter("ALL", "Cả năm")
+                yearSelected = year;
                 // chart.destroy();
 
             })
@@ -74,7 +77,7 @@ app.controller("AnalysisRevenueController", function ($http,$scope, $routeParams
             });
     }
 
-    $scope.setValuesortOrder = function(order, label) {
+    $scope.setValuesortOrder = function (order, label) {
         document.getElementById("btn-sortOrder").innerHTML = label;
 
         isSortOrder = order; // Giá trị sắp xếp hiện tại (asc: tăng dần, desc: giảm dần)
@@ -136,6 +139,72 @@ app.controller("AnalysisRevenueController", function ($http,$scope, $routeParams
 
         chart.data.datasets[0].data = quarterData;
         chart.update();
+    }
+
+
+    $scope.exportExcel = function () {
+        var createXLSLFormatObj = [];
+
+        /* XLS Head Columns */
+        var xlsHeader = ["Tháng", "Doanh thu"];
+
+
+        let listData = [];
+        let i = 1;
+        $scope.listData.forEach(element => {
+            listData.push({
+                "Tháng" : "Tháng " + i,
+                "Doanh thu" : element
+            });
+            i++;
+        });
+
+        /* XLS Rows Data */
+        var xlsRows = listData;
+
+
+        createXLSLFormatObj.push(xlsHeader);
+        xlsRows.forEach(function (value) {
+            var innerRowData = [];
+
+            Object.keys(value).forEach(function (key) {
+                innerRowData.push(value[key]);
+            });
+
+            createXLSLFormatObj.push(innerRowData);
+        });
+
+
+        /* File Name */
+        var filename = "Thong ke doanh thu nam "+ yearSelected +".xlsx";
+
+        /* Sheet Name */
+        var ws_name = "Doanh thu nam " + yearSelected;
+
+        var wb = XLSX.utils.book_new(),
+            ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+
+        // Tạo đối tượng tô màu cho phần tiêu đề
+        var headerStyle = {
+            fill: {
+                fgColor: { rgb: 'FFFF00' }, // Mã màu HEX cho màu vàng
+            },
+        };
+
+        // Áp dụng phong cách tô màu cho phần tiêu đề (dòng 1)
+        XLSX.utils.sheet_add_aoa(ws, [xlsHeader], { origin: 'A1' });
+        xlsHeader.forEach(function (value, index) {
+            var cellAddress = XLSX.utils.encode_cell({ r: 0, c: index });
+            ws[cellAddress] = { ...ws[cellAddress], ...headerStyle };
+        });
+
+        /* Add worksheet to workbook */
+        XLSX.utils.book_append_sheet(wb, ws, ws_name);
+
+        
+
+        /* Write workbook and Download */
+        XLSX.writeFile(wb, filename);
     }
 
     $scope.loadData(2023);

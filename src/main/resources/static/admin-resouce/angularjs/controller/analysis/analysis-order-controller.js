@@ -17,6 +17,7 @@ app.controller("AnalysisOrderController", function ($http, $scope, $routeParams)
         $http
             .get("/admin/analysis/orders?year=" + year)
             .then((resp) => {
+                console.log(resp);
                 //Lấy dữ liệu từ server và gán vào DataService
                 //Gán dữ liệu vào $scope.data trên biến toàn cục
                 $scope.listData = resp.data.listdataRevenueByMonths;

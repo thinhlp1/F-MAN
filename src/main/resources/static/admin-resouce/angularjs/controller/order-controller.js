@@ -114,22 +114,22 @@ app.controller(
         }
 
 
-        $scope.loadTaskbar = function(){
+        $scope.loadTaskbar = function () {
             $http
-            .get("/admin/componet-data")
-            .then((resp) => {
-                $scope.orderApproveQuantity = resp.data.orderApprove;
-                document.getElementById("quantityOrderApprove").innerHTML =    $scope.orderApproveQuantity;
-            })
-            .catch((err) => {
-                notification(
-                    "ERROR " + err.status + ": Lỗi tải dữ liệu",
-                    3000,
-                    "right",
-                    "top",
-                    "error",
-                );
-            });
+                .get("/admin/componet-data")
+                .then((resp) => {
+                    $scope.orderApproveQuantity = resp.data.orderApprove;
+                    document.getElementById("quantityOrderApprove").innerHTML = $scope.orderApproveQuantity;
+                })
+                .catch((err) => {
+                    notification(
+                        "ERROR " + err.status + ": Lỗi tải dữ liệu",
+                        3000,
+                        "right",
+                        "top",
+                        "error",
+                    );
+                });
         }
 
 
@@ -196,6 +196,43 @@ app.controller(
                 );
             });
         };
+
+        $scope.extractTableData = function () {
+            console.log("extra");
+            const tableRows = document.querySelectorAll('.gridjs-tbody .gridjs-tr');
+
+            let dataArray = [];
+
+
+            tableRows.forEach(row => {
+                const rowData = {};
+                const cells = row.querySelectorAll('.gridjs-td');
+
+                rowData.id = cells[0].textContent;
+                rowData.createAtString = cells[1].textContent;
+                rowData.receiver = cells[2].textContent;
+                rowData.address = cells[3].textContent;
+                rowData.totalStringVND = cells[4].textContent;
+                rowData.orderState = cells[5].textContent;
+
+                const dataArrayItem = {
+                    "Mã hóa đơn": rowData.id,
+                    "Ngày tạo": rowData.createAtString,
+                    "Người nhận": rowData.receiver,
+                    "Địa chỉ": rowData.address,
+                    "Tổng tiền": rowData.totalStringVND,
+                    "Trạng thái": rowData.orderState
+                };
+
+                dataArray.push(dataArrayItem);
+            });
+
+            console.log(dataArray); // Dữ liệu trong mảng
+            return dataArray;
+        }
+
+
+
 
 
         //Khởi tạo table GRIDJS
@@ -412,15 +449,88 @@ app.controller(
             taskBar.append(dropdownSpan)
 
 
+            //insert buttton export
+            const spanElement = document.createElement('span');
+            spanElement.classList.add('mx-5');
+
+            const buttonElement = document.createElement('button');
+            buttonElement.classList.add('btn', 'btn-success');
+            buttonElement.textContent = 'Excel';
+            buttonElement.onclick = $scope.exportExcel;
+            buttonElement.setAttribute("style", "padding: 9px 20px; background-color: #7ACE4C !important; border: 1px solid #d2d6dc");
+
+            spanElement.appendChild(buttonElement);
+            taskBar.append(spanElement)
+
+
         }
 
+
+        $scope.exportExcel = function () {
+            var createXLSLFormatObj = [];
+
+            /* XLS Head Columns */
+            var xlsHeader = ["Mã hóa đơn", "Ngày tạo",  "Người nhận",  "Địa chỉ", "Tổng tiền", "Trạng thái"];
+
+
+            let listData = [];
+           
+            listData = $scope.extractTableData();
+
+            /* XLS Rows Data */
+            var xlsRows = listData;
+
+
+            createXLSLFormatObj.push(xlsHeader);
+            xlsRows.forEach(function (value) {
+                var innerRowData = [];
+
+                Object.keys(value).forEach(function (key) {
+                    innerRowData.push(value[key]);
+                });
+
+                createXLSLFormatObj.push(innerRowData);
+            });
+
+
+            /* File Name */
+            var filename = " Danh sach hoa don.xlsx";
+
+            /* Sheet Name */
+            var ws_name = "Danh sach hoa don" ;
+
+            var wb = XLSX.utils.book_new(),
+                ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+
+            // Tạo đối tượng tô màu cho phần tiêu đề
+            var headerStyle = {
+                fill: {
+                    fgColor: { rgb: 'FFFF00' }, // Mã màu HEX cho màu vàng
+                },
+            };
+
+            // Áp dụng phong cách tô màu cho phần tiêu đề (dòng 1)
+            XLSX.utils.sheet_add_aoa(ws, [xlsHeader], { origin: 'A1' });
+            xlsHeader.forEach(function (value, index) {
+                var cellAddress = XLSX.utils.encode_cell({ r: 0, c: index });
+                ws[cellAddress] = { ...ws[cellAddress], ...headerStyle };
+            });
+
+            /* Add worksheet to workbook */
+            XLSX.utils.book_append_sheet(wb, ws, ws_name);
+
+
+
+            /* Write workbook and Download */
+            XLSX.writeFile(wb, filename);
+        }
 
         function filterOrdersByOrderStateId(orderStateId) {
             // Sử dụng hàm filter để lọc các phần tử có id của orderState bằng với orderStateId cần tìm
             let filteredOrders;
-            if (orderStateId === "ALL"){
+            if (orderStateId === "ALL") {
                 filteredOrders = $scope.data;
-            }else{
+            } else {
                 filteredOrders = $scope.data.filter((order) => order.orderState.id === orderStateId);
 
             }
@@ -468,7 +578,7 @@ app.controller(
             $scope.loadApproveList().then(() => {
                 $scope.initGrid($scope.data);
             });
-            
+
         }
 
         $scope.loadTaskbar();
