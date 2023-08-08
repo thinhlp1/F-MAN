@@ -35,7 +35,7 @@
 <!-- End Header Area -->
 <section class="section_gap_75"></section>
 <!--================Profile Details Area =================-->
-<section class="section_gap" ng-app="myApp" ng-controller="ProfileController">
+<section class="section_gap" style="padding: 10px;">
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-3">
@@ -43,7 +43,7 @@
                     <form enctype="multipart/form-data" >
                         <div id="imgDialog" class="col-12 mb-3">
                             <div id="image-box" class="text-center position-relative w-100">
-                                <img th:src="@{/user-resouce/img/author.png}"
+                                <img th:src="@{'/user-resouce/img/' + ${user2.image}}"
                                      th:alt="${user2.name} + ' profile picture'"
                                      id="blah"
                                      class="img-fluid w-100 rounded-circle"/>
@@ -85,9 +85,14 @@
                         <div style="height: 120px;width: 220px;">
                             <div class="card border-0">
                                 <span class="card-title m-0">Địa chỉ mặc định:</span>
-                                <span>Tên người nhận: [[${address.receiverName}]]</span>
-                                <span>Số điện thoại: [[${address.numberPhone}]]</span>
-                                <span>Địa chỉ: [[${address.address}]]</span>
+                                <th:block th:if="${address != null}">
+                                    <span>Tên người nhận: [[${address.receiverName}]]</span>
+                                    <span>Số điện thoại: [[${address.numberPhone}]]</span>
+                                    <span>Địa chỉ: [[${address.address}]]</span>
+                                </th:block>
+                                <th:block th:if="${address == null}">
+                                    <span class="text-dark font-weight-bold">Chưa có địa chỉ</span>
+                                </th:block>
                             </div>
                         </div>
                     </div>

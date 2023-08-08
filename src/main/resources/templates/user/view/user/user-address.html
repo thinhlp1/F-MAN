@@ -62,98 +62,80 @@
                         <p>[[${item.isDefault == 1 ? 'Mặc định' : 'Ẩn'}]]</p>
                     </td>
 
-                    <td class="d-flex justify-content-between" th:data-receiver-name="${item.receiverName}" th:data-number-phone="${item.numberPhone}" th:data-address="${item.address}">
+                    <td class="d-flex justify-content-between" th:data-receiver-name="${item.receiverName}"
+                        th:data-number-phone="${item.numberPhone}" th:data-address="${item.address}">
                         <div>
 
-                        <form th:action="@{'/user/address/address-default/' + ${item.id}(user-id=${item.user.id})}" method="post">
-                            <button
-                                    class="btn btn-secondary">
-                                Mặc định
-                            </button>
-                        </form>
+                            <form th:action="@{'/user/address/address-default/' + ${item.id}(user-id=${item.user.id})}"
+                                  method="post">
+                                <button
+                                        class="btn btn-secondary">
+                                    Mặc định
+                                </button>
+                            </form>
                         </div>
                         <div>
-
-                        <a class="btn btn-edit "
-                           data-toggle="modal"
-                           th:data-target="'#editModal' + ${item.id}"
-                           th:data-address-id="${item.id}"
-                           th:data-receiver-name="${item.receiverName}"
-                           th:data-number-phone="${item.numberPhone}"
-                           th:data-address="${item.address}"
-                           style="color: white; background-color: rgb(207, 136, 13)">
-                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                        </a>
-                        <div class="modal fade" th:id="'editModal' + ${item.id}" tabindex="-1" role="dialog"
-                             aria-labelledby="editModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editModalLabel">
-                                            Chỉnh sửa thông tin
-                                        </h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <form th:action="@{'/user/address/update/' + ${item.id}(user-id=${user.id})}"
-                                          th:object="${address}" method="post">
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <label for="receiverName">Họ tên</label>
-                                                <input type="text" class="form-control" id="receiverName"
-                                                       name="receiverName" th:field="*{receiverName}"/>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="numberPhone">Số điện thoại</label>
-                                                <input type="text" class="form-control" id="numberPhone" name="numberPhone"
-                                                       placeholder="Nhập số điện thoại" th:field="*{numberPhone}"/>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="userAddress">Địa chỉ</label>
-                                                <input class="form-control" id="userAddress" name="userAddress"
-                                                       th:field="*{address}" placeholder="Nhập địa chỉ"/>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                                Đóng
+                            <a class="btn btn-edit"
+                               data-toggle="modal"
+                               th:data-target="'#editModal' + ${item.id}"
+                               th:data-address-id="${item.id}"
+                               th:data-receiver-name="${item.receiverName}"
+                               th:data-number-phone="${item.numberPhone}"
+                               th:data-address="${item.address}"
+                               style="color: white; background-color: rgb(207, 136, 13)">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </a>
+                            <div class="modal fade" th:id="'editModal' + ${item.id}" tabindex="-1" role="dialog"
+                                 aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">
+                                                Chỉnh sửa thông tin
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
                                             </button>
+                                        </div>
+                                        <form th:action="@{'/user/address/update/' + ${item.id}(user-id=${user.id})}"
+                                              th:object="${address}" method="post">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="receiverName">Họ tên</label>
+                                                    <input type="text" class="form-control" id="receiverName"
+                                                           name="receiverName" th:placeholder="${item.receiverName}" th:value="${item.receiverName}" th:field="*{receiverName}"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="numberPhone">Số điện thoại</label>
+                                                    <input type="text" class="form-control" id="numberPhone"
+                                                           name="numberPhone"
+                                                           th:placeholder="${item.numberPhone}" th:field="*{numberPhone}"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="userAddress">Địa chỉ</label>
+                                                    <input class="form-control" id="userAddress" name="userAddress"
+                                                           th:field="*{address}" th:placeholder="${item.address}"/>
+                                                </div>
+                                            </div>
 
-                                            <button class="btn" style="
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Đóng
+                                                </button>
+
+                                                <button class="btn" style="
                                   color: white;
                                   background-color: rgb(201, 131, 11);
                                 ">
-                                                Lưu thay đổi
-                                            </button>
-                                        </div>
-                                    </form>
+                                                    Lưu thay đổi
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        </div>
-                        <!-- Script xử lý sự kiện khi người dùng nhấn nút chỉnh sửa -->
-                        <script>
-                            // Lắng nghe sự kiện click trên nút "Chỉnh sửa"
-                            document.querySelectorAll('.btn-edit').forEach(button => {
-                                button.addEventListener('click', function() {
-                                    // Lấy dữ liệu từ thuộc tính data của thẻ tr
-                                    const row = this.closest('tr');
-                                    const receiverName = row.getAttribute('data-receiver-name').trim();
-                                    const numberPhone = row.getAttribute('data-number-phone').trim();
-                                    const address = row.getAttribute('data-address').trim();
-                                    console.log('Receiver Name:', receiverName);
-                                    console.log('Number Phone:', numberPhone);
-                                    console.log('Address:', address);
-                                    // Hiển thị dữ liệu lên modal
-                                    document.getElementById('receiverName').value = receiverName;
-                                    document.getElementById('numberPhone').value = numberPhone;
-                                    document.getElementById('userAddress').value = address;
-                                });
-                            });
 
-                        </script>
 
 
                         <!-- ======Modal xóa============ -->
@@ -289,6 +271,25 @@
 <script th:src="@{/user-resouce/js/main.js}"></script>
 
 <script th:src="@{/common/commonFunction.js}"></script>
+<!-- Script xử lý sự kiện khi người dùng nhấn nút chỉnh sửa -->
+<script>
+    // Lắng nghe sự kiện click trên nút "Chỉnh sửa"
+    // Lắng nghe sự kiện click trên nút "Chỉnh sửa"
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function () {
+            // Lấy dữ liệu từ thuộc tính data của thẻ a
+            const receiverName = this.getAttribute('data-receiver-name').trim();
+            const numberPhone = this.getAttribute('data-number-phone').trim();
+            const address = this.getAttribute('data-address').trim();
 
+            // Hiển thị dữ liệu lên modal
+            document.getElementById('receiverName').value = receiverName;
+            document.getElementById('numberPhone').value = numberPhone;
+            document.getElementById('userAddress').value = address;
+
+        });
+    });
+
+</script>
 </body>
 </html>
