@@ -51,7 +51,7 @@ public class CategoryPageController {
     @PostMapping("fillter")
     public String fillter(@RequestParam(value = "brandId", defaultValue = "%") String brandId,
                           @RequestParam(value = "min_price", defaultValue = "0") BigInteger min,
-                          @RequestParam(value = "max_price", defaultValue = "0") BigInteger max,
+                          @RequestParam(value = "max_price", defaultValue = "1000000") BigInteger max,
                           Model model) {
         Page<Product> page;
         Pageable pageable = PageRequest.of(
@@ -74,10 +74,10 @@ public class CategoryPageController {
     }
 
 
-//    @ModelAttribute("list_productType")
-//    public List<ProductType> getListProductType() {
-//        return productTypeService.getAll();
-//    }
+    @ModelAttribute("list_productType")
+    public List<ProductType> getListProductType() {
+        return productTypeService.getAll();
+    }
 
     @ModelAttribute("list_brand")
     public List<Brand> getListBrand() {
@@ -108,7 +108,7 @@ public class CategoryPageController {
                 show.orElse(8),
                 Sort.by(direction.orElse("desc").equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
                         field.orElse("id")));
-        if (!(productTypeId.isEmpty()) || !(brandId.isEmpty()) && !(min.isEmpty()) && !(max.isEmpty())) {
+        if (!(productTypeId.isEmpty()) || !(brandId.isEmpty()) || !(min.isEmpty()) || !(max.isEmpty())) {
             page = (Page<Product>) productService.getAllProductByBrandIdLikeAndProductTypeIdLikeAndPriceBetween(
                     brandId.orElse("%"),
                     productTypeId.orElse("%"),

@@ -76,7 +76,7 @@
         </div>
         <div class="search_input" id="search_input_box">
             <div class="container">
-                <form class="d-flex justify-content-between" action="/category/" method="get">
+                <form class="d-flex justify-content-between" th:action="@{/category/}" method="get">
                     <input type="text" class="form-control" name="keywords" id="search_input" placeholder="Search Here">
                     <button type="submit" class="btn"></button>
                     <span class="" id="close_search" title="Close Search"></span>
