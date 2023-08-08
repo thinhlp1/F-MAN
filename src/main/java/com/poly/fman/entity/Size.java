@@ -3,6 +3,8 @@ package com.poly.fman.entity;
 
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +44,7 @@ public class Size implements Serializable {
 	//bi-directional many-to-one association to ProductSize
 	
 	@OneToMany(mappedBy="size")
+	@JsonIgnore
 	private List<ProductSize> productSizes;
 
 

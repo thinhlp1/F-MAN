@@ -50,7 +50,7 @@
         <!-- Taskbar -->
         <div th:replace="~{/admin/layout/Conponent/taskbar.html :: taskbar}"></div>
         <!-- Taskbar -->
-        <div class="container-fluid">
+        <div class="container-fluid" >
             <ng-view></ng-view>
         </div>
         <!-- Footer -->
@@ -60,6 +60,8 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/javascript" src="//unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 <script
         th:src="@{/admin-resouce/plugins/bower_components/jquery/dist/jquery.min.js}"></script>
 <!-- Bootstrap tether Core JavaScript -->
@@ -75,9 +77,19 @@
 <script th:src="@{/admin-resouce/angularjs/controller/product-controller.js}"></script>
 <script th:src="@{/admin-resouce/angularjs/controller/brand-controller.js}"></script>
 <script th:src="@{/admin-resouce/angularjs/controller/order-controller.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/controller/size-controller.js}"></script>
+
 <script th:src="@{/admin-resouce/angularjs/controller/user-controller.js}"></script>
 <script th:src="@{/admin-resouce/angularjs/controller/discount-controller.js}"></script>
 <script th:src="@{/admin-resouce/angularjs/controller/payment-method-controller.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/controller/analysis/analysis-revenue-controller.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/controller/analysis/analysis-order-controller.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/controller/analysis/analysis-product-controller.js}"></script>
+
+<script th:src="@{/admin-resouce/angularjs/component/component-controller.js}"></script>
+<script th:src="@{/admin-resouce/angularjs/controller/dashboard-controller.js}"></script>
+
+
 
 <!--Custom JavaScript -->
 <script th:src="@{/admin-resouce/js/custom.js}"></script>

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,7 @@ public class HomepageController {
     @ModelAttribute("items")
     public Page<Product> getListProduct(
             Model model) {
-        int pageSize = (int) productService.getCountProduct();
+        int pageSize = 8;
 
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by("createAt").descending());
         Page<Product> page = (Page<Product>) productService.getAllActive(pageable);

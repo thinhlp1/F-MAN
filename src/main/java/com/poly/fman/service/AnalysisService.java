@@ -3,20 +3,24 @@ package com.poly.fman.service;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.poly.fman.dto.analysis.DashBoardOverviewDTO;
+import com.poly.fman.dto.analysis.AnalysisRevenueDTO;
+import com.poly.fman.dto.analysis.DashBoardDataDTO;
 import com.poly.fman.dto.analysis.DataDTO;
 import com.poly.fman.dto.analysis.DataSellProductDTO;
+import com.poly.fman.dto.model.ProductDTO;
 import com.poly.fman.entity.OrderState;
 import com.poly.fman.entity.Product;
 import com.poly.fman.repository.OrderItemRepository;
@@ -37,8 +41,9 @@ public class AnalysisService {
         private final CartService cartService;
         private final OrderItemRepository orderItemRepository;
         private final OrderRepository orderRepository;
+        private final ModelMapper modelMapper;
 
-        public DashBoardOverviewDTO analysisDashBoardOverViewData() {
+        public DashBoardDataDTO analysisDashBoardOverViewData() {
                 // Calendar calendar = Calendar.getInstance();
                 // calendar.set(Calendar.HOUR_OF_DAY, 0);
                 // calendar.set(Calendar.MINUTE, 0);
@@ -50,7 +55,7 @@ public class AnalysisService {
                 List<String> state = new ArrayList<>();
                 state.add("ORDER_IS_SHIPPING");
                 state.add("ORDER_RECEIVED");
-               
+
                 // Số lượng sản phẩm bán được trong hôm nay
                 Integer soldProductsToday = orderItemRepository.countSoldProductsByDateRangeAndState(startDate, today,
                                 state);
@@ -88,9 +93,9 @@ public class AnalysisService {
                 // Số đơn hàng trong tháng này với các trạng thái A và B
                 Long ordersThisMonth = orderRepository.countOrdersByDateRangeAndStates(startDateOfMonth, today, state);
 
-                Pageable pageable = PageRequest.of(0, 3, Sort.by("id").descending());
-                Page<Product> page1 = (Page<Product>) productService.getTopProductSelling(pageable);
-                List<Product> listProduct = page1.getContent();
+              
+                List<DataSellProductDTO> listProduct = findTop10BestSellingProducts(2023);
+                listProduct.subList(0, 5);
 
                 if (soldProductsToday == null) {
                         soldProductsToday = Integer.valueOf(0);
@@ -122,7 +127,7 @@ public class AnalysisService {
                         ordersThisMonth = Long.valueOf(0);
                 }
 
-                DashBoardOverviewDTO dashBoardOverviewDTO = new DashBoardOverviewDTO();
+                DashBoardDataDTO dashBoardOverviewDTO = new DashBoardDataDTO();
                 dashBoardOverviewDTO.setListOrders(new DataDTO(ordersToday, ordersThisWeek, ordersThisMonth));
                 dashBoardOverviewDTO
                                 .setListRevenue((new DataDTO(CommonUtils.convertToCurrencyString(revenueToday, " VNĐ"),
@@ -137,7 +142,7 @@ public class AnalysisService {
 
         }
 
-        public List<DataDTO> calculateRevenueByMonths(Integer year) {
+        public AnalysisRevenueDTO calculateRevenueByMonths(Integer year) {
 
                 Calendar calendar = Calendar.getInstance();
                 int currentMonth = calendar.get(Calendar.MONTH);
@@ -150,7 +155,7 @@ public class AnalysisService {
                 state.add("ORDER_IS_SHIPPING");
                 state.add("ORDER_RECEIVED");
                 DataDTO dataMonths = new DataDTO();
-                DataDTO dataMonthsStr = new DataDTO();
+                // DataDTO dataMonthsStr = new DataDTO();
                 for (int month = 0; month < 12; month++) {
                         calendar.set(currentYear, month, 1);
                         Date startDate = calendar.getTime();
@@ -162,16 +167,20 @@ public class AnalysisService {
                         revenue = revenue == null ? BigInteger.valueOf(0) : revenue;
 
                         dataMonths.setDataMonth(month + 1, revenue);
-                        dataMonthsStr.setDataMonth(month + 1, CommonUtils.convertToCurrencyString(revenue, " VNĐ"));
+                        // dataMonthsStr.setDataMonth(month + 1,
+                        // CommonUtils.convertToCurrencyString(revenue, " VNĐ"));
 
                 }
                 List<DataDTO> listData = new ArrayList<>();
                 listData.add(dataMonths);
-                listData.add(dataMonthsStr);
-                return listData;
+
+                AnalysisRevenueDTO analysisRevenueDTO = new AnalysisRevenueDTO();
+                analysisRevenueDTO.setListdataRevenueByMonths(Arrays.asList(dataMonths.getDataMonths()));
+                // listData.add(dataMonthsStr);
+                return analysisRevenueDTO;
         }
 
-        public List<DataDTO> countOrdersByMonths(Integer year) {
+        public AnalysisRevenueDTO countOrdersByMonths(Integer year) {
                 Calendar calendar = Calendar.getInstance();
                 int currentMonth = calendar.get(Calendar.MONTH);
                 int currentYear = calendar.get(Calendar.YEAR);
@@ -195,15 +204,15 @@ public class AnalysisService {
 
                         orders = orders == null ? Long.valueOf(0) : orders;
 
-                     
                         dataMonths.setDataMonth(month + 1, orders);
-
 
                 }
                 List<DataDTO> listData = new ArrayList<>();
                 listData.add(dataMonths);
 
-                return listData;
+                AnalysisRevenueDTO analysisRevenueDTO = new AnalysisRevenueDTO();
+                analysisRevenueDTO.setListdataRevenueByMonths(Arrays.asList(dataMonths.getDataMonths()));
+                return analysisRevenueDTO;
         }
 
         public List<DataSellProductDTO> findTop10BestSellingProducts(Integer year) {
@@ -219,21 +228,21 @@ public class AnalysisService {
                 List<String> state = new ArrayList<>();
                 state.add("ORDER_IS_SHIPPING");
                 state.add("ORDER_RECEIVED");
-                System.out.println(DateUtils.toString(startDate, "dd/MM/yyyy HH:mm"));
-                System.out.println(DateUtils.toString(startOfYear, "dd/MM/yyyy HH:mm"));
                 List<Object[]> topProducts = orderItemRepository
                                 .findTop10BestSellingProductsByRangeAndStates(startOfYear, today, state);
                 List<DataSellProductDTO> listDataSellProductDTOs = new ArrayList<>();
 
-                System.out.println("Top 10 sản phẩm bán chạy:");
                 for (int i = 0; i < topProducts.size(); i++) {
                         Object[] result = topProducts.get(i);
 
                         Product product = (Product) result[0];
-                        Long quantity = (Long) result[1];
-                        DataSellProductDTO dataSellProductDTO = new DataSellProductDTO(product, quantity);
+                        long quantity = (Long) result[1];
+                        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class) ;
+                        DataSellProductDTO dataSellProductDTO = new DataSellProductDTO(productDTO, quantity);
                         listDataSellProductDTOs.add(dataSellProductDTO);
                 }
+
+
                 return listDataSellProductDTOs;
         }
 
@@ -286,7 +295,7 @@ public class AnalysisService {
                 List<Integer> yearRange = new ArrayList<>();
                 for (int year = startYear; year <= endYear; year++) {
                         yearRange.add(year);
-                       
+
                 }
                 Collections.reverse(yearRange);
                 return yearRange;

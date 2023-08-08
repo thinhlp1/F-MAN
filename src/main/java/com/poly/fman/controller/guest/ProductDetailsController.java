@@ -18,7 +18,7 @@ public class ProductDetailsController {
         Product product = productService.getById(id);
         model.addAttribute("productDetails", product);
         model.addAttribute("listProducts",productService.getAllProductByBrandId(product.getBrand().getId()));
-        return "user/view/page/single-product";
+        return "user/view/page/product-detailst";
     }
 
 }

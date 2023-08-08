@@ -1,7 +1,47 @@
-<div class="d-flex text-end mb-3">
+<div class="text-end mb-3">
     <a class="btn btn-blue-primary" href="#!size-add">
         <i class="fa fa-plus-square" aria-hidden="true"></i>
         Thêm
     </a>
 </div>
-<div class="grid"></div>
+<div id="grid"></div>
+
+<div class="modal fade" id="size" aria-hidden="true"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa fa-exclamation-triangle"
+                       aria-hidden="true"></i>
+                    XÓA
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body text-center">
+                <img class="img-fluid mb-3" width="300px" height="300px"
+                     th:src="@{/admin-resouce/plugins/images/large/cat-screaming-no.jpg}">
+                <h4>Bạn có chắc chắc muốn xóa size có mã <span class="text-danger fw-bold">{{ id }}</span>
+                    ?</h4>
+            </div>
+            <div class="modal-footer">
+                <div class="row g-3 w-100">
+                    <div class="col-6">
+                        <button class="btn btn-outline-danger w-100"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">Không
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button ng-click="delete(id)"
+                                class="btn btn-blue-primary w-100">Có
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

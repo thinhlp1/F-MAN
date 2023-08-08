@@ -16,189 +16,192 @@
     }
 </style>
 <!--BACK-->
-<div class="back mb-3">
-    <a class="btn btn-blue-primary" href="#!order">
-        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-        Quay Lại
-    </a>
+<div ng-controller="OrderController" ng-init="loadDetails()">
+    <div class="back mb-3" >
+        <a class="btn btn-blue-primary" ng-click="back()">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+            Quay Lại
+        </a>
+    </div>
+    <section class="order_details " >
+        <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+    
+        <div class="container">
+    
+            <div class="row order_d_inner">
+                <div class="col">
+                    <div class="details_item">
+                        <h4 style="font-family: Roboto">Thông tin hóa đơn</h4>
+                        <ul class="list">
+                            <li><span>Mã hóa đơn</span> : {{order.id}}</li>
+                            <li><span>Ngày tạo</span> : {{order.createAtString}}</li>
+                            <li><span>Tổng tiền</span> : {{order.totalStringVND}}</li>
+    
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="details_item">
+                        <h4 style="font-family: Roboto">Thông tin hóa đơn</h4>
+                        <ul class="list">
+                            <li><span>Thanh toán</span> : {{order.paymentMethod.name}}</li>
+                            <li>
+                                <span>Voucher</span> : {{ order.voucher.name || 'Không có' }}
+                            </li>
+                            </li>
+                            <li><span>Trạng thái :</span><span id="span_state"> {{order.orderState.name}}</span>
+    
+                            <li id="orderNoteLi" ng-class="{'d-none': !order.note}">
+                                <span>Lý do :</span>
+                                <span id="orderNote">{{order.note}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- <div class="col"  ng-class="{'d-none': !order.paymentMethod.id != 'VISA'}" >
+                    <div class="details_item">
+                        <h4 style="font-family: Roboto">Thông tin thanh toán</h4>
+                        <ul class="list">
+                            <li><span>Mã giao dịch</span> : [[${transaction != null ? transaction.transNo : ''}]]
+                            </li>
+                            <li><span>Ngân hàng</span> : [[${transaction != null ? transaction.bank.name : ""}]]
+                            </li>
+                            <li><span>Ngày thanh toán</span> : [[${transaction != null ?
+                                transaction.payDateString : ""}]]</li>
+                        </ul>
+                    </div>
+                </div> -->
+                <div class="col">
+                    <div class="details_item">
+                        <h4 style="font-family: Roboto">Địa chỉ nhận hàng</h4>
+                        <ul class="list">
+                            <li><span>Tên</span> : {{order.address.receiverName}}</li>
+                            <li><span>Số điện thoại</span> : {{order.address.numberPhone}}</li>
+                            <li><span>Địa chỉ</span> : {{order.address.address}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="order_details_table">
+                <h2 style="font-family: Roboto">Thông tin hóa đơn chi tiết</h2>
+                <div class="table-responsive">
+                    <div class="row mx-0 container-fluid">
+                        <div class="col-10">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Sản phẩm</th>
+                                        <th scope="col">Size</th>
+                                        <th scope="col">Số lượng</th>
+                                        <th scope="col">Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in order.listOrderItemDTO">
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-center">
+                                                <img alt="" style="width: 90px; height: 100px; border-radius: 30px;"
+                                                    src="/admin-resouce/plugins/images/products/{{item.product.image}}">
+                                                <p class="ml-3">{{item.product.name}} </p>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="td_p">{{item.productSize.size.id}}</p>
+                                        </td>
+                                        <td>
+                                            <p class="td_p" id="itemQuantity_{{item.id}}" value="{{item.quantity}}">
+                                                {{item.quantity}}</p>
+                                        </td>
+                                        <td>
+                                            <p class="td_p">{{item.totalStringVND}}</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+    
+                            </table>
+                        </div>
+                        <div class="col-2">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Tồn kho</th>
+    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in order.listOrderItemDTO">
+                                        <td>
+                                            <p class="td_p" id="stockQuantity_{{item.id}}">
+                                                {{item.productSize.quantity}}</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+    
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mx-0 mt-5">
+                        <div class=" col ">
+                            <div>
+                                <h4 style="font-family: Roboto">Tạm tính: {{order.tempTotalStringVND}}</h4>
+                            </div>
+                            <!-- <c:if test="${tempTotal != ''}"> -->
+                            <div>
+                                <h4 style="font-family: Roboto">Giảm giá: {{order.discountStringVND}}</h4>
+                            </div>
+                            <!-- </c:if> -->
+                            <div>
+                                <h4 style="font-family: Roboto">Tổng tiền: {{order.totalStringVND}}
+                                </h4>
+                            </div>
+                        </div>
+                        <div id="btnGroup" class=" col d-flex align-items-end justify-content-end">
+    
+    
+                            <a id="btn-cancel" data-bs-toggle="modal" data-bs-target="#cancelModel"
+                                class="btn btn-danger ms-3 text-white mr-3"> Hủy
+                            </a>
+    
+                            <a id="btn-approve" ng-click="approve()" class="btn btn-blue-primary ms-3 text-white">
+                                Duyệt
+                            </a>
+    
+    
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="cancelModel" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Hủy đơn</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="">
+                            <p class="text-danger"> Điền lý do hủy đơn </p>
+                            <textarea style="width: 100%;" name="note" id="note" rows="5" placeholder="Ghi chú"
+                                ng-model="note"></textarea>
+                        </div>
+                        <div class=" d-flex justify-content-end my-2 mx-2">
+                            <a id="btn-cancel" ng-click="cancel()" type="button" class="btn btn-danger ms-3 text-white mr-3"
+                                style="display: block;"> Xác
+                                nhận hủy đơn
+                            </a>
+                        </div>
+    
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </section>
+    
 </div>
-<section class="order_details " ng-controller="OrderController" ng-init="loadDetails()">
-    <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
-
-    <div class="container">
-
-        <div class="row order_d_inner">
-            <div class="col">
-                <div class="details_item">
-                    <h4 style="font-family: Roboto">Thông tin hóa đơn</h4>
-                    <ul class="list">
-                        <li><span>Mã hóa đơn</span> : {{order.id}}</li>
-                        <li><span>Ngày tạo</span> : {{order.createAtString}}</li>
-                        <li><span>Tổng tiền</span> : {{order.totalStringVND}}</li>
-
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col">
-                <div class="details_item">
-                    <h4 style="font-family: Roboto">Thông tin hóa đơn</h4>
-                    <ul class="list">
-                        <li><span>Thanh toán</span> : {{order.paymentMethod.name}}</li>
-                        <li>
-                            <span>Voucher</span> : {{ order.voucher.name || 'Không có' }}
-                        </li>
-                        </li>
-                        <li><span>Trạng thái :</span><span id="span_state"> {{order.orderState.name}}</span>
-
-                        <li id="orderNoteLi" ng-class="{'d-none': !order.note}">
-                            <span>Lý do :</span>
-                            <span id="orderNote">{{order.note}}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <!-- <div class="col"  ng-class="{'d-none': !order.paymentMethod.id != 'VISA'}" >
-                <div class="details_item">
-                    <h4 style="font-family: Roboto">Thông tin thanh toán</h4>
-                    <ul class="list">
-                        <li><span>Mã giao dịch</span> : [[${transaction != null ? transaction.transNo : ''}]]
-                        </li>
-                        <li><span>Ngân hàng</span> : [[${transaction != null ? transaction.bank.name : ""}]]
-                        </li>
-                        <li><span>Ngày thanh toán</span> : [[${transaction != null ?
-                            transaction.payDateString : ""}]]</li>
-                    </ul>
-                </div>
-            </div> -->
-            <div class="col">
-                <div class="details_item">
-                    <h4 style="font-family: Roboto">Địa chỉ nhận hàng</h4>
-                    <ul class="list">
-                        <li><span>Tên</span> : {{order.address.receiverName}}</li>
-                        <li><span>Số điện thoại</span> : {{order.address.numberPhone}}</li>
-                        <li><span>Địa chỉ</span> : {{order.address.address}}</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="order_details_table">
-            <h2 style="font-family: Roboto">Thông tin hóa đơn chi tiết</h2>
-            <div class="table-responsive">
-                <div class="row mx-0 container-fluid">
-                    <div class="col-10">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Sản phẩm</th>
-                                    <th scope="col">Size</th>
-                                    <th scope="col">Số lượng</th>
-                                    <th scope="col">Thành tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="item in order.listOrderItemDTO">
-                                    <td>
-                                        <div class="d-flex justify-content-start align-items-center">
-                                            <img alt="" style="width: 90px; height: 100px; border-radius: 30px;"
-                                                src="/admin-resouce/plugins/images/products/{{item.product.image}}">
-                                            <p class="ml-3">{{item.product.name}} </p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="td_p">{{item.productSize.size.id}}</p>
-                                    </td>
-                                    <td>
-                                        <p class="td_p" id="itemQuantity_{{item.id}}" value="{{item.quantity}}">
-                                            {{item.quantity}}</p>
-                                    </td>
-                                    <td>
-                                        <p class="td_p">{{item.totalStringVND}}</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                        </table>
-                    </div>
-                    <div class="col-2">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Tồn kho</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="item in order.listOrderItemDTO">
-                                    <td>
-                                        <p class="td_p" id="stockQuantity_{{item.id}}">
-                                            {{item.productSize.quantity}}</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                        </table>
-                    </div>
-                </div>
-                <div class="row mx-0 mt-5">
-                    <div class=" col ">
-                        <div>
-                            <h4 style="font-family: Roboto">Tạm tính: {{order.tempTotalStringVND}}</h4>
-                        </div>
-                        <!-- <c:if test="${tempTotal != ''}"> -->
-                        <div>
-                            <h4 style="font-family: Roboto">Giảm giá: {{order.discountStringVND}}</h4>
-                        </div>
-                        <!-- </c:if> -->
-                        <div>
-                            <h4 style="font-family: Roboto">Tổng tiền: {{order.totalStringVND}}
-                            </h4>
-                        </div>
-                    </div>
-                    <div id="btnGroup" class=" col d-flex align-items-end justify-content-end">
-
-
-                        <a id="btn-cancel" data-bs-toggle="modal" data-bs-target="#cancelModel"
-                            class="btn btn-danger ms-3 text-white mr-3"> Hủy
-                        </a>
-
-                        <a id="btn-approve" ng-click="approve()" class="btn btn-blue-primary ms-3 text-white">
-                            Duyệt
-                        </a>
-
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="cancelModel" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Hủy đơn</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="">
-                        <p class="text-danger"> Điền lý do hủy đơn </p>
-                        <textarea style="width: 100%;" name="note" id="note" rows="5" placeholder="Ghi chú"
-                            ng-model="note"></textarea>
-                    </div>
-                    <div class=" d-flex justify-content-end my-2 mx-2">
-                        <a id="btn-cancel" ng-click="cancel()" type="button" class="btn btn-danger ms-3 text-white mr-3"
-                            style="display: block;"> Xác
-                            nhận hủy đơn
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
