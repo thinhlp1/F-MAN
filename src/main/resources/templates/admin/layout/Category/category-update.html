@@ -12,6 +12,7 @@
                        readonly="true"
                        placeholder="ID Danh Mục"/>
                 <label for="category_id">ID</label>
+                <span class="text-danger">{{errors.id}}</span>
             </div>
         </div>
         <div class="col-12 mb-3">
@@ -19,6 +20,7 @@
                 <input type="text" class="form-control" id="category_name" maxlength="50" ng-model="form.name"
                        placeholder="Tên Danh Mục"/>
                 <label for="category_name">Tên danh mục</label>
+                <span class="text-danger">{{errors.name}}</span>
             </div>
         </div>
         <div class="col-12 text-end">

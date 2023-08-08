@@ -116,6 +116,7 @@ public class OrderService {
 
         Order order = orderRepository.findById(id).orElse(null);
         OrderDTO orderDTO = new OrderDTO();
+
         List<OrderItem> listOderItem = order.getOrderItems();
         List<OrderItemDTO> listOrderItemDTOs = new ArrayList();
         listOrderItemDTOs = listOderItem.stream()
@@ -124,6 +125,13 @@ public class OrderService {
 
         Long tempTotal = (long) 0;
         Long discount = (long) 0;
+
+        Transaction transaction = transactionRepository.findByOrderId(order.getId());
+        if (transaction != null) {
+            TransactionDTO transactionDTO = modelMapper.map(transaction, TransactionDTO.class);
+            orderDTO.setTransactionDTO(transactionDTO);
+
+        }
 
         for (OrderItem orderItem : listOderItem) {
             tempTotal += orderItem.getProduct().getPrice().intValue() * orderItem.getQuantity();
@@ -152,6 +160,16 @@ public class OrderService {
 
     public List<OrderDTO> getAllOders() {
         List<Order> listOrder = orderRepository.findAll();
+        List<OrderDTO> listOrderDTO = listOrder.stream()
+                .map(item -> convertDTO(item))
+                .collect(Collectors.toList());
+        Collections.sort(listOrderDTO, (o1, o2) -> o2.getCreateAt().compareTo(o1.getCreateAt()));
+
+        return listOrderDTO;
+    }
+
+    public List<OrderDTO> getApproveOrder() {
+        List<Order> listOrder = orderRepository.findAllByOrderStateId("PENDING_APPROVAL");
         List<OrderDTO> listOrderDTO = listOrder.stream()
                 .map(item -> convertDTO(item))
                 .collect(Collectors.toList());

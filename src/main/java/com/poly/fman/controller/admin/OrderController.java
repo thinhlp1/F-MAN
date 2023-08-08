@@ -46,6 +46,11 @@ public class OrderController {
         return "admin/layout/Order/order-list";
     }
 
+     @GetMapping("/approve")
+    public String viewApproveOrder() {
+        return "admin/layout/Order/order-approve";
+    }
+
     @GetMapping("/list")
     @ResponseBody
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
@@ -54,33 +59,13 @@ public class OrderController {
         return ResponseEntity.ok(listOrder);
     }
 
-    @GetMapping("/approve")
-    public String getOrdersApprove(Model model,
-            @RequestParam(required = false) String orderStateId,
-            @RequestParam(defaultValue = "createAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortOrder,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    @GetMapping("/approve-list")
+    @ResponseBody
+    public ResponseEntity<List<OrderDTO>> getOrdersApprove() {
 
-        // Page<Order> orderPage = orderService.getOders(orderStateId, sortBy,
-        // sortOrder, page - 1, size);
-        // List<OrderState> orderStates = orderStateRepository.findAll();
-        // List<Order> listOrder = orderPage.getContent();
-        //
-        // if (orderStateId == null || orderStateId.equals("")) {
-        // orderStateId = "ALL";
-        // }
-        //
-        // model.addAttribute("orders", orderPage.getContent());
-        // model.addAttribute("currentPage", orderPage.getNumber());
-        // model.addAttribute("totalPages", orderPage.getTotalPages());
-        // model.addAttribute("orderStates", orderStates);
-        // model.addAttribute("sortBy", sortBy);
-        // model.addAttribute("orderStateId", orderStateId);
-        // model.addAttribute("sortOrder", sortOrder);
-        // model.addAttribute("size", size);
+        List<OrderDTO> listOrder = orderService.getApproveOrder();
 
-        return "admin/layout/Order/order-approve";
+        return ResponseEntity.ok(listOrder);
     }
 
     @GetMapping("/view/details/{orderId}")

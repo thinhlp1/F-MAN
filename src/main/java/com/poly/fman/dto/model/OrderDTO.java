@@ -41,6 +41,8 @@ public class OrderDTO implements ModelDTO,ResponseDTO {
 
     private PaymentMethodDTO paymentMethod;
 
+    private TransactionDTO transactionDTO;
+
     private VoucherDTO voucher;
 
     private Long discount;

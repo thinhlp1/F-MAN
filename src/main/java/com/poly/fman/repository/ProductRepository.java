@@ -19,7 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     public Optional<Page<Product>> findAllByActiveIsTrue(Pageable pageable);
 
-public Optional<List<Product>> findAllByActiveIsTrue();
+    public Optional<List<Product>> findAllByActiveIsTrue();
 
     public Optional<Page<Product>> findAllByActiveIsFalse(Pageable pageable);
 
@@ -34,12 +34,6 @@ public Optional<List<Product>> findAllByActiveIsTrue();
             "ORDER BY SUM(oi.quantity) DESC")
     Page<Product> findTopSellingActiveProducts(Pageable pageable);
 
-    
-  
-  
- 
-    
-    
     public Optional<List<Product>> findByNameLikeAndActiveIsTrue(String name);
 
     public Optional<Page<Product>> findByBrandId(String id, Pageable pageable);
@@ -49,15 +43,15 @@ public Optional<List<Product>> findAllByActiveIsTrue();
     public Optional<Page<Product>> findByNameContaining(String name, Pageable pageable);
 
 
-    
     public Optional<Page<Product>> findAllProductByBrandIdLikeAndPriceBetweenAndActiveIsTrue(String brandId, BigInteger min, BigInteger max, Pageable pageable);
+
     //
     public Optional<List<Product>> findByProductTypeId(String id);
 
     public Optional<Page<Product>> findAllProductByBrandIdLikeAndProductTypeIdLikeAndPriceBetween(String brandId, String productTypeId, BigInteger min, BigInteger max, Pageable pageable);
 
     // lọc product
-   
+
     //
 //    public Optional<List<Product>> findByBrandIdInAndActiveIsTrue(Collection<String> brandId);
 //

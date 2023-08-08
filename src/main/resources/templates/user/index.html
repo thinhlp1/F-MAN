@@ -1,69 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <!-- Mobile Specific Meta -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- Author Meta -->
-  <meta name="author" content="CodePixar">
-  <!-- Meta Description -->
-  <meta name="description" content="">
-  <!-- Meta Keyword -->
-  <meta name="keywords" content="">
-  <!-- meta character set -->
-  <meta charset="UTF-8">
-  <!-- Site Title -->
-  <title>Đăng nhập</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Author Meta -->
+    <meta name="author" content="CodePixar">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>Trang chủ | FMan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
-  <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
-
+    <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
 </head>
 
-<body ng-app="myApp" >
+<body>
 
-  <!-- Start Header Area -->
-  <div th:replace="~{/user/view/component/nav.html::nav}"></div>
-  <!-- End Header Area -->
+<!-- Start Header Area -->
+<div th:replace="~{/user/view/component/nav.html::nav}"></div>
+<!-- End Header Area -->
+<!-- start features Area -->
+<section class="features-area section_gap">
 
-  <!-- Start Banner Area -->
-  <section class="mt-5">
+</section>
+<!-- end features Area -->
+<!-- Start brand Area -->
 
-  </section>
-  <!-- End Banner Area -->
+<!-- start product Area -->
+<section class="brand-area">
+    <div class="container">
+        <div class="row" th:object="${brands}">
+            <a th:each="brand : ${brands}" class="col single-img" ng-href="#">
+                <img class="img-fluid d-block mx-auto"
+                     th:src="@{/admin-resouce/plugins/images/brand/__${brand.image}__}" alt="">
+            </a>
+        </div>
+    </div>
+</section>
+<!-- End brand Area -->
+<div class="row justify-content-center mt-5 mx-0">
+    <div class="col-lg-6 text-center">
+        <div class="section-title">
+            <h1>Mới nhất</h1>
+            <p>Những sản phẩm mới nhất được cập nhật liên tục</p>
+        </div>
+    </div>
+</div>
+<!-- single product slide -->
+<div class="single-product-slider">
+    <div class="container">
+        <div class="row" th:object="${items.content}">
+            <div class="col-lg-3 col-md-6" th:each="item : ${items.content}">
+                <a th:href="@{/product/__${item.id}__}">
+                    <div class="single-product">
+                        <img class="img-fluid" style="max-height: 280px"
+                             th:src="@{/admin-resouce/plugins/images/products/__${item.image}__}" alt="">
+                        <div class="product-details">
+                            <h6 th:text="${item.name}"></h6>
+                            <div class="price">
+                                <h6 th:text="${item.price}"></h6>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="row justify-content-center mt-5 mx-0">
+    <div class="col-lg-6 text-center">
+        <div class="section-title">
+            <h1>Bán chạy</h1>
+            <p>Những sản phẩm được bán chạy</p>
+        </div>
+    </div>
+</div>
 
-  <!-- Start Footer Area -->
-  <div th:replace="~{/user/view/component/footer.html::footer}"></div>
-  <!-- End Footer Area -->
+<!-- single product slide -->
+<div class="single-product-slider">
+    <div class="container">
+        <div class="row" th:object="${product_selling.content}">
+            <div class="col-lg-3 col-md-6" th:each="item : ${product_selling.content}">
+                <a th:href="@{/product/__${item.id}__}">
+                    <div class="single-product">
+                        <img class="img-fluid" style="max-height: 280px"
+                             th:src="@{/admin-resouce/plugins/images/products/__${item.image}__}" alt="">
+                        <div class="product-details">
+                            <h6 th:text="${item.name}"></h6>
+                            <div class="price">
+                                <h6 th:text="${item.price}"></h6>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{/user/view/component/footer.html::footer}">
+</div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
-  <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
-  <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
-  <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
-  <script th:src="@{/user-resouce/js/countdown.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
-  <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
-  <!--gmaps Js-->
-  <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
-  <script th:src="@{/user-resouce/js/main.js}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+<script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+<script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+<script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+<!--  <script th:src="@{/user-resouce/js/countdown.js}"></script>-->
+<script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+<!--gmaps Js-->
+<script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+<script th:src="@{/user-resouce/js/main.js}"></script>
 
-  <script th:src="@{/common/commonFunction.js}"></script>
-
+<script th:src="@{/common/commonFunction.js}"></script>
 
 
 </body>

@@ -35,7 +35,7 @@
 <!-- End Header Area -->
 <section class="section_gap_75"></section>
 <!--================Profile Details Area =================-->
-<section>
+<section class="section_gap" ng-app="myApp" ng-controller="ProfileController">
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-3">
@@ -154,12 +154,12 @@
 
                     <a class="btn mx-5" th:href="@{/user/address/all(user-id=${user2.id})}"
                        style="color: white; background-color: rgb(201, 131, 11)">Sổ địa chỉ</a>
-                    <a class="btn mx-5" href="${pageContext.request.contextPath}/auth/change-password"
+                    <a class="btn mx-5" href="/auth/account#!change-password"
                        style="color: white; background-color: rgb(201, 131, 11)">Đổi mật khẩu</a>
                     <a class="btn mx-5" href="${pageContext.request.contextPath}/auth/sendComfirmOTPChangeEmail"
                        style="color: white; background-color: rgb(201, 131, 11)">Đổi email</a>
-                    <a class="btn btn-danger ml-auto mr-3" href="${pageContext.request.contextPath}/auth/logout">Đăng
-                        xuất</a>
+                    <button class="btn btn-danger ml-auto mr-3 mt-5" ng-click="logout()" >Đăng
+                        xuất</button>
                 </div>
             </div>
         </div>
@@ -191,11 +191,7 @@
 <script th:src="@{/common/commonFunction.js}"></script>
 
 <script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
-<script th:src="@{/user-resouce/angularjs/controller/loginController.js}"></script>
-<script th:src="@{/user-resouce/angularjs/controller/registerController.js}"></script>
-<script th:src="@{/user-resouce/angularjs/controller/confirmOTPController.js}"></script>
-<script th:src="@{/user-resouce/angularjs/controller/forgetController.js}"></script>
-<script th:src="@{/user-resouce/angularjs/controller/changePasswordController.js}"></script>
-<script th:src="@{/user-resouce/angularjs/account-route.js}"></script>
+<script th:src="@{/user-resouce/angularjs/controller/profile-controller.js}"></script>
+<!-- <script th:src="@{/user-resouce/angularjs/account-route.js}"></script> -->
 </body>
 </html>

@@ -1,7 +1,4 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-
-
 <div th:fragment="nav" th:with="userId=${session.userId == null} ? 0 : ${session.userId}">
 
 
@@ -40,6 +37,7 @@
 
                             </th:block>
                             <th:block th:if="${userId != 0}">
+                                
                                 <li class="nav-item">
                                     <a class="nav-link" th:href="@{/auth/account#!change-password}">Đổi mật khẩu</a>
                                 </li>
@@ -78,7 +76,7 @@
         </div>
         <div class="search_input" id="search_input_box">
             <div class="container">
-                <form class="d-flex justify-content-between" action="/category/" method="get">
+                <form class="d-flex justify-content-between" th:action="@{/category/}" method="get">
                     <input type="text" class="form-control" name="keywords" id="search_input" placeholder="Search Here">
                     <button type="submit" class="btn"></button>
                     <span class="" id="close_search" title="Close Search"></span>
