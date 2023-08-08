@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="zxx">
+<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- Mobile Specific Meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -29,7 +29,7 @@
 
 </head>
 
-<body ng-app="myApp" ng-controller="profileController">
+<body>
 <!-- Start Header Area -->
 <div th:replace="~{/user/view/component/nav.html::nav}"></div>
 <!-- End Header Area -->
@@ -40,12 +40,15 @@
         <div class="row">
             <div class="col-12 col-md-3">
                 <div class="d-flex align-items-center justify-content-center">
-                    <form enctype="multipart/form-data">
+                    <form enctype="multipart/form-data" >
                         <div id="imgDialog" class="col-12 mb-3">
                             <div id="image-box" class="text-center position-relative w-100">
-                                <img src=""
+                                <img th:src="@{/user-resouce/img/author.png}"
+                                     th:alt="${user2.name} + ' profile picture'"
                                      id="blah"
                                      class="img-fluid w-100 rounded-circle"/>
+
+
                                 <i id="icon-upload"
                                    class="fa fa-cloud-upload position-absolute top-50 start-50 translate-middle text-white"
                                    style="font-size: 1.5rem" aria-hidden="true"></i>
@@ -63,32 +66,34 @@
                     <div class="col-12 col-sm-6 col-md-3">
                         <div style="height: 100px">
                             <p>Người dùng</p>
-                            <p style="color: black"></p>
+                            <p style="color: black">[(${user2.name})]</p>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-3">
                         <div style="height: 100px">
                             <p>Số điện thoại</p>
-                            <p style="color: black"></p>
+                            <p style="color: black">[[${user2.numberPhone}]]</p>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-3">
                         <div style="height: 100px">
                             <p>Email:</p>
-                            <p style="color: black"></p>
+                            <p style="color: black">[[${user2.email}]]</p>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-3">
-                        <div style="height: 100px">
+                        <div style="height: 120px;width: 220px;">
                             <div class="card border-0">
                                 <span class="card-title m-0">Địa chỉ mặc định:</span>
-
+                                <span>Tên người nhận: [[${address.receiverName}]]</span>
+                                <span>Số điện thoại: [[${address.numberPhone}]]</span>
+                                <span>Địa chỉ: [[${address.address}]]</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 30px">
-                    <button type="button" formaction="${pageContext.request.contextPath}/user/profile/${user.id}"
+                    <button type="button"
                             class="btn" id="editProfileButt" data-toggle="modal" data-target="#editModal"
                             style="color: white; background-color: rgb(207, 136, 13)">
                         Thay đổi thông tin
@@ -105,37 +110,37 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <!--                                <c:if test="${errorIsTrue}">-->
-                                <!--                                    <script>-->
-                                <!--                                        window.onload = function callModal() {-->
-                                <!--                                            document.getElementById("editProfileButt").click();-->
-                                <!--                                        };-->
-                                <!--                                    </script>-->
-                                <!--                                </c:if>-->
-                                <form action="">
+<!--                                                                <c:if test="${errorIsTrue}">-->
+<!--                                                                    <script>-->
+<!--                                                                        window.onload = function callModal() {-->
+<!--                                                                            document.getElementById("editProfileButt").click();-->
+<!--                                                                        };-->
+<!--                                                                    </script>-->
+<!--                                                                </c:if>-->
+                                <form th:action="@{'/user/profile/' + ${user2.id}}" th:object="${user2}" method="post" >
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <label for="fullName">Họ tên</label>
                                             <input type="text" class="form-control" id="fullName"
                                                    placeholder="Nhập họ tên"
-                                                   path="name"/>
+                                                   th:field="*{name}"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="phoneNumber">Số điện thoại</label>
                                             <input type="text" class="form-control" id="phoneNumber"
-                                                   placeholder="Nhập số điện thoại" path="numberPhone"/>
+                                                   placeholder="Nhập số điện thoại" th:field="*{numberPhone}"/>
                                         </div>
                                         <input type="text" class="form-control" hidden="hidden"
-                                               path="password" value="${user.password}"/>
-                                        <input accept="image/*" type="file" id="imgInp" hidden="hidden"
-                                               name="photo_file"/>
+                                               th:field="*{password}" value="[[${user2.password}]]"/>
+<!--                                        <input accept="image/*" type="file" id="imgInp" hidden="hidden"-->
+<!--                                               name="photo_file"/>-->
                                     </div>
                                     <div class="modal-footer">
-                                        <button formaction="${pageContext.request.contextPath}/user/profile/${user.id}"
+                                        <button
                                                 type="button" class="btn btn-secondary" data-dismiss="modal">
                                             Đóng
                                         </button>
-                                        <button type="submit" class="btn" style="
+                                        <button class="btn" style="
                             color: white;
                             background-color: rgb(201, 131, 11);
                           ">
@@ -147,7 +152,7 @@
                         </div>
                     </div>
 
-                    <a class="btn mx-5" href="${pageContext.request.contextPath}/user/address/all?user-id=${user.id}"
+                    <a class="btn mx-5" th:href="@{/user/address/all(user-id=${user2.id})}"
                        style="color: white; background-color: rgb(201, 131, 11)">Sổ địa chỉ</a>
                     <a class="btn mx-5" href="${pageContext.request.contextPath}/auth/change-password"
                        style="color: white; background-color: rgb(201, 131, 11)">Đổi mật khẩu</a>
@@ -178,6 +183,7 @@
 <script th:src="@{/user-resouce/js/countdown.js}"></script>
 <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
 <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+
 <!--gmaps Js-->
 <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
 <script th:src="@{/user-resouce/js/main.js}"></script>

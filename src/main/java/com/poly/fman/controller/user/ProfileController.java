@@ -1,9 +1,9 @@
 package com.poly.fman.controller.user;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +21,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-import java.util.List;
-
 @CrossOrigin("*")
 @Controller
 @AllArgsConstructor
@@ -33,25 +31,22 @@ public class ProfileController {
     private HttpSession session;
     private SessionService sessionService;
 
-    @GetMapping("/user/profile/")
-    public String profile() {
+    @GetMapping("/user/profile/{id}")
+    public String profile(@PathVariable("id") int id, Model model) {
+        User user = userService.getUserByIdAndActiveTrue(id);
+        Address address = addressService.getByUserIdAndIsDefaultTrue(id);
+        model.addAttribute("user2", user);
+        model.addAttribute("address", address);
         return "user/view/user/profile";
     }
 
-    @GetMapping("/user/profile/{id}")
-    @ResponseBody
-    public ResponseEntity<User> getUserProfile(@PathVariable("id") int id) {
-        return ResponseEntity.ok(userService.getUserByIdAndActiveTrue(id));
-    }
-
-    @PostMapping("/{id}")
-    public String updateProfile(@PathVariable("id") int id, @Valid @ModelAttribute("user2") UserDTO2 userDTO,
-            BindingResult result,
+    @PostMapping("/user/profile/{id}")
+    public String updateProfile(@PathVariable("id") int id, @Valid @ModelAttribute("user2") UserDTO2 userDTO, Errors errors,
             Model model) {
 
         // Kiểm tra các lỗi null, định dạng
 
-        if (result.hasErrors() && userDTO.getName().equals("") && userDTO.getNumberPhone().equals("")) {
+        if (errors.hasErrors() && userDTO.getName().equals("") && userDTO.getNumberPhone().equals("")) {
             UserDTO2 userDefault = userService.getUserDtoById(id);
             Address address = this.addressService.getByUserIdAndIsDefaultTrue(id);
             model.addAttribute("user2", userDTO);
@@ -70,16 +65,16 @@ public class ProfileController {
     @PostMapping("/update-image/{id}")
     public String updateProfileImage(@PathVariable("id") int id, UserDTO2 userDTO,
             Model model, @RequestParam("photo_file") MultipartFile img) {
-//        if (img.isEmpty()) {
-//            userDTO.setImage(userService.getUserById(id).getImage());
-//        } else {
-//            String image = paramService.save(img, "/views/admin/plugins/images/");
-//            userDTO.setImage(image);
-//        }
-//        // Kiểm tra các lỗi null, định dạng, hình ảnh
-//        userDTO = userService.getUserDtoByIdForUpdateImage(id, userDTO);
-//        userService.updateImageByUser(userDTO);// Bước này để save user vô csdl
-//        model.addAttribute("user", userDTO);
+        if (img.isEmpty()) {
+            userDTO.setImage(userService.getUserByIdAndActiveTrue(id).getImage());
+        } else {
+            String image = paramService.save(img, "/views/admin/plugins/images/");
+            userDTO.setImage(image);
+        }
+        // Kiểm tra các lỗi null, định dạng, hình ảnh
+        userDTO = userService.getUserDtoByIdForUpdateImage(id, userDTO);
+        userService.updateImageByUser(userDTO);// Bước này để save user vô csdl
+        model.addAttribute("user", userDTO);
         return "redirect:/user/profile/" + id;
     }
 }

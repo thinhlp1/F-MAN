@@ -66,7 +66,6 @@ public class User implements UserDetails {
 
 	private String username;
 
-	@JsonIgnore
 	// bi-directional many-to-one association to Role
 	@JsonIgnore
 	@ManyToOne

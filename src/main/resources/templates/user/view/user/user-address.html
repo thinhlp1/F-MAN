@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Author Meta -->
+    <meta name="author" content="CodePixar">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>Điạ chỉ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
+    <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
+
+</head>
+<body>
+<!-- Start Header Area -->
+<div th:replace="~{/user/view/component/nav.html::nav}"></div>
+<!-- End Header Area -->
+<section class="section_gap_75"></section>
+
+<!--================Profile Details Area =================-->
+<section>
+    <div class="container my-3">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="" style="background: rgb(255, 162, 0)">
+                <tr class="text-white">
+                    <th scope="col"><span>Họ tên</span></th>
+                    <th scope="col"><span>Số điện thoại</span></th>
+                    <th scope="col"><span>Địa chỉ</span></th>
+                    <th scope="col"><span>Trạng thái</span></th>
+                    <th scope="col"><span>Hành động</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item: ${items}">
+                    <td>[[${item.receiverName}]]</td>
+                    <td>
+                        <p>[[${item.numberPhone}]]</p>
+                    </td>
+
+                    <td>
+                        <p>[[${item.address}]]</p>
+                    </td>
+                    <td>
+                        <p>[[${item.isDefault == 1 ? 'Mặc định' : 'Ẩn'}]]</p>
+                    </td>
+
+                    <td class="d-flex justify-content-between" th:data-receiver-name="${item.receiverName}" th:data-number-phone="${item.numberPhone}" th:data-address="${item.address}">
+                        <div>
+
+                        <form th:action="@{'/user/address/address-default/' + ${item.id}(user-id=${item.user.id})}" method="post">
+                            <button
+                                    class="btn btn-secondary">
+                                Mặc định
+                            </button>
+                        </form>
+                        </div>
+                        <div>
+
+                        <a class="btn btn-edit "
+                           data-toggle="modal"
+                           th:data-target="'#editModal' + ${item.id}"
+                           th:data-address-id="${item.id}"
+                           th:data-receiver-name="${item.receiverName}"
+                           th:data-number-phone="${item.numberPhone}"
+                           th:data-address="${item.address}"
+                           style="color: white; background-color: rgb(207, 136, 13)">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </a>
+                        <div class="modal fade" th:id="'editModal' + ${item.id}" tabindex="-1" role="dialog"
+                             aria-labelledby="editModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel">
+                                            Chỉnh sửa thông tin
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form th:action="@{'/user/address/update/' + ${item.id}(user-id=${user.id})}"
+                                          th:object="${address}" method="post">
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="receiverName">Họ tên</label>
+                                                <input type="text" class="form-control" id="receiverName"
+                                                       name="receiverName" th:field="*{receiverName}"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="numberPhone">Số điện thoại</label>
+                                                <input type="text" class="form-control" id="numberPhone" name="numberPhone"
+                                                       placeholder="Nhập số điện thoại" th:field="*{numberPhone}"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="userAddress">Địa chỉ</label>
+                                                <input class="form-control" id="userAddress" name="userAddress"
+                                                       th:field="*{address}" placeholder="Nhập địa chỉ"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                Đóng
+                                            </button>
+
+                                            <button class="btn" style="
+                                  color: white;
+                                  background-color: rgb(201, 131, 11);
+                                ">
+                                                Lưu thay đổi
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <!-- Script xử lý sự kiện khi người dùng nhấn nút chỉnh sửa -->
+                        <script>
+                            // Lắng nghe sự kiện click trên nút "Chỉnh sửa"
+                            document.querySelectorAll('.btn-edit').forEach(button => {
+                                button.addEventListener('click', function() {
+                                    // Lấy dữ liệu từ thuộc tính data của thẻ tr
+                                    const row = this.closest('tr');
+                                    const receiverName = row.getAttribute('data-receiver-name').trim();
+                                    const numberPhone = row.getAttribute('data-number-phone').trim();
+                                    const address = row.getAttribute('data-address').trim();
+                                    console.log('Receiver Name:', receiverName);
+                                    console.log('Number Phone:', numberPhone);
+                                    console.log('Address:', address);
+                                    // Hiển thị dữ liệu lên modal
+                                    document.getElementById('receiverName').value = receiverName;
+                                    document.getElementById('numberPhone').value = numberPhone;
+                                    document.getElementById('userAddress').value = address;
+                                });
+                            });
+
+                        </script>
+
+
+                        <!-- ======Modal xóa============ -->
+                        <div>
+
+                            <button class="btn btn-danger" data-toggle="modal" th:data-target="'#delete' + ${item.id}">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                            <div class="modal fade" th:id="'delete' + ${item.id}" tabindex="-1" role="dialog"
+                                 aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-danger">
+                                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                                XÓA
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <img class="img-fluid mb-3" width="300px" height="300px"
+                                                 th:src="@{/admin-resouce/plugins/images/large/cat-screaming-no.jpg}"/>
+                                            <h4>Bạn có chắc chắn muốn xóa không?</h4>
+                                        </div>
+                                        <form
+                                                th:action="@{'/user/address/delete/' + ${item.id}(user-id=${item.user.id})}"
+                                                th:object="${address}" method="post">
+                                            <div class="modal-footer">
+                                                <div class="row g-3 w-100">
+                                                    <div class="col-6">
+                                                        <button class="btn btn-outline-danger w-100 btn-close"
+                                                                data-dismiss="modal" aria-label="Close">
+                                                            Không
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <button class="btn btn-secondary w-100">
+                                                            Có
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="row d-flex justify-content-end my-2 mx-2">
+            <button class="btn" id="addAddressButt" data-toggle="modal" data-target="#add"
+                    style="color: white; background-color: rgb(238, 159, 21)">
+                Thêm địa chỉ
+            </button>
+        </div>
+    </div>
+</section>
+<!--================End Order Details Area =================-->
+
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="addModal"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModal">Thêm địa chỉ</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--            <c:if test="${errorIsTrue}">-->
+            <!--                <script>-->
+            <!--                    window.onload = function callModal() {-->
+            <!--                        document.getElementById("addAddressButt").click();-->
+            <!--                    };-->
+            <!--                </script>-->
+            <!--            </c:if>-->
+            <form th:action="@{/user/address/create(user-id=${user.id})}" th:object="${address}" method="post">
+                <div class="modal-body">
+                    <!--                    <form:errors path="receiverName" class="text-danger fst-italic fw-bold" />-->
+                    <div class="form-group">
+                        <label for="fullName">Họ tên</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Nhập họ tên"
+                               th:field="*{receiverName}"/>
+                    </div>
+                    <!--                    <form:errors path="numberPhone" class="text-danger fst-italic fw-bold" />-->
+                    <div class="form-group">
+                        <label for="phoneNumber">Số điện thoại</label>
+                        <input type="text" class="form-control" id="phoneNumber" placeholder="Nhập số điện thoại"
+                               th:field="*{numberPhone}"/>
+                    </div>
+                    <!--                    <form:errors path="address" class="text-danger fst-italic fw-bold" />-->
+                    <div class="form-group">
+                        <label for="address">Địa chỉ</label>
+                        <textarea class="form-control" id="address" placeholder="Nhập địa chỉ" rows="3"
+                                  th:field="*{address}"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button class="btn"
+                            style="color: white; background-color: rgb(201, 131, 11)">
+                        Thêm mới
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Start Footer Area -->
+<div th:replace="~{/user/view/component/footer.html::footer}"></div>
+<!-- End Footer Area -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+<script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+<script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+<script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+<script th:src="@{/user-resouce/js/countdown.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--gmaps Js-->
+<script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+<script th:src="@{/user-resouce/js/main.js}"></script>
+
+<script th:src="@{/common/commonFunction.js}"></script>
+
+</body>
+</html>
