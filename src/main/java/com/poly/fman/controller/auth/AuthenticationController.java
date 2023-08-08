@@ -390,7 +390,7 @@ public class AuthenticationController {
             cookieService.remove("userId");
             cookieService.remove("username");
             cookieService.remove("remember");
-            session.removeAttribute("userId");
+            session.invalidate();
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
          return ResponseEntity.status(200).body(new SimpleReponseDTO("200", "Đăng xuất thành công"));
