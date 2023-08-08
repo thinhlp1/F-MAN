@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Author Meta -->
+    <meta name="author" content="CodePixar">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>Tài khoản</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
+    <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
+    <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
+
+</head>
+
+<body>
+<!-- Start Header Area -->
+<div th:replace="~{/user/view/component/nav.html::nav}"></div>
+<!-- End Header Area -->
+<section class="section_gap_75"></section>
+<!--================Profile Details Area =================-->
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="d-flex align-items-center justify-content-center">
+                    <form enctype="multipart/form-data" >
+                        <div id="imgDialog" class="col-12 mb-3">
+                            <div id="image-box" class="text-center position-relative w-100">
+                                <img th:src="@{/user-resouce/img/author.png}"
+                                     th:alt="${user2.name} + ' profile picture'"
+                                     id="blah"
+                                     class="img-fluid w-100 rounded-circle"/>
+
+
+                                <i id="icon-upload"
+                                   class="fa fa-cloud-upload position-absolute top-50 start-50 translate-middle text-white"
+                                   style="font-size: 1.5rem" aria-hidden="true"></i>
+                                <input accept="image/*" type="file" hidden="hidden" name="photo_file"/>
+                            </div>
+                        </div>
+                        <button class="btn btn-danger" id="imgButt" hidden="hidden">
+                            Update ảnh
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-12 col-md-9">
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div style="height: 100px">
+                            <p>Người dùng</p>
+                            <p style="color: black">[(${user2.name})]</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div style="height: 100px">
+                            <p>Số điện thoại</p>
+                            <p style="color: black">[[${user2.numberPhone}]]</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div style="height: 100px">
+                            <p>Email:</p>
+                            <p style="color: black">[[${user2.email}]]</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div style="height: 120px;width: 220px;">
+                            <div class="card border-0">
+                                <span class="card-title m-0">Địa chỉ mặc định:</span>
+                                <span>Tên người nhận: [[${address.receiverName}]]</span>
+                                <span>Số điện thoại: [[${address.numberPhone}]]</span>
+                                <span>Địa chỉ: [[${address.address}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 30px">
+                    <button type="button"
+                            class="btn" id="editProfileButt" data-toggle="modal" data-target="#editModal"
+                            style="color: white; background-color: rgb(207, 136, 13)">
+                        Thay đổi thông tin
+                    </button>
+                    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">
+                                        Chỉnh sửa thông tin
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+<!--                                                                <c:if test="${errorIsTrue}">-->
+<!--                                                                    <script>-->
+<!--                                                                        window.onload = function callModal() {-->
+<!--                                                                            document.getElementById("editProfileButt").click();-->
+<!--                                                                        };-->
+<!--                                                                    </script>-->
+<!--                                                                </c:if>-->
+                                <form th:action="@{'/user/profile/' + ${user2.id}}" th:object="${user2}" method="post" >
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="fullName">Họ tên</label>
+                                            <input type="text" class="form-control" id="fullName"
+                                                   placeholder="Nhập họ tên"
+                                                   th:field="*{name}"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phoneNumber">Số điện thoại</label>
+                                            <input type="text" class="form-control" id="phoneNumber"
+                                                   placeholder="Nhập số điện thoại" th:field="*{numberPhone}"/>
+                                        </div>
+                                        <input type="text" class="form-control" hidden="hidden"
+                                               th:field="*{password}" value="[[${user2.password}]]"/>
+<!--                                        <input accept="image/*" type="file" id="imgInp" hidden="hidden"-->
+<!--                                               name="photo_file"/>-->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button
+                                                type="button" class="btn btn-secondary" data-dismiss="modal">
+                                            Đóng
+                                        </button>
+                                        <button class="btn" style="
+                            color: white;
+                            background-color: rgb(201, 131, 11);
+                          ">
+                                            Lưu thay đổi
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="btn mx-5" th:href="@{/user/address/all(user-id=${user2.id})}"
+                       style="color: white; background-color: rgb(201, 131, 11)">Sổ địa chỉ</a>
+                    <a class="btn mx-5" href="${pageContext.request.contextPath}/auth/change-password"
+                       style="color: white; background-color: rgb(201, 131, 11)">Đổi mật khẩu</a>
+                    <a class="btn mx-5" href="${pageContext.request.contextPath}/auth/sendComfirmOTPChangeEmail"
+                       style="color: white; background-color: rgb(201, 131, 11)">Đổi email</a>
+                    <a class="btn btn-danger ml-auto mr-3" href="${pageContext.request.contextPath}/auth/logout">Đăng
+                        xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+</section>
+<!--================End Order Details Area =================-->
+<!-- Start Footer Area -->
+<div th:replace="~{/user/view/component/footer.html::footer}"></div>
+<!-- End Footer Area -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+<script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
+<script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
+<script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
+<script th:src="@{/user-resouce/js/countdown.js}"></script>
+<script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
+
+<!--gmaps Js-->
+<script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
+<script th:src="@{/user-resouce/js/main.js}"></script>
+
+<script th:src="@{/common/commonFunction.js}"></script>
+
+<script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
+<script th:src="@{/user-resouce/angularjs/controller/loginController.js}"></script>
+<script th:src="@{/user-resouce/angularjs/controller/registerController.js}"></script>
+<script th:src="@{/user-resouce/angularjs/controller/confirmOTPController.js}"></script>
+<script th:src="@{/user-resouce/angularjs/controller/forgetController.js}"></script>
+<script th:src="@{/user-resouce/angularjs/controller/changePasswordController.js}"></script>
+<script th:src="@{/user-resouce/angularjs/account-route.js}"></script>
+</body>
+</html>

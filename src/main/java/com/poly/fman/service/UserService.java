@@ -91,13 +91,13 @@ public class UserService {
         return user;
     }
 
-    public User getUserById(int id) {
-        User user = userRepository.findByIdAndActiveIsTrue(id).orElse(null);
+    public User getUserByIdAndActiveTrue(int id) {
+        User user = userRepository.findByIdAndActiveIsTrue(id);
         return user;
     }
 
     public UserDTO2 getUserDtoById(int id) {
-        User user = userRepository.findByIdAndActiveIsTrue(id).orElse(null);
+        User user = userRepository.findByIdAndActiveIsTrue(id);
         UserDTO2 userDTO = modelMapper.map(user, UserDTO2.class);
         userDTO.setRoleId(user.getRole().getId());
         return userDTO;
@@ -120,7 +120,7 @@ public class UserService {
     }
 
     public User getUserDtoById(int id, UserDTO2 userDTO) {
-        User user = userRepository.findByIdAndActiveIsTrue(id).orElse(null);
+        User user = userRepository.findByIdAndActiveIsTrue(id);
         user.setName(userDTO.getName());
         // user.setEmail(userDTO.getEmail());
         user.setNumberPhone(userDTO.getNumberPhone());
@@ -131,7 +131,7 @@ public class UserService {
     }
 
     public UserDTO2 getUserDtoByIdForUpdateImage(int id, UserDTO2 userDTO) {
-        User user = userRepository.findByIdAndActiveIsTrue(id).orElse(null);
+        User user = userRepository.findByIdAndActiveIsTrue(id);
         user.setImage(userDTO.getImage());
         userDTO = modelMapper.map(user, UserDTO2.class);
         // userDTO.setRoleId(user.getRole().getId());

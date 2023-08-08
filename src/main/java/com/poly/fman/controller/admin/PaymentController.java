@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.poly.fman.dto.model.VoucherDTO;
 import com.poly.fman.entity.Voucher;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -76,7 +77,9 @@ public class PaymentController {
     public ResponseEntity<PaymentMethodDTO> create(@RequestParam("photo_file") MultipartFile photoFile,
                                                    @RequestParam("payment_id") String paymentId,
                                                    @RequestParam("payment_name") String paymentName,
-                                                   @RequestParam("card_number") String cardNumber) {
+                                                   @RequestParam("card_number") String cardNumber
+                                                   ) {
+
         try {
             //   Save file ảnh vào thư mục images
             paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
@@ -88,7 +91,7 @@ public class PaymentController {
             paymentDto.setAccount_number(cardNumber);
             paymentDto.setImage(photoFile.getOriginalFilename());
             // Kiểm tra xem phương thức thanh toán đã tồn tại hay chưa
-            if (!paymentService.existPaymentById(paymentId)) {
+            if (!paymentService.existPaymentById(paymentDto.getId())) {
                 ResponseEntity.notFound().build();
             }
             paymentService.create(paymentDto);

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.mysql.cj.callback.FidoAuthenticationCallback;
@@ -71,28 +72,34 @@ public class AddressService {
         }
     }
 
+    public Address getById(int id){
+        return addressRepository.findById(id).get();
+    }
+
     public Address getByIdAndUserId(Integer id, Integer userId) {
         return this.addressRepository.findByIdAndUserId(id, userId).orElse(null);
     }
 
-    public Page<Address> getPageAddress(Integer userId, Pageable pageable) {
-        return this.addressRepository.findAllByUserIdAndActiveIsTrue(userId, pageable).orElse(null);
+    public Address getAddressById(Integer id) {
+        return this.addressRepository.findById(id).get();
     }
 
-    public List<Address> getPageAddress(Integer userId) {
-        return this.addressRepository.findAllByUserIdAndActiveIsTrue(userId).orElse(null);
+
+    public List<Address> getListAddressByUserId(Integer userId, Sort sort) {
+        return this.addressRepository.findAllByUserIdAndActiveIsTrue(userId, sort);
     }
 
-    public Address getByIsDefault(byte isDefault) {
+    public Address getByIsDefaultTrue(byte isDefault) {
         return this.addressRepository.findByIsDefault(isDefault);
     }
 
+
     public Address getByUserIdAndIsDefaultTrue(Integer userId) {
-        return this.addressRepository.findByUserIdAndIsDefaultTrue(userId).orElse(null);
+        return this.addressRepository.findByUserIdAndIsDefaultTrue(userId);
     }
 
     public Address create(AddressDTO2 addressDTO, Integer userId) {
-        User user = this.userService.getUserById(userId);
+        User user = this.userService.getUserByIdAndActiveTrue(userId);
         addressDTO.setUser(user);
         addressDTO.setUserId(user.getId());
         Address address = modelMapper.map(addressDTO, Address.class);
@@ -107,19 +114,23 @@ public class AddressService {
     }
 
     public Address update(AddressDTO2 addressDTO, Integer addressId, Integer userId) {
-        // User user = this.userService.getUserById(userId);
-        // addressDTO.setUser(user);
-        // addressDTO.setUserId(user.getId());
+//         User user = this.userService.getUserByIdAndActiveTrue(userId);
+//         addressDTO.setUser(user);
+//         addressDTO.setUserId(user.getId());
+//         addressDTO.setActive((byte) 1);
+        System.out.println(addressId);
+        System.out.println(userId);
         Address address = this.getByIdAndUserId(addressId, userId);
-        // address.setUser(addressDTO.getUser());
+//        address.setUser(addressDTO.getUser());
         address.setReceiverName(addressDTO.getReceiverName());
         address.setAddress(addressDTO.getAddress());
         address.setNumberPhone(addressDTO.getNumberPhone());
+//        address.setIsDefault(addressDTO.getIsDefault());
         return addressRepository.save(address);
     }
 
-    public Address updateAddressDefaultIsFalse() {
-        Address address = this.getByIsDefault((byte) 1);
+    public Address updateAddressDefaultIsFalse(int userId) {
+        Address address = this.getByUserIdAndIsDefaultTrue(userId);
         address.setIsDefault((byte) 0);
         return addressRepository.save(address);
         // List<Address> list =
@@ -130,8 +141,8 @@ public class AddressService {
         // }
     }
 
-    public Address updateAddressDefault(Integer addressId, Integer userId) {
-        Address address = this.getByIdAndUserId(addressId, userId);
+    public Address updateAddressDefault(int addressId) {
+        Address address = this.getById(addressId);
         address.setIsDefault((byte) 1);
         return addressRepository.save(address);
     }

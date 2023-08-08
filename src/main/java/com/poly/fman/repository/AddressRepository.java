@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.poly.fman.entity.Address;
@@ -16,11 +17,11 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
 
     public Optional<Page<Address>> findAllByUserIdAndActiveIsTrue(Integer userId, Pageable pageable);
 
-    public Optional<List<Address>> findAllByUserIdAndActiveIsTrue(Integer userId);
+    public List<Address> findAllByUserIdAndActiveIsTrue(Integer userId, Sort sort);
 
-    public Optional<Address> findByUserIdAndIsDefaultTrue(Integer userId);
+    public Address findByUserIdAndIsDefaultTrue(Integer userId);
 
-    public Address findByIsDefault(byte isDefault);
+    public Address findByIdAndUserIdAndIsDefault(int id, int userId, byte isDefault);
 
     public Optional<List<Address>> findByUserId(Integer userId);
 
@@ -30,4 +31,5 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
 
     public Optional<List<Address>> findByUserIdAndActiveIsTrue(Integer userId);
 
+    public Address findByIsDefault(byte isDefault);
 }

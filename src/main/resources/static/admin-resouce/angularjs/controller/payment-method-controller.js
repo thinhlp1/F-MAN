@@ -9,6 +9,8 @@ app.controller("PaymentMethodController",
         $scope.id = "";
         $scope.data = DataService.getData(); //Chứa danh sách tất cả đối tượng (Discount)
         $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
+
+        $scope.errors = ErrorService.getError();
         /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
 
         $scope.reset = () => {
@@ -16,24 +18,6 @@ app.controller("PaymentMethodController",
             $scope.form = {};
         };
 
-        // $scope.getImage  = () => {
-        //     const imageUrl = '/images/viec-lam-tai-huyen-tri-ton-an-giang-3.jpg'; // Thay đổi tên file hình ảnh tùy theo yêu cầu của bạn
-        //
-        //     return $http.get(imageUrl, { responseType: 'arraybuffer' })
-        //         .then((response) => {
-        //             const imageBlob = new Blob([response.data], { type: 'image/jpeg' });
-        //             const imageUrl = URL.createObjectURL(imageBlob);
-        //             $scope.image = imageUrl;
-        //         })
-        //         .catch((error) => {
-        //             console.error(error);
-        //             // Xử lý lỗi nếu cần thiết
-        //             $scope.error = 'Error loading image';
-        //             console.log($scope.error)
-        //         });
-        // };
-        // Gọi hàm để lấy hình ảnh khi controller được khởi tạo
-        // $scope.getImage();
         $scope.load = () => {
             return $http
                 .get(PAYMENT_LIST_URL)
@@ -313,10 +297,14 @@ app.controller("PaymentMethodController",
                 headers: {'Content-Type': undefined}
             }).then((resp) => {
                 $scope.data.push(resp.data);
+                ErrorService.setError({});
+                $scope.errors = ErrorService.getError();
                 notification("Thêm thành công", 3000, "right", "top", "success");
                 console.log("Thêm thành công", resp);
             }).catch((err) => {
                 console.log(err);
+                ErrorService.setError(err.data.errors);
+                $scope.errors = ErrorService.getError();
                 notification("ERROR " + err.status + ": Thêm thất bại", 3000, "right", "top", "error");
             });
         };

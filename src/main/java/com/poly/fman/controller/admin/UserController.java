@@ -60,7 +60,7 @@ public class UserController {
         if (!userService.existUserById(id)) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userService.getUserById(id));
+        return ResponseEntity.ok(userService.getUserByIdAndActiveTrue(id));
     }
 
     @GetMapping("/create")
@@ -151,7 +151,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         User user = new User();
-        user = userService.getUserById(id);
+        user = userService.getUserByIdAndActiveTrue(id);
         userService.delete(user.getUsername());
         return ResponseEntity.ok().build();
     }

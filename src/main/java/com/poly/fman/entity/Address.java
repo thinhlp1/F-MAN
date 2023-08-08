@@ -49,6 +49,7 @@ public class Address implements Serializable {
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
+
 	// bi-directional many-to-one association to Order
 	@OneToMany(mappedBy = "address")
 	private List<Order> orders;
