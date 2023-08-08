@@ -88,7 +88,22 @@ public class ProductController {
 	  @GetMapping("/create")
    	  public String createFormProduct(Model model) {
         model.addAttribute("product", new ProductDTO());
+		// try {
+		// 	 List<Brand> listBrand = new ArrayList<Brand>();
+		//  listBrand = brandService.getAllActive();
+		//  model.addAttribute("listBrands", listBrand);
+		// } catch (Exception e) {
+		// 	System.out.println(e);
+		// }
+		
         return "admin/layout/Product/product-add";
     	}
+
+		
+		@GetMapping("/create")
+		@ResponseBody
+	  public ResponseEntity<List<Brand>> getBrandsAll(){
+		  return ResponseEntity.ok(brandService.getAllActive());       
+	  }
 	
 }

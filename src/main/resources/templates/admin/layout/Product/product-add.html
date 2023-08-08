@@ -40,7 +40,7 @@
                     <div class="form-floating mb-3">
                         <select ng-model="form.brand" id="product_brand" class="form-select">
                             <option value="">Chọn Thương Hiệu</option>
-                                <option value="1">Brand A</option>
+                             <!-- <option th:each ="brand:${listBrands}" th:value="${brand.id}">[(${brand.name})]</option> -->
                         </select>
                         <label for="product_brand">Thương hiệu</label>
                     </div>
