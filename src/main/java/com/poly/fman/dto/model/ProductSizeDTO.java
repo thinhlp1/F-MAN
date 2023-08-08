@@ -30,7 +30,7 @@ public class ProductSizeDTO implements ModelDTO, ResponseDTO {
 
 	private Date updateAt;
 	
-	private ProductDTO product;
+	private Product product;
 	
-	private SizeDTO size;
+	private Size size;
 }

@@ -20,12 +20,9 @@ app.config(function ($routeProvider) {
       controller: "productController",
 
     })
-    .when("/product-update/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/products/update-form/" + $routeParams.id;
-      },
+    .when("/product-update", {
+      templateUrl: "/admin/products/update-form",
       controller: "productController",
-
     })
     .when("/product-detail/:id", {
       templateUrl: ($routeParams) => {
@@ -46,12 +43,9 @@ app.config(function ($routeProvider) {
       controller: "brandController",
 
     })
-    .when("/brand-update/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/brands/update-form/" + $routeParams.id;
-        
-      },
-      controller: "brandController",
+    .when("/brand-update", {
+      templateUrl: "/admin/brands/update-form",
+      controller: "brandController"
 
     })
     .when("/brand-detail/:id", {

@@ -9,17 +9,19 @@
 <!-- Form xử lý -->
 <form>
     <div class="row">
-        <div id="imgDialog" class="col-4 mb-3">
-            <div id="image-box" class="text-center position-relative w-100 h-100"
-                 style="border: dashed">
-                <img id="blah" class="img-fluid w-100 h-100">
-                <i id="icon-upload"
-                   class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
-                   aria-hidden="true"></i>
-                <input accept="image/*" type='file' name="photo_file" id="imgInp" hidden="hidden">
+        <div class="col-4">
+            <div id="imgDialog" class="col-12 mb-3">
+                <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed">
+                    <img id="blah" class="img-fluid"/>
+                    <i id="icon-upload"
+                    class="fa fa-cloud-upload fs-7 position-absolute top-50 start-50 translate-middle"
+                    aria-hidden="true"></i>
+                    <input accept="image/*" type="file" id="imgInp" name="photo_file"/>
+    <!--                <input type="text" hidden="hidden" ng-model="form.image">-->
+                </div>
             </div>
         </div>
-        <!--XỬ LÍ CLICK IMG SHOW DIALOG SELECT IMAGE-->
+ 
         <div class="col-8">
             <div class="row">
                 <div class="col-12">
@@ -38,19 +40,19 @@
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <select ng-model="form.brand" id="product_brand" class="form-select">
+                        <select ng-model="form.brandId" id="product_brand" class="form-select">
                             <option value="">Chọn Thương Hiệu</option>
-                             <!-- <option th:each ="brand:${listBrands}" th:value="${brand.id}">[(${brand.name})]</option> -->
+                            <option th:each ="brand:${listBrands}" th:value="${brand.id}">[(${brand.name})]</option>
                         </select>
                         <label for="product_brand">Thương hiệu</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <select ng-model="form.productType" id="product_type" class="form-select">
+                        <select ng-model="form.productTypeId" id="product_type" class="form-select">
                             <option value="">Chọn Loại Sản Phẩm</option>
-                                <option value="1">Product Type A</option>
-
+                        
+                            <option th:each ="productType:${listProductTypes}" th:value="${productType.id}">[(${productType.name})]</option>
                         </select>
                         <label for="product_type">Loại sản phẩm</label>
                     </div>
@@ -93,40 +95,36 @@
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td><!-- <input class="h-100 w-100 py-2 fs-4"
-                                                                                type="text" placeholder="Nhập size"> -->
-
+                                                <tbody id="table-render">
+                                                <tr th:each ="size:${listSizes}">
+                                                    <td>
                                                         <div class="form-floating mb-3">
-                                                            <select name="size_product"
-                                                                    class="h-100 w-100 py-2 fs-4 form-select">
-                                                            </select>
+                                                            <input th:value="${size.id}" name="size_product" readonly width="30px">
                                                         </div>
-
                                                     </td>
                                                     <td>
                                                         <input class="h-100 w-100 py-2 fs-4" min="1"
                                                                name="quatity_product"
                                                                type="number"
                                                                placeholder="Nhập số lượng"></td>
-                                                    <td>
-                                                        <button type="button"
-                                                                class="delete-row-root btn bg-transparent text-danger h-100 w-100">
+
+                                                    <!-- <td>
+                                                        <button 
+                                                        class="delete-row-root btn bg-transparent text-danger h-100 w-100">
                                                             <i
                                                                     class="fa fa-trash fs-7 "
                                                                     aria-hidden="true"></i></button>
-                                                    </td>
+                                                    </td> -->
                                                 </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="text-end">
+                                    <!-- <div class="text-end">
                                         <button id="add-row-button"
-                                        ng-click="addRowHTML()" class="btn bg-transparent text-success text-end"><i
+                                        ng-click="addRowHTML2()" class="btn bg-transparent text-success text-end"><i
                                                 class="fa fa-plus fs-7" aria-hidden="true"></i></button>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
@@ -134,105 +132,11 @@
                                     </button>
 
 
-                                    <button type="button" class="btn btn-primary" id="addSize">Chọn</button>
+                                    <button ng-click="clickSelectSize()" class="btn btn-primary" id="addSize">Chọn</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- <script>
-                        const table = document.getElementById('my-table');
-                        const addRowButton = document.getElementById('add-row-button');
-                        const clickSize = document.getElementById('addSize');
-
-
-                        clickSize.addEventListener('click', function () {
-                            const listSize = document.getElementsByName('size_product');
-                            const listQuatity = document.getElementsByName('quatity_product');
-
-                            var sizeArray = [];
-
-
-                            listSize.forEach(function (item, index) {
-                                var sizeOject = {};
-                                sizeOject.id = item.value;
-                                sizeArray.push(sizeOject);
-                            })
-                            for (var i = 0; i < sizeArray.length; i++) {
-                                sizeArray[i].quatity = listQuatity[i].value;
-                            }
-
-
-                            console.log(sizeArray);
-                            $.ajax({
-                                url: "${pageContext.request.contextPath}/admin/products/create/productsize",
-                                type: "POST",
-                                contentType: "application/json",
-                                data: JSON.stringify(sizeArray),
-                                success: function (response) {
-                                    // Xử lý phản hồi thành công
-
-                                },
-                                error: function (error) {
-                                    // Xử lý phản hồi lỗi
-                                    console.log("Checkout failed");
-
-                                }
-                            });
-
-
-                        })
-                        addRowButton.addEventListener('click', function () {
-                            console.log("vao day ne")
-                            // Tạo một hàng mới
-                            const newRow = table.insertRow();
-
-                            // Tạo hai ô mới cho hàng
-                            const cell1 = newRow.insertCell();
-                            const cell2 = newRow.insertCell();
-                            const cell3 = newRow.insertCell();
-
-                            // Thêm nội dung cho hai ô mới tạo
-                            // cell1.innerHTML = `<input class="h-100 w-100 py-2 fs-4" type="text" name="size_product" placeholder="Nhập size">`;
-                            cell1.innerHTML = `
-                                            <div class="form-floating mb-3">
-     								           <select name="size_product" class="form-select h-100 w-100 py-2 fs-4">
-
-    								 				<c:forEach var="items" items="${list_sizes}">
-    								 					<option value="${items.id}">${items.size}</option>
-    								 				</c:forEach>
-    											</select>
-    									  </div>
-    										`;
-                            cell2.innerHTML = `<input class="h-100 w-100 py-2 fs-4" type="number" name="quatity_product" placeholder="Nhập số lượng">`;
-
-                            // Thêm nút "Delete" cho hàng mới tạo
-                            const deleteButton = document.createElement('button');
-                            deleteButton.classList.add('delete-row-button');
-                            deleteButton.classList.add('text-danger');
-                            deleteButton.classList.add('bg-transparent');
-                            deleteButton.classList.add('w-100');
-                            deleteButton.classList.add('h-100');
-                            deleteButton.classList.add('border-0');
-                            deleteButton.innerHTML = `<i class="fa fa-trash fs-7" text-danger aria-hidden="true"></i>`;
-                            cell3.appendChild(deleteButton);
-
-                            // Gắn sự kiện click cho nút "Delete"
-                            deleteButton.addEventListener('click', function () {
-                                table.deleteRow(newRow.rowIndex);
-                            });
-                        });
-
-                        // Gắn sự kiện cho tất cả các nút "Delete" được tạo ra ban đầu
-                        const deleteButtons = document.querySelectorAll('.delete-row-button');
-                        deleteButtons.forEach(function (button) {
-                            button.addEventListener('click', function () {
-                                const row = button.parentNode.parentNode;
-                                row.parentNode.removeChild(row);
-                            });
-                        });
-
-                    </script> -->
                 </div>
                 <!-- end modal -->
 
@@ -241,8 +145,8 @@
         </div>
         <div class="col-12 mb-3">
             <div class="form-floating">
-                <form:textarea class="form-control" ng-model="form.desc" placeholder="Nhập ghi chú" id="product_note"
-                               style="height: 100px"></form:textarea>
+                <textarea class="form-control" ng-model="form.desc" placeholder="Nhập ghi chú" id="product_note"
+                               style="height: 100px"></textarea>
                 <label for="product_note">Ghi chú</label>
                
             </div>
