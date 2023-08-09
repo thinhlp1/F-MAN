@@ -3,7 +3,9 @@ package com.poly.fman.controller.user;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.poly.fman.dto.model.OrderDTO;
 import com.poly.fman.dto.model.ResponseDTO;
@@ -31,6 +34,7 @@ import com.poly.fman.repository.TransactionRepository;
 import com.poly.fman.service.CartService;
 import com.poly.fman.service.CheckoutPaymentService;
 import com.poly.fman.service.OrderService;
+import com.poly.fman.service.common.AuthenticationService;
 import com.poly.fman.service.common.DateUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +48,7 @@ public class UserOrderController {
     private final OrderStateRepository orderStateRepository;
     private final CheckoutPaymentService checkoutPaymentService;
     private final TransactionRepository transactionRepository;
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/by-user/{userId}")
     public String getOrdersByUser(Model model, @PathVariable("userId") Integer userId,
@@ -51,7 +56,11 @@ public class UserOrderController {
             @RequestParam(defaultValue = "createAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortOrder,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size) throws AccessDeniedException {
+
+        if (!authenticationService.checkPermision(userId)) {
+            throw new AccessDeniedException("Access Denied");
+        }
 
         Page<Order> orderPage = orderService.getOrdersByUser(userId, orderStateId, sortBy, sortOrder, page - 1, size);
         List<OrderState> orderStates = orderStateRepository.findAll();
@@ -79,6 +88,9 @@ public class UserOrderController {
     @GetMapping("/{orderId}")
     public String getOrder(@PathVariable("orderId") Integer orderId, Model model) {
         OrderDTO orderDTO = orderService.getOrderDTO(orderId);
+        if (!authenticationService.checkPermision(orderDTO.getUser().getId())) {
+            throw new AccessDeniedException("Access Denied");
+        }
 
         if (orderDTO.getPaymentMethod().getId().equals("VISA")) {
 
@@ -95,7 +107,7 @@ public class UserOrderController {
     @PostMapping("/checkout")
     @ResponseBody
     public ResponseEntity<ResponseDTO> checkout(@RequestBody CheckoutRequestDTO checkoutDTO) {
-        System.out.println("OKE");
+        System.out.println(checkoutDTO.toString());
         ResponseDTO checkoutOrderResponseDTO = orderService.create(checkoutDTO);
         if (checkoutOrderResponseDTO instanceof SimpleReponseDTO) {
 
@@ -212,7 +224,6 @@ public class UserOrderController {
 
         Transaction transaction = checkoutPaymentService.createTransaction(transactionDTO);
         orderService.updateRecheckout(orderId);
-            
 
         model.addAttribute("transaction", transaction);
         return "user/view/order/checkout_result";

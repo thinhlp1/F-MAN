@@ -136,6 +136,7 @@ $scope.clickSelectSize = () => {
       var fileInput = document.getElementById("imgInp");
       var file = fileInput.files[0];
       var formData = new FormData();
+    
       formData.append('photo_file', file);
       formData.append('product_id', $scope.form.id);
       formData.append('product_name', $scope.form.name);
