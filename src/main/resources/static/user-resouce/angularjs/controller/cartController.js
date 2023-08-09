@@ -55,7 +55,7 @@ app.controller('CartController', function ($scope, $http, $location) {
     }
 
     function addItemToCart(item) {
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         let cart;
         if (cartJSON) {
             cart = JSON.parse(cartJSON);
@@ -76,13 +76,13 @@ app.controller('CartController', function ($scope, $http, $location) {
         }
         const updatedCartJSON = JSON.stringify(cart);
 
-        sessionStorage.setItem('cart', updatedCartJSON);
+        localStorage.setItem('cart', updatedCartJSON);
         showCartQuantity();
 
     }
 
     $scope.decreaseItemQuantityById = function (id) {
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         if (!cartJSON) {
             return;
         }
@@ -94,7 +94,7 @@ app.controller('CartController', function ($scope, $http, $location) {
             if (cart.listCartItem[cartItemIndex].quantity > 1) {
                 cart.listCartItem[cartItemIndex].quantity -= 1;
                 const updatedCartJSON = JSON.stringify(cart);
-                sessionStorage.setItem('cart', updatedCartJSON);
+                localStorage.setItem('cart', updatedCartJSON);
                 $scope.loadCart();
             }
         }
@@ -102,7 +102,7 @@ app.controller('CartController', function ($scope, $http, $location) {
 
     $scope.increaseItemQuantityById = function (id) {
 
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         if (!cartJSON) {
             return;
         }
@@ -118,10 +118,10 @@ app.controller('CartController', function ($scope, $http, $location) {
                 };
                 $http(request).then(
                     function (response) {
-                        cart.listCartItem[cartItemIndex].quantity = parseInt(   cart.listCartItem[cartItemIndex].quantity) + 1;
+                        cart.listCartItem[cartItemIndex].quantity = parseInt(cart.listCartItem[cartItemIndex].quantity) + 1;
 
                         const updatedCartJSON = JSON.stringify(cart);
-                        sessionStorage.setItem('cart', updatedCartJSON);
+                        localStorage.setItem('cart', updatedCartJSON);
                         $scope.loadCart();
                     }
                 ).catch(function (error) {
@@ -136,7 +136,7 @@ app.controller('CartController', function ($scope, $http, $location) {
 
 
     $scope.removeItem = function (id) {
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         if (!cartJSON) {
             return;
         }
@@ -147,7 +147,7 @@ app.controller('CartController', function ($scope, $http, $location) {
         if (cartItemIndex !== -1) {
             cart.listCartItem.splice(cartItemIndex, 1);
             const updatedCartJSON = JSON.stringify(cart);
-            sessionStorage.setItem('cart', updatedCartJSON);
+            localStorage.setItem('cart', updatedCartJSON);
             $scope.loadCart();
             showCartQuantity();
         }
@@ -181,7 +181,7 @@ app.controller('CartController', function ($scope, $http, $location) {
             checkboxesArray.shift();
         }
 
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         let cart;
         if (cartJSON) {
             cart = JSON.parse(cartJSON);
@@ -202,7 +202,8 @@ app.controller('CartController', function ($scope, $http, $location) {
     }
 
     $scope.loadCart = function () {
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
+        console.log(cartJSON);
         let cart;
         let userId;
         if (cartJSON) {
@@ -222,6 +223,8 @@ app.controller('CartController', function ($scope, $http, $location) {
             url: "/user/carts/get-cart-items/" + userId,
             data: JSON.stringify(cart)
         };
+
+        console.log(request);
 
         $http(request).then(
             function (response) {

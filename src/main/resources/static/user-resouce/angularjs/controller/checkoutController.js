@@ -68,7 +68,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
         }
 
 
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         if (cartJSON) {
             cart = JSON.parse(cartJSON);
         } else {
@@ -260,7 +260,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
     }
 
     $scope.removeItem = function (id) {
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         if (!cartJSON) {
             return;
         }
@@ -271,7 +271,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
         if (cartItemIndex !== -1) {
             cart.listCartItem.splice(cartItemIndex, 1);
             const updatedCartJSON = JSON.stringify(cart);
-            sessionStorage.setItem('cart', updatedCartJSON);
+            localStorage.setItem('cart', updatedCartJSON);
             showCartQuantity();
         }
     }

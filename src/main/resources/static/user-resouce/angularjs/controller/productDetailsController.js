@@ -61,7 +61,7 @@ app.controller('ProductDetailsController', function ($scope, $http, $location) {
             return;
         }
 
-        var quantity = quantityInput.value;
+        var quantity = parseInt(quantityInput.value);
 
         if (sizeId === '' || sizeId == -1) {
             Swal.fire({
@@ -73,12 +73,12 @@ app.controller('ProductDetailsController', function ($scope, $http, $location) {
         var item = {
             "productId": productId,
             "productSizeId": sizeId,
-            "quantity": quantity
+            "quantity": parseInt(quantity)
         }
 
         console.log(item);
 
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         let cart;
         if (cartJSON) {
             cart = JSON.parse(cartJSON);
@@ -89,17 +89,41 @@ app.controller('ProductDetailsController', function ($scope, $http, $location) {
         }
 
         const existingItem = cart.listCartItem.find((cartItem) => cartItem.productSizeId === item.productSizeId);
+        var cartItemIndex = cart.listCartItem.findIndex((cartItem) => cartItem.productSizeId === item.productSizeId);
 
         if (existingItem) {
+            console.log(existingItem.quantity + quantity >= maxQuantity);
             // Nếu đã tồn tại mục với cùng id, tăng số lượng lên 1
-            existingItem.quantity += 1;
-        } else {
+            if (existingItem.quantity >= maxQuantity) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Xin lỗi bạn',
+                    text: 'Giỏ hàng của bạn đã tối đa sản phẩm này',
+                })
+                return;
+            } else if (existingItem.quantity + quantity >= maxQuantity) {
+                console.log(maxQuantity - existingItem.quantity);
+                console.log('Đã thêm ' + (maxQuantity - existingItem.quantity) + " sản phẩm nữa vào giỏ");
+
+                cart.listCartItem[cartItemIndex].quantity = parseInt(cart.listCartItem[cartItemIndex].quantity) + (maxQuantity - existingItem.quantity);
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Nhắc nhỏ',
+                    text: "Đã thêm " + (maxQuantity - existingItem.quantity) + " sản phẩm nữa vào giỏ",
+                })
+
+            }
+            else {
+                cart.listCartItem[cartItemIndex].quantity = parseInt(cart.listCartItem[cartItemIndex].quantity) + quantity;
+            }
+        }
+        else {
             // Nếu chưa tồn tại mục với cùng id, thêm mục mới vào danh sách listItem
             cart.listCartItem.push(item);
         }
         const updatedCartJSON = JSON.stringify(cart);
 
-        sessionStorage.setItem('cart', updatedCartJSON);
+        localStorage.setItem('cart', updatedCartJSON);
         Swal.fire({
             icon: 'success',
             title: 'OK',
@@ -146,7 +170,7 @@ app.controller('ProductDetailsController', function ($scope, $http, $location) {
 
         console.log(item);
 
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         let cart;
         if (cartJSON) {
             cart = JSON.parse(cartJSON);
@@ -160,14 +184,14 @@ app.controller('ProductDetailsController', function ($scope, $http, $location) {
 
         if (existingItem) {
             // Nếu đã tồn tại mục với cùng id, tăng số lượng lên 1
-            existingItem.quantity += 1;
+            existingItem.quantity = parseInt(existingItem.quantity) + 1;
         } else {
             // Nếu chưa tồn tại mục với cùng id, thêm mục mới vào danh sách listItem
             cart.listCartItem.push(item);
         }
         const updatedCartJSON = JSON.stringify(cart);
 
-        sessionStorage.setItem('cart', updatedCartJSON);
+        localStorage.setItem('cart', updatedCartJSON);
         showCartQuantity();
 
         window.location = "/user/carts/#!/checkout/" + sizeId;

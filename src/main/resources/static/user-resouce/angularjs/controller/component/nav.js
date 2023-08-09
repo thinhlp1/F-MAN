@@ -1,7 +1,7 @@
 function cartQuantity() {
     let cartQuantity;
     let cartQuantityElm = document.getElementById("cartQuantity")
-    const cartJSON = sessionStorage.getItem('cart');
+    const cartJSON = localStorage.getItem('cart');
     if (!cartJSON) {
         cartQuantity = 0;
     } else {
