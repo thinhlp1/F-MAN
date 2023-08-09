@@ -144,7 +144,12 @@ public class ProductController {
 				int priceString = Integer.parseInt(price);
 				BigInteger priceNew = BigInteger.valueOf(priceString);
 				productDTO2.setPrice(priceNew);
-				productDTO2.setDesc(desc);
+				if (desc.equals("")) {
+					productDTO2.setDesc(" ");
+				}else {
+					productDTO2.setDesc(desc);
+				}
+				
 				// Kiểm tra xem phương thức thanh toán đã tồn tại hay chưa
 				if (!productService.existProductById(product_id)) {
 					ResponseEntity.notFound().build();
@@ -173,6 +178,7 @@ public class ProductController {
 		
 	
 				// Trả về đối tượng phương thức thanh toán đã được thêm
+				 sessionService.remove("listSizeProductNew");
 				return ResponseEntity.ok(productDTO2);
 			}catch (Exception e){
 				e.printStackTrace();
