@@ -15,6 +15,12 @@ app.config(function ($routeProvider) {
         .when("/change-password", {
             templateUrl: "change-password",
         })
+        .when("/change-email", {
+            templateUrl: "change-email",
+        })
+        .when("/sendConfirmOtpChangeEmail", {
+            templateUrl: "confirmOtpEmail",
+        })
         .otherwise({
             redirectTo: "/login"
         });

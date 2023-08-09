@@ -13,6 +13,15 @@ app.controller("PaymentMethodController",
         $scope.errors = ErrorService.getError();
         /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
 
+        $scope.showPreview = false;
+
+        $scope.toggleInput = function() {
+            var input = document.getElementById('imgInp');
+            if (input) {
+                input.click();
+            }
+        };
+
         $scope.reset = () => {
             $scope.id = "";
             $scope.form = {};
@@ -38,6 +47,41 @@ app.controller("PaymentMethodController",
                     );
                 });
         };
+
+        // $scope.edit = async (id) => {
+        //     $scope.isLoading = true; // Đánh dấu là phần xử lý bất đồng bộ đang được thực hiện
+        //     try {
+        //         const resp = await $http.get(PAYMENT_URL + "/" + id);
+        //
+        //         FormService.setForm(resp.data);
+        //         // var date = $scope.form.startAt;
+        //         // $scope.setStartAtForm(date);
+        //         $scope.form = FormService.getForm();
+        //
+        //         // Hiển thị preview ảnh (nếu có) sau khi tải dữ liệu
+        //         if ($scope.form.photo_file) {
+        //             $scope.previewImage = $scope.form.photo_file;
+        //             $scope.showPreview = true;
+        //         } else {
+        //             $scope.previewImage = '';
+        //             $scope.showPreview = false;
+        //         }
+        //
+        //         $timeout(() => {
+        //             $scope.isLoading = false; // Đánh dấu là phần xử lý bất đồng bộ đã hoàn thành
+        //             $location.path("/payment-update");
+        //         });
+        //     } catch (err) {
+        //         console.log(err);
+        //         notification(
+        //             "ERROR " + err.status + ": Lỗi tải dữ liệu",
+        //             3000,
+        //             "right",
+        //             "top",
+        //             "error",
+        //         );
+        //     }
+        // };
 
         $scope.edit = async (id) => {
             $scope.isLoading = true; // Đánh dấu là phần xử lý bất đồng bộ đang được thực hiện
@@ -315,10 +359,37 @@ app.controller("PaymentMethodController",
             $scope.grid.config.plugin.remove("search");
             $scope.grid.updateConfig({data: data}).forceRender();
         };
-
-
         //Call Function
         $scope.load().then(() => {
             $scope.initGrid();
+            document.getElementById('imgInp').addEventListener('change', function() {
+                var preview = document.getElementById('imgPreview');
+                var file = document.getElementById('imgInp').files[0];
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $scope.$apply(function() {
+                        $scope.previewImage = e.target.result;
+                        $scope.showPreview = true;
+                    });
+                };
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                } else {
+                    $scope.$apply(function() {
+                        $scope.previewImage = '';
+                        $scope.showPreview = false;
+                    });
+                }
+            });
         });
+
+
+
+
+
+
+
+
     });
