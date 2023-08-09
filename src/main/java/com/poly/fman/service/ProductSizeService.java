@@ -1,5 +1,6 @@
 package com.poly.fman.service;
 
+import com.poly.fman.dto.model.ProductSizeDTO;
 import com.poly.fman.dto.model.ProductSizeDTO2;
 import com.poly.fman.entity.ProductSize;
 import com.poly.fman.repository.ProductSizeRepository;
@@ -54,7 +55,7 @@ public class ProductSizeService {
     }
 
 
-    public ProductSize create(ProductSizeDTO2 productSizeDTO) {
+    public ProductSize create(ProductSizeDTO productSizeDTO) {
         ProductSize productSize = modelMapper.map(productSizeDTO, ProductSize.class);
         productSize.setActive((byte) 1);
         return productSizeRespository.save(productSize);

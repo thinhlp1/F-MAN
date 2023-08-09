@@ -1,6 +1,8 @@
 package com.poly.fman.service;
 
+import com.poly.fman.dto.model.ProductDTO;
 import com.poly.fman.dto.model.ProductDTO2;
+import com.poly.fman.entity.Brand;
 import com.poly.fman.entity.Product;
 import com.poly.fman.entity.ProductType;
 import com.poly.fman.repository.ProductRepository;
@@ -28,7 +30,8 @@ public class ProductService {
     private ModelMapper modelMapper = new ModelMapper();
 
     private final ProductRepository productRespository;
-    
+    private final BrandService brandService;
+    private final ProductTypeService productTypeService;
     @PersistenceContext
     private EntityManager entityManager;
 

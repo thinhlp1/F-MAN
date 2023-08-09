@@ -1,7 +1,13 @@
 app.controller(
     "productController",
     function(
-        $scope, $http, DataService, FormService, ErrorService
+      $scope,
+      $http,
+      DataService,
+      FormService,
+      ErrorService,
+      $location,
+      $timeout,
     ){
         const PRODUCT_URL = "http://localhost:8080/admin/products";
         const PRODUCT_LIST_URL = "http://localhost:8080/admin/products/list";
@@ -13,6 +19,7 @@ app.controller(
     $scope.data = DataService.getData(); //Chứa danh sách tất cả đối tượng (Category)
     $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
     $scope.errors = ErrorService.getError();
+    $scope.listSizes = DataService.getData();
     /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
 
     $scope.reset = () => {
@@ -28,7 +35,7 @@ app.controller(
           DataService.setData(resp.data);
           //Gán dữ liệu vào $scope.data trên biến toàn cục
           $scope.data = DataService.getData();
-          console.log($scope.data);
+         
         })
         .catch((err) => {
           console.log(err);
@@ -40,17 +47,102 @@ app.controller(
             "error",
           );
         });
+        };
+
+
+// idit chuyen vao trang update kem product
+$scope.edit = async (id) => {
+  $scope.isLoading = true; // Đánh dấu là phần xử lý bất đồng bộ đang được thực hiện
+  try {
+    const resp = await $http.get(PRODUCT_URL + "/" + id);
+    FormService.setForm(resp.data);
+    $scope.form = FormService.getForm();
+    console.log($scope.form);
+    $timeout(() => {
+      $scope.isLoading = false; // Đánh dấu là phần xử lý bất đồng bộ đã hoàn thành
+      $location.path("/product-update");
+    });
+  } catch (err) {
+    console.log(err);
+    notification(
+      "ERROR " + err.status + ": Lỗi tải dữ liệu",
+      3000,
+      "right",
+      "top",
+      "error",
+    );
+  }
+};
+
+$scope.clickSelectSize = () => {
+        const listSize = document.getElementsByName('size_product');
+        const listQuatity = document.getElementsByName('quatity_product');
+        var sizeArray = [];
+        listSize.forEach(function(item , index) {
+            var sizeOject = {};
+            sizeOject.id = item.value;        
+            sizeArray.push(sizeOject);   
+        } )
+        for(var i =0; i< sizeArray.length; i++) {
+            sizeArray[i].quatity = listQuatity[i].value;
+        }    
+        console.log(sizeArray);
+        $.ajax({
+            url: "http://localhost:8080/admin/products/create/productsize",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(sizeArray),
+            success: function (response) {
+                // Xử lý phản hồi thành công  
+            },
+        error: function ( error) {
+            // Xử lý phản hồi lỗi
+            console.log("Checkout failed");
+
+        }});
+
     };
 
+    $scope.clickSelectSizeUpdate = () => {
+      const listSize = document.getElementsByName('size_product');
+      const listQuatity = document.getElementsByName('quatity_product');
+      var sizeArray = [];
+      listSize.forEach(function(item , index) {
+          var sizeOject = {};
+          sizeOject.id = item.value;        
+          sizeArray.push(sizeOject);   
+      } )
+      for(var i =0; i< sizeArray.length; i++) {
+          sizeArray[i].quatity = listQuatity[i].value;
+      }    
+      console.log(sizeArray);
+      $.ajax({
+          url: "http://localhost:8080/admin/products/create/productsizeupdate",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(sizeArray),
+          success: function (response) {
+              // Xử lý phản hồi thành công  
+          },
+      error: function ( error) {
+          // Xử lý phản hồi lỗi
+          console.log("Checkout failed");
 
+      }});
+
+  };
 
     $scope.create = () => {
       var fileInput = document.getElementById("imgInp");
       var file = fileInput.files[0];
       var formData = new FormData();
       formData.append('photo_file', file);
-      formData.append('brand_id', $scope.form.id);
-      formData.append('brand_name', $scope.form.name);
+      formData.append('product_id', $scope.form.id);
+      formData.append('product_name', $scope.form.name);
+      formData.append('brandId', $scope.form.brandId);
+      formData.append('productTypeId', $scope.form.productTypeId);
+      formData.append('price', $scope.form.price);
+      formData.append('desc', $scope.form.desc);
       
       $http
         .post(PRODUCT_URL + "/create", formData, {
@@ -72,7 +164,11 @@ app.controller(
       var file = fileInput.files[0];
       var formData = new FormData();
       formData.append('photo_file', file);
-      formData.append('brand_name', $scope.form.name);
+      formData.append('product_name', $scope.form.name);
+      formData.append('brandId', $scope.form.brandId);
+      formData.append('productTypeId', $scope.form.productTypeId);
+      formData.append('price', $scope.form.price);
+      formData.append('desc', $scope.form.desc);
 
       const url = `${PRODUCT_URL}/${$scope.form.id}`;
       $http
@@ -119,13 +215,63 @@ app.controller(
 
 
     // add row table size and quantity
+    $scope.addRowHTML2 = () => {
+     listSizesRender = {};
+      $http
+        .get(PRODUCT_URL +"/getListSize")
+        .then((resp) => {
+          //Lấy dữ liệu từ server và gán vào DataService
+       
+          //Gán dữ liệu vào $scope.data trên biến toàn cục
+          listSizesRender = resp.data;
+          console.log(listSizesRender);
+       
+      var my_table = document.getElementById("my-table");
+   
+      // Tạo một hàng mới
+      const newRow = my_table.insertRow();
+      // Tạo hai ô mới cho hàng
+      const cell1 = newRow.insertCell();
+      const cell2 = newRow.insertCell();
+      const cell3 = newRow.insertCell();
+      cell1.innerHTML = `
+      <div class="form-floating mb-3">
+      <select name="size_product" class="h-100 w-100 py-2 fs-4 form-select"> 
+      
+      </select>
+      </div>
+  `;
+      cell2.innerHTML = `<input class="h-100 w-100 py-2 fs-4" type="number" name="quatity_product" placeholder="Nhập số lượng">`;
+      // Thêm nút "Delete" cho hàng mới tạo
+      const deleteButton = document.createElement('button');
+      deleteButton.classList.add('delete-row-button');
+      deleteButton.classList.add('text-danger');
+      deleteButton.classList.add('bg-transparent');
+      deleteButton.classList.add('w-100');
+      deleteButton.classList.add('h-100');
+      deleteButton.classList.add('border-0');
+      deleteButton.innerHTML = `<i class="fa fa-trash fs-7" text-danger aria-hidden="true"></i>`;
+      cell3.appendChild(deleteButton);
 
-    $scope.addRowHTML = () => {
-
-      console.log("vao roi ne")
+      // Gắn sự kiện click cho nút "Delete"
+      deleteButton.addEventListener('click', function () {
+        my_table.deleteRow(newRow.rowIndex);
+      });
      
-    };
 
+    })
+    .catch((err) => {
+      console.log(err);
+      notification(
+        "ERROR " + err.status + ": Lỗi tải dữ liệu",
+        3000,
+        "right",
+        "top",
+        "error",
+      );
+    });      
+    };
+       
 
 
     //Khởi tạo table GRIDJS

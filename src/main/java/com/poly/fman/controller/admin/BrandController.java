@@ -110,7 +110,7 @@ public class BrandController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Brand> updateCategory(@PathVariable("id") String id, 
+    public ResponseEntity<Brand> updateBrand(@PathVariable("id") String id, 
                                                    @RequestParam("photo_file") MultipartFile photoFile,
                                                    @RequestParam("brand_name") String brandName) {
         if (!brandService.existBrandById(id)) {
