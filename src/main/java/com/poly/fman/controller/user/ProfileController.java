@@ -35,6 +35,9 @@ public class ProfileController {
     public String profile(@PathVariable("id") int id, Model model) {
         User user = userService.getUserByIdAndActiveTrue(id);
         Address address = addressService.getByUserIdAndIsDefaultTrue(id);
+//        if (address == null){
+//            address = new Address();
+//        }
         model.addAttribute("user2", user);
         model.addAttribute("address", address);
         return "user/view/user/profile";
