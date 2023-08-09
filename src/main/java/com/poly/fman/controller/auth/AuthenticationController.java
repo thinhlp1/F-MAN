@@ -66,18 +66,28 @@ public class AuthenticationController {
         return "user/view/account/confirmOTP";
     }
 
+    @GetMapping("/confirmOtpEmail")
+    public String confirmOtpEmailForm() {
+        return "user/view/account/confirmOtpEmail";
+    }
+
     @GetMapping("/change-password")
     public String changePasswordForm() {
         return "user/view/account/change-password";
     }
 
     @GetMapping("/change-email")
-    public String changeEmailForm(Model model) {
-        ChangeEmailDTO changeEmailDTO = new ChangeEmailDTO();
-        session.setAttribute("ChangeEmailDto", changeEmailDTO);
-        model.addAttribute("account", changeEmailDTO);
+    public String changeEmailForm() {
         return "user/view/account/change-email";
     }
+
+//    @GetMapping("/change-email")
+//    public String changeEmailForm(Model model) {
+//        ChangeEmailDTO changeEmailDTO = new ChangeEmailDTO();
+//        session.setAttribute("ChangeEmailDto", changeEmailDTO);
+//        model.addAttribute("account", changeEmailDTO);
+//        return "user/view/account/change-email";
+//    }
 
     @GetMapping("/forget")
     public String forgetForm(Model model) {
@@ -194,33 +204,34 @@ public class AuthenticationController {
     }
 
     @PostMapping("/change-email")
-    public String changeEmail(@ModelAttribute("account") @Valid ChangeEmailDTO changeEmailDTO,
-            BindingResult bindingResult, Model model) {
-        User user = userService.getUserByUsernameAndActiveIsTrue(cookieService.getValue("username"));
-
-        if (changeEmailDTO.getNewEmail().equalsIgnoreCase(user.getEmail())) {
-            model.addAttribute("err_message_email", "Email mới bị trùng với mail hiện tại");
-            return "user/view/account/change-email";
-        }
+    @ResponseBody
+    public ResponseEntity<SimpleReponseDTO> changeEmail(@RequestBody @Valid ChangeEmailDTO changeEmailDTO,
+                                                        BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
-            return "user/view/account/change-email";
+            return ResponseEntity.status(400).body(new SimpleReponseDTO("400", "Thông tin không hợp lệ"));
         }
-        changeEmailDTO.setUsername(cookieService.getValue("username"));
-        if (authenticationService.changeEmail(user.getId(), changeEmailDTO.getNewEmail())) {
-            user = userService.getUserByUsernameAndActiveIsTrue(changeEmailDTO.getUsername());
-            // model.addAttribute("user", user);
-            // model.addAttribute("user2", user);
-            // session.setAttribute("successEmail", true);
-            // session.setAttribute("showEmail", "Đổi email thành công");
-            // session.setAttribute("ChangeEmailDto", changeEmailDTO);
 
-            return "redirect:/auth/logout";
-            // model.addAttribute("showEmail", "Đổi email thành công");
-            // return "user/view/user/profile";
-            // return "redirect:/user/profile/" + user.getId();
+        changeEmailDTO.setUsername(cookieService.getValue("username"));
+
+        if (authenticationService.checkEmailExit(changeEmailDTO.getNewEmail())) {
+            if (authenticationService.changeEmail(changeEmailDTO.getUsername(), changeEmailDTO.getNewEmail())) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth != null) {
+                    cookieService.remove("token");
+                    cookieService.remove("userId");
+                    cookieService.remove("username");
+                    cookieService.remove("remember");
+                    session.removeAttribute("userId");
+                    new SecurityContextLogoutHandler().logout(request, response, auth);
+                }
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(500)
+                        .body(new SimpleReponseDTO("500", "Có lỗi xảy ra. Đổi email không thành công"));
+            }
+        } else {
+            return ResponseEntity.status(401).body(new SimpleReponseDTO("401", "Email không hợp lệ"));
         }
-        model.addAttribute("err_message_email", "Đổi email không thành công");
-        return "user/view/account/change-email";
     }
 
     @PostMapping("/forget")
@@ -274,8 +285,8 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/sendComfirmOTPChangeEmail")
-    public String sendComfirmOTPChangeEmail(Model model) {
+    @GetMapping("/sendConfirmOtpChangeEmail")
+    public String sendConfirmOtpChangeEmail(Model model) {
         User user = this.userService.getUserByUsernameAndActiveIsTrue(cookieService.getValue("username"));
         String email = user.getEmail();
         // model.addAttribute("desUri", "ChangeEmail");
