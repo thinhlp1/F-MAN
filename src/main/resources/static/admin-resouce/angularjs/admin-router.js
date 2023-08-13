@@ -26,10 +26,9 @@ app.config(function ($routeProvider) {
     })
     .when("/product-detail/:id", {
       templateUrl: ($routeParams) => {
-        return "/admin/products/details/" + $routeParams.id;
-      },
+        return "/admin/products/detail-form/" + $routeParams.id;
+    },
       controller: "productController",
-
     })
 
     // BRAND
@@ -137,6 +136,12 @@ app.config(function ($routeProvider) {
         .when("/user-update", {
             templateUrl: "/admin/users/update-form" ,
             controller: "userController"
+        })
+        .when("/user-detail/:id", {
+          templateUrl: ($routeParams) => {
+            return "/admin/users/detail-form/" + $routeParams.id;
+        },
+          controller: "userController",
         })
        
 

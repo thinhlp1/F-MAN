@@ -385,11 +385,4 @@ app.controller("PaymentMethodController",
             });
         });
 
-
-
-
-
-
-
-
     });

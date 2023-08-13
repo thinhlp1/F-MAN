@@ -7,7 +7,7 @@
 </div>
 
 <!-- Form xử lý -->
-<form>
+<form enctype="multipart/form-data" class="was-validated">
     <div class="row">
         <div id="imgDialog" class="col-4 mb-3">
             <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed"
@@ -27,41 +27,46 @@
             <div class="row">
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" ng-model="form.id" id="product_id"
+                        <input type="text" class="form-control" required ng-model="form.id" id="product_id"
                                     placeholder="ID Sản Phẩm"/>
+                                    <div class="invalid-feedback">Vui lòng điền ID Sản Phẩm</div>
                         <label for="product_id">ID Sản Phẩm</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" ng-model="form.name" id="product_name"
+                        <input type="text" class="form-control" required ng-model="form.name" id="product_name"
                                     placeholder="Tên sản phẩm"/>
+                                    <div class="invalid-feedback">Vui lòng điền Tên Sản Phẩm</div>
                         <label for="product_name">Tên sản phẩm</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <select ng-model="form.brandId" id="product_brand" class="form-select">
+                        <select ng-model="form.brandId" required id="product_brand" class="form-select">
                             <option value="">Chọn Thương Hiệu</option>
                             <option th:each ="brand:${listBrands}" th:value="${brand.id}">[(${brand.name})]</option>
                         </select>
+                        <div class="invalid-feedback">Vui lòng chọn thương hiệu Sản Phẩm</div>
                         <label for="product_brand">Thương hiệu</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <select ng-model="form.productTypeId" id="product_type" class="form-select">
+                        <select ng-model="form.productTypeId" required id="product_type" class="form-select">
                             <option value="">Chọn Loại Sản Phẩm</option>
                         
                             <option th:each ="productType:${listProductTypes}" th:value="${productType.id}">[(${productType.name})]</option>
                         </select>
+                        <div class="invalid-feedback">Vui lòng chọn loại Sản Phẩm</div>
                         <label for="product_type">Loại sản phẩm</label>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-floating mb-3">
-                        <input type="number" min="200000" ng-model="form.price" class="form-control" id="product_price"
+                        <input type="number" min="200000" required ng-model="form.price" class="form-control" id="product_price"
                                     placeholder="Giá sản phẩm"/>
+                                    <div class="invalid-feedback">Vui lòng điền giá Sản Phẩm</div>
                         <label for="product_price">Giá</label>
                     </div>
                 </div>
@@ -146,8 +151,9 @@
         </div>
         <div class="col-12 mb-3">
             <div class="form-floating">
-                <textarea class="form-control" ng-model="form.desc" placeholder="Nhập ghi chú" id="product_note"
+                <textarea class="form-control" required ng-model="form.desc" placeholder="Nhập ghi chú" id="product_note"
                                style="height: 100px"></textarea>
+                               <div class="invalid-feedback">Vui lòng thêm ghi chú Sản Phẩm</div>
                 <label for="product_note">Ghi chú</label>
                
             </div>

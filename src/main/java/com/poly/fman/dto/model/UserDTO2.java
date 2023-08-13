@@ -6,7 +6,6 @@ import javax.swing.SpringLayout.Constraints;
 
 import com.poly.fman.entity.Role;
 import com.poly.fman.interfaces.ValidPassword;
-import com.poly.fman.service.common.DateUtils;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO2 implements ModelDTO {
+public class UserDTO2 implements ModelDTO, ResponseDTO {
 
 	private int id;
 

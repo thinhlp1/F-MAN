@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrandDTO implements ModelDTO {
+public class BrandDTO implements ModelDTO, ResponseDTO {
 
 
 	@NotBlank(message = "{NotBlank.brand.id}")

@@ -1,11 +1,13 @@
 package com.poly.fman.controller.admin;
 
-import com.poly.fman.dto.model.BrandDTO;
+
 import com.poly.fman.dto.model.ProductDTO;
 import com.poly.fman.dto.model.ProductDTO2;
 import com.poly.fman.dto.model.ProductSizeCreateDTO;
 import com.poly.fman.dto.model.ProductSizeDTO;
 import com.poly.fman.dto.model.ProductSizeDTO2;
+import com.poly.fman.dto.model.ResponseDTO;
+import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.entity.Brand;
 import com.poly.fman.entity.Product;
 import com.poly.fman.entity.ProductHistory;
@@ -25,7 +27,6 @@ import com.poly.fman.service.common.SessionService;
 import lombok.AllArgsConstructor;
 
 import org.modelmapper.ModelMapper;
-
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -65,7 +66,7 @@ public class ProductController {
 	@GetMapping("/list") 
 	@ResponseBody
 	public ResponseEntity<List<Product>> getAllProduct() {
-		return ResponseEntity.ok(productService.getAllActive());	
+		return ResponseEntity.ok(productService.getAll());	
 	}
 
 
@@ -77,18 +78,37 @@ public class ProductController {
         }
         return ResponseEntity.ok(productService.getById(id));
     }
+
+	@GetMapping("/detail-form/{productId}")
+		public String detailForm(Model model , @PathVariable ("productId") String productId) {
+
+			Product product = new Product();
+			product = productService.getById(productId);
+			model.addAttribute("productDetail", product);
+			List<ProductSize> listSize = new ArrayList<ProductSize>();
+			listSize = productSizeService.getAllByProductID(productId);
+				model.addAttribute("listSizeProduct", listSize);
+			return "admin/layout/Product/product-details";
+		}
+	
+
+	@GetMapping("/detail/{id}")
+    @ResponseBody
+    public ResponseEntity<Product> getProductDetail(@PathVariable("id") String id) {
+        if (!productService.existProductById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(productService.getById(id));
+    }
 	
 	@DeleteMapping("/delete/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable("id") String id) {
         if (!productService.existProductById(id)) {
             return ResponseEntity.notFound().build();
         }
-		try {
-			  productService.delete(id);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-      
+				Product product = productService.getById(id);
+			    productService.deleteProductActive(product);
+		
         return ResponseEntity.ok().build();
     }
 	
@@ -115,7 +135,7 @@ public class ProductController {
 
 
 		@PostMapping("/create")
-		public ResponseEntity<ProductDTO2> create(@RequestParam("photo_file") MultipartFile photo_file,
+		public ResponseEntity<ResponseDTO> create(@RequestParam("photo_file") MultipartFile photo_file,
 													   @RequestParam("product_id") String product_id,
 													   @RequestParam("product_name") String product_name,
 													    @RequestParam("brandId") String brandId,
@@ -123,9 +143,16 @@ public class ProductController {
 													    @RequestParam("price") String price,
 														@RequestParam("desc") String desc	   
 													   ) {
+
+
+			if (productService.existProductById(product_id)){
+				System.out.println("vào day la bi trung");
+					return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Sản phẩm này đã tồn tại"));
+		     }
 	   try {
-				//   Save file ảnh vào thư mục images
-				paramService.saveSpringBootUpdated(photo_file, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+				//   Save file ảnh vào thư mục images/admin-resouce/plugins/images/products/
+				
+				paramService.saveSpringBootUpdated(photo_file, "src\\main\\resources\\static\\admin-resouce\\plugins\\images\\products");
 	
 				// Thêm phương thức thanh toán vào cơ sở dữ liệu
 				ProductDTO2 productDTO2 = new ProductDTO2();
@@ -184,6 +211,7 @@ public class ProductController {
 				e.printStackTrace();
 				throw new RuntimeException();
 			}
+			
 		}
 	
 		@ResponseBody
@@ -232,7 +260,7 @@ public class ProductController {
 				ResponseEntity.notFound().build();
 			}
 				//   Save file ảnh vào thư mục images
-				paramService.saveSpringBootUpdated(photo_file, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+				paramService.saveSpringBootUpdated(photo_file, "src\\main\\resources\\static\\admin-resouce\\plugins\\images\\products");
 	
 				
 

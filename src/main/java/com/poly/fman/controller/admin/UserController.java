@@ -1,5 +1,6 @@
 package com.poly.fman.controller.admin;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +22,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.poly.fman.dto.model.BrandDTO;
+import com.poly.fman.dto.model.ResponseDTO;
 import com.poly.fman.dto.model.RoleDTO;
 import com.poly.fman.dto.model.UserDTO;
 import com.poly.fman.dto.model.UserDTO2;
+import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.entity.Brand;
+import com.poly.fman.entity.Product;
+import com.poly.fman.entity.ProductSize;
 import com.poly.fman.entity.Role;
 import com.poly.fman.entity.User;
 import com.poly.fman.repository.RoleRepository;
@@ -63,6 +68,25 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByIdAndActiveTrue(id));
     }
 
+    @GetMapping("/detail-form/{userId}")
+		public String detailForm(Model model , @PathVariable ("userId") String userId) {
+
+			return "admin/layout/User/user_details";
+		}
+	
+
+	@GetMapping("/detail/{id}")
+    @ResponseBody
+    public ResponseEntity<User> getUserDetail(@PathVariable("id") String id) {
+        User user = userService.getUser(id);
+        
+        if (user == null) {
+            System.out.println("vao day roi ne");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userService.getUser(id));
+    }
+
     @GetMapping("/create")
     public String createForm(Model model) {
         model.addAttribute("user", new UserDTO());
@@ -70,7 +94,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UserDTO2> create(@RequestParam("photo_file") MultipartFile photoFile,
+    public ResponseEntity<ResponseDTO> create(@RequestParam("photo_file") MultipartFile photoFile,
                                                    @RequestParam("name") String name,
                                                    @RequestParam("password") String password,
                                                    @RequestParam("email") String email,
@@ -78,9 +102,14 @@ public class UserController {
                                                    @RequestParam("active") boolean activeUser,
                                                    @RequestParam("roleId") String roleId
                                                    ) {
+        User userCheck = userService.getUser(email);
+     if (userCheck != null){
+				System.out.println("vào day la bi trung");
+			   return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "username và mail đã tồn tại"));
+		     }
    try {
             //   Save file ảnh vào thư mục images
-            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images\\users");
 
             // Thêm phương thức thanh toán vào cơ sở dữ liệu
             UserDTO2 userDTO = new UserDTO2();
@@ -126,7 +155,7 @@ public class UserController {
         }
 
             //   Save file ảnh vào thư mục images
-            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images\\users");
 
             // Thêm phương thức thanh toán vào cơ sở dữ liệu
             UserDTO2 userDTO = new UserDTO2();

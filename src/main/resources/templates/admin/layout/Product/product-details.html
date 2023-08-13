@@ -1,41 +1,42 @@
 <!--BACK-->
-<div class="back mb-3">
+<div  class="back mb-3">
     <a class="btn btn-blue-primary" href="#!product">
         <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
         Quay lại
     </a>
 </div>
-<div class="product-details">
+<div class="product-details" ng-init="loadDetails()">
     <div class="product-details-title mb-4">
         <h3 class="fw-bold">Chi tiết sản phẩm</h3>
     </div>
     <div class="row product-details-content">
         <div class="col-md-3 order-md-2">
             <img class="img-fluid rounded-circle"
-                 th:src="@{admin-resouce/plugins/images/products/p1.png}">
+            src="/admin-resouce/plugins/images/products/{{product.image}}">
         </div>
         <div class="col-md-4 order-md-1">
             <table class="table table table-responsive-sm table-borderless">
                 <tbody class="custom-table-list">
                 <tr>
                     <th>ID sản phẩm:</th>
-                    <td>SP01</td>
+                    <td>{{product.id}}</td>
                 </tr>
                 <tr>
                     <th>Tên sản phẩm:</th>
-                    <td>Product name</td>
+                    <td>{{product.name}}</td>
                 </tr>
                 <tr>
                     <th>Loại sản phẩm:</th>
-                    <td>ProductType</td>
+                    <td>[(${productDetail.pr
+                        oductType.name})]</td>
                 </tr>
                 <tr>
                     <th>Thương hiệu:</th>
-                    <td>Brand</td>
+                    <td>[(${productDetail.brand.name})]</td>
                 </tr>
                 <tr>
                     <th>Giá:</th>
-                    <td>12222222</td>
+                    <td>{{product.price}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -45,11 +46,11 @@
                 <tbody class="custom-table-list">
                 <tr>
                     <th>Ngày tạo:</th>
-                    <td>20/03/2033</td>
+                    <td>{{product.createAt}}</td>
                 </tr>
                 <tr>
                     <th>Ngày cập nhật:</th>
-                    <td>20/03/2033</td>
+                    <td>{{product.updateAt}}</td>
                 </tr>
                 <tr>
                     <th class="mb-3">
@@ -60,11 +61,12 @@
                             Số lượng:
                         </p>
                     </th>
-                    <td>
+                   
+                    <td th:each = "productSize:${listSizeProduct}">
                         <div class="row">
-                            <div class="col">
-                                <p class="mb-4">34</p>
-                                <p>5</p>
+                            <div class="col-4">
+                                <p class="mb-4">[(${productSize.size.id})]</p>
+                                <p>[(${productSize.quantity})]</p>
                             </div>
                         </div>
                     </td>
@@ -80,7 +82,7 @@
                     Ghi chú:
                 </th>
                 <td class="text-inverse">
-                    Ghi chu test,.....
+                    {{product.desc}}
                 </td>
             </tr>
         </table>

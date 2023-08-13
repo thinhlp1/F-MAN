@@ -8,10 +8,11 @@ app.controller(
       ErrorService,
       $location,
       $timeout,
+      $routeParams
     ){
         const PRODUCT_URL = "http://localhost:8080/admin/products";
         const PRODUCT_LIST_URL = "http://localhost:8080/admin/products/list";
-
+        const PRODUCT_DETAIL_URL = "http://localhost:8080/admin/products/detail";
 
 
           //Khởi tạo các biến toàn cục
@@ -20,6 +21,7 @@ app.controller(
     $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
     $scope.errors = ErrorService.getError();
     $scope.listSizes = DataService.getData();
+    $scope.product;
     /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
 
 
@@ -35,6 +37,10 @@ app.controller(
     $scope.reset = () => {
       $scope.id = "";
       $scope.form = {};
+      FormService.setForm({});
+        ErrorService.setError({});
+
+        $location.path('product')
     };
 
     $scope.load = () => {
@@ -60,8 +66,8 @@ app.controller(
         };
 
 
-// idit chuyen vao trang update kem product
-$scope.edit = async (id) => {
+  // idit chuyen vao trang update kem product
+  $scope.edit = async (id) => {
   $scope.isLoading = true; // Đánh dấu là phần xử lý bất đồng bộ đang được thực hiện
   try {
     const resp = await $http.get(PRODUCT_URL + "/" + id);
@@ -82,9 +88,30 @@ $scope.edit = async (id) => {
       "error",
     );
   }
-};
+  };
 
-$scope.clickSelectSize = () => {
+  // idit chuyen vao trang detail kem product
+  $scope.loadDetails = () => {
+  console.log(PRODUCT_DETAIL_URL);
+  return $http
+      .get(PRODUCT_DETAIL_URL + "/" + $routeParams.id)
+      .then((resp) => {
+          console.log(resp);
+          $scope.product = resp.data;
+      })
+      .catch((err) => {
+          console.log(err);
+          notification(
+              "ERROR " + err.status + ": " + err.data.message,
+              3000,
+              "right",
+              "top",
+              "error",
+          );
+      });
+  };
+
+  $scope.clickSelectSize = () => {
         const listSize = document.getElementsByName('size_product');
         const listQuatity = document.getElementsByName('quatity_product');
         var sizeArray = [];
@@ -165,7 +192,13 @@ $scope.clickSelectSize = () => {
           console.log("Thêm thành công", resp);
       }).catch((err) => {
           console.log(err);
-          notification("ERROR " + err.status + ": Thêm thất bại", 3000, "right", "top", "error");
+          notification(
+            "ERROR " + err.status + ": " + err.data.message,
+            3000,
+            "right",
+            "top",
+            "error",
+          );
       });
     };
 
@@ -208,8 +241,10 @@ $scope.clickSelectSize = () => {
         .delete(url)
         .then((resp) => {
           // Xóa bản ghi khỏi $scope.data
-          $scope.data = $scope.data.filter((item) => item.id !== id);
-          $scope.updateTable($scope.data);
+         // $scope.data = $scope.data.filter((item) => item.id !== id);
+         $scope.load().then(() => {
+          $scope.initGrid();
+        });
           notification("Xóa thành công", 3000, "right", "top", "success");
         })
         .catch((err) => {
@@ -380,10 +415,13 @@ $scope.clickSelectSize = () => {
                       "button",
                       {
                         className: "border-0 bg-transparent",
-                        onClick: () =>
-                          alert(
-                            `Viewing "${row.cells[0].data}" "${row.cells[1].data}"`,
-                          ),
+                        onclick: () => window.location = "/admin/index#!product-detail/" + `${row.cells[0].data}`
+                        // onClick: () => {
+                        //   $scope.id = row.cells[0].data;
+                        //   //Gọi funcntion edit() để xử lí
+                        //   $scope.detail($scope.id);
+                        // }
+                      
                       },
                       gridjs.html('<i class="fa fa-eye" aria-hidden="true"></i>'),
                     ),
@@ -438,30 +476,30 @@ $scope.clickSelectSize = () => {
       //Call Function
       $scope.load().then(() => {
         $scope.initGrid();
-        document.getElementById('imgInp').addEventListener('change', function() {
-          var preview = document.getElementById('imgPreview');
-          var file = document.getElementById('imgInp').files[0];
-          var reader = new FileReader();
-
-          reader.onload = function(e) {
-              $scope.$apply(function() {
-                  $scope.previewImage = e.target.result;
-                  $scope.showPreview = true;
-              });
-          };
-
-          if (file) {
-              reader.readAsDataURL(file);
-          } else {
-              $scope.$apply(function() {
-                  $scope.previewImage = '';
-                  $scope.showPreview = false;
-              });
-          }
-      });
-      });
-    },
-
+        var loadingImage = document.getElementById('imgInp');
+        if (loadingImage != null) {
+          document.getElementById('imgInp').addEventListener('change', function() {
+            var preview = document.getElementById('imgPreview');
+            var file = document.getElementById('imgInp').files[0];
+            var reader = new FileReader();
+  
+            reader.onload = function(e) {
+                $scope.$apply(function() {
+                    $scope.previewImage = e.target.result;
+                    $scope.showPreview = true;
+                });
+            };
+  
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                $scope.$apply(function() {
+                    $scope.previewImage = '';
+                    $scope.showPreview = false;
+                });
+            }
+        });
+        }
     
-
-)
+      });
+  });

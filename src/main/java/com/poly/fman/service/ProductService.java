@@ -196,7 +196,8 @@ public class ProductService {
         try {
               Product product = this.getById(id);
         if (product != null) {
-             product.setActive((byte) 0);
+            byte Byte = 0;
+             product.setActive(Byte);
              productRespository.save(product);
            
         }
