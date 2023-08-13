@@ -111,6 +111,16 @@ public class ProductController {
 		
         return ResponseEntity.ok().build();
     }
+
+	@PutMapping("/restore/{id}")
+    public ResponseEntity<Product> restore(@PathVariable("id") String id) {
+        if (!productService.existProductById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+		Product product = productService.getById(id);
+        productService.restoreProductActive(product);
+        return ResponseEntity.ok().build();
+    }
 	
 
 	  @GetMapping("/create")
@@ -149,6 +159,9 @@ public class ProductController {
 				System.out.println("vào day la bi trung");
 					return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Sản phẩm này đã tồn tại"));
 		     }
+			 if (photo_file == null) {
+					return ResponseEntity.status(400).body(new SimpleReponseDTO("500", "Vui lòng chọn ảnh"));
+				}
 	   try {
 				//   Save file ảnh vào thư mục images/admin-resouce/plugins/images/products/
 				

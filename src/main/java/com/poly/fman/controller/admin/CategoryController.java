@@ -42,7 +42,7 @@ public class CategoryController {
     @GetMapping("/admin/categorys/list")
     @ResponseBody
     public ResponseEntity<List<ProductType>> getCategories() {
-        return ResponseEntity.ok(productTypeService.getAllActive());
+        return ResponseEntity.ok(productTypeService.getAll());
     }
 
     @GetMapping("/admin/categorys/{id}")
@@ -74,8 +74,8 @@ public class CategoryController {
     }
 
     @PutMapping("/admin/categorys/{id}")
-    public ResponseEntity<ResponseDTO> updateCategory(@PathVariable("id") String id,@Valid @RequestBody ProductTypeDTO productType) {
-        if(productTypeService.existProductTypeById(id)){
+    public ResponseEntity<ResponseDTO> updateCategory(@PathVariable("id") String id, @Valid @RequestBody ProductTypeDTO productType) {
+        if (productTypeService.existProductTypeById(id)) {
             productTypeService.update(productType);
         }
         return ResponseEntity.ok(productType);
@@ -90,11 +90,13 @@ public class CategoryController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/restore/{id}")
-    public String restore(@PathVariable("id") String id) {
+    @PutMapping("/admin/categorys/restore/{id}")
+    public ResponseEntity<ProductType> restore(@PathVariable("id") String id) {
+        if (!productTypeService.existProductTypeById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         productTypeService.restore(id);
-        session.set("isRestore", true);
-        return "redirect:/admin/categorys/";
+        return ResponseEntity.ok().build();
     }
 
 

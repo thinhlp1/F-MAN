@@ -9,16 +9,15 @@ app.config(function ($routeProvider) {
         })
 
 
-    // PRODUCT
-    .when("/product", {
-      templateUrl: "/admin/products/",
-      controller: "productController",
+        // PRODUCT
+        .when("/product", {
+            templateUrl: "/admin/products/",
+            controller: "productController",
 
-    })
-    .when("/product-add", {
-      templateUrl: "/admin/products/create",
-      controller: "productController",
-
+        })
+        .when("/product-add", {
+            templateUrl: "/admin/products/create",
+            controller: "productController",
     })
     .when("/product-update", {
       templateUrl: "/admin/products/update-form",
@@ -31,30 +30,30 @@ app.config(function ($routeProvider) {
       controller: "productController",
     })
 
-    // BRAND
-    .when("/brand", {
-      templateUrl: "/admin/brands/",
-      controller: "brandController",
+        // BRAND
+        .when("/brand", {
+            templateUrl: "/admin/brands/",
+            controller: "brandController",
 
-    })
-    .when("/brand-add", {
-      templateUrl: "/admin/brands/create",
-      controller: "brandController",
+        })
+        .when("/brand-add", {
+            templateUrl: "/admin/brands/create",
+            controller: "brandController",
 
-    })
-    .when("/brand-update", {
-      templateUrl: "/admin/brands/update-form",
-      controller: "brandController"
+        })
+        .when("/brand-update", {
+            templateUrl: "/admin/brands/update-form",
+            controller: "brandController"
 
-    })
-    .when("/brand-detail/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/brands/details/" + $routeParams.id;
-      },
-      controller: "brandController",
+        })
+        .when("/brand-detail/:id", {
+            templateUrl: ($routeParams) => {
+                return "/admin/brands/details/" + $routeParams.id;
+            },
+            controller: "brandController",
 
-    })
-    
+        })
+
 
 
         // CATEGORY
@@ -71,38 +70,36 @@ app.config(function ($routeProvider) {
             controller: "CategoryController",
         })
 
-    // SIZE
-    .when("/size", {
-      templateUrl: "/admin/sizes/",
-      controller: "SizeController",
+        // SIZE
+        .when("/size", {
+            templateUrl: "/admin/sizes/",
+            controller: "SizeController",
 
-    })
-    .when("/size-add", {
-      templateUrl: "/admin/sizes/create",
-      controller: "SizeController",
+        })
+        .when("/size-add", {
+            templateUrl: "/admin/sizes/create",
+            controller: "SizeController",
 
-    })
-    .when("/size-update/:id", {
-      templateUrl: ($routeParams) => {
-        return "/admin/sizes/update-form/" + $routeParams.id;
-      },
-      controller: "SizeController",
+        })
+        .when("/size-update", {
+            templateUrl: "/admin/sizes/update-form",
+            controller: "SizeController",
 
-    })
+        })
 
-    // DISCOUNT
-    .when("/discount", {
-      templateUrl: "/admin/discounts/",
-      controller: "DiscountController"
-    })
-    .when("/discount-add", {
-      templateUrl: "/admin/discounts/create",
-      controller: "DiscountController"
-    })
-    .when("/discount-update", {
-      templateUrl: "/admin/discounts/update-form",
-      controller: "DiscountController"
-    })
+        // DISCOUNT
+        .when("/discount", {
+            templateUrl: "/admin/discounts/",
+            controller: "DiscountController"
+        })
+        .when("/discount-add", {
+            templateUrl: "/admin/discounts/create",
+            controller: "DiscountController"
+        })
+        .when("/discount-update", {
+            templateUrl: "/admin/discounts/update-form",
+            controller: "DiscountController"
+        })
 
         // ORDER
         .when("/order", {
@@ -134,7 +131,7 @@ app.config(function ($routeProvider) {
             controller: "userController"
         })
         .when("/user-update", {
-            templateUrl: "/admin/users/update-form" ,
+            templateUrl: "/admin/users/update-form",
             controller: "userController"
         })
         .when("/user-detail/:id", {
@@ -144,7 +141,6 @@ app.config(function ($routeProvider) {
           controller: "userController",
         })
        
-
 
         // PAYMENT
         .when("/payment", {
@@ -161,7 +157,7 @@ app.config(function ($routeProvider) {
         })
 
         // ANALYSIS
-     
+
         .when("/analysis-revenue", {
             templateUrl: "/admin/analysis/view/revenue",
             // controller: "AnalysisRevenueController",
