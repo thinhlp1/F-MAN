@@ -43,7 +43,7 @@ public class SizeController {
     @GetMapping("/list")
     @ResponseBody
     public ResponseEntity<List<Size>> getCategories() {
-        return ResponseEntity.ok(sizeService.getAllActive());
+        return ResponseEntity.ok(sizeService.getAll());
     }
 
     @GetMapping("/{id}")
@@ -91,12 +91,14 @@ public class SizeController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/restore/{id}")
-    public String restore(@PathVariable("id") String id) {
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<Size> restore(@PathVariable("id") String id) {
         //Restore lại những size đã bị INACTIVE
+        if(!sizeService.existId(id)){
+            ResponseEntity.notFound().build();
+        }
         sizeService.restore(id);
-        session.set("isRestore", true);
-        return "redirect:/admin/sizes/";
+        return ResponseEntity.ok().build();
     }
 
 

@@ -1,28 +1,26 @@
 <div class="page-breadcrumb bg-white" th:fragment="taskbar" ng-controller="ComponentController" ng-init="loadTaskbar()">
-  <div class="row align-items-center">
-    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-      <h4 class="page-title">
-        Title
-      </h4>
-    </div>
-    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
-      <div class="d-md-flex">
-        <ol class="breadcrumb ms-auto">
-          <li><a href="#!index" class="fw-normal">Bảng
-            Điều
-            Khiển</a></li>
-        </ol>
-        <a href="#!order-approve"
-           class="btn btn-blue-primary position-relative d-none d-md-block pull-right ms-3 text-white">Đơn
-          Chờ
+    <div class="row align-items-center">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+            <h4 class="page-title">{{pageTitle}}</h4>
+        </div>
+        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+            <div class="d-md-flex">
+                <ol class="breadcrumb ms-auto">
+                    <li><a href="#!index" class="fw-normal">Bảng
+                        Điều
+                        Khiển</a></li>
+                </ol>
+                <a href="#!order-approve"
+                   class="btn btn-blue-primary position-relative d-none d-md-block pull-right ms-3 text-white">Đơn
+                    Chờ
 
-          <span id="quantityOrderApprove"
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span id="quantityOrderApprove"
+                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                     {{orderApproveQuantity}}
                                     <span class="visually-hidden">unread messages</span>
                                 </span>
-        </a>
-      </div>
+                </a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
