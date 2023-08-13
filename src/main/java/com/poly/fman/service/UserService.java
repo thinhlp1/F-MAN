@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.poly.fman.dto.model.UserDTO2;
+import com.poly.fman.entity.AuthenticationProvider;
 import com.poly.fman.entity.Brand;
 import com.poly.fman.entity.Role;
 import com.poly.fman.entity.User;
@@ -143,6 +144,7 @@ public class UserService {
         Role role = roleRepository.findById(roleInput).get();
         userDTO.setRole(role);
         User user = modelMapper.map(userDTO, User.class);
+        user.setAuthenticationProvider(AuthenticationProvider.LOCAL);
         // user.setUsername(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
       

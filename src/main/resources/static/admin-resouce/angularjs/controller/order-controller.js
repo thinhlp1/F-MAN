@@ -1,6 +1,6 @@
 app.controller(
     "OrderController",
-    function ($scope, $http, DataService, $routeParams) {
+    function ($scope, $http, DataService, $routeParams, $q) {
         const ODER_URL = "http://localhost:8080/admin/orders";
         const ORDER_LIST_URL = `${ODER_URL}/list`;
         const ORDER_APPROVE_LIST_URL = `${ODER_URL}/approve-list`;
@@ -450,8 +450,8 @@ app.controller(
 
 
             //insert buttton export
-            const spanElement = document.createElement('span');
-            spanElement.classList.add('mx-5');
+            const spanExport = document.createElement('span');
+            spanExport.classList.add('mx-5');
 
             const buttonElement = document.createElement('button');
             buttonElement.classList.add('btn', 'btn-success');
@@ -459,22 +459,80 @@ app.controller(
             buttonElement.onclick = $scope.exportExcel;
             buttonElement.setAttribute("style", "padding: 9px 20px; background-color: #7ACE4C !important; border: 1px solid #d2d6dc");
 
-            spanElement.appendChild(buttonElement);
-            taskBar.append(spanElement)
+            spanExport.appendChild(buttonElement);
+            taskBar.append(spanExport)
+
+            const spanImport = document.createElement('span');
+
+            var fileInput = document.createElement('input');
+            fileInput.setAttribute('type', 'file');
+            fileInput.setAttribute('id', 'importExcelInput');
+            fileInput.setAttribute('accept', '.xlsx, .xls');
+            fileInput.onchange = $scope.importExcel
+            fileInput.style.display = 'none';
+
+            // Tạo thẻ input type="button"
+            var browseButton = document.createElement('input');
+            browseButton.setAttribute('type', 'button');
+            browseButton.classList.add('btn', 'btn-success');
+            browseButton.setAttribute("style", "padding: 9px 20px; background-color: #7ACE4C !important; border: 1px solid #d2d6dc");
+
+            browseButton.setAttribute('value', 'Import');
+            browseButton.addEventListener('click', function () {
+                document.getElementById('importExcelInput').click();
+            });
+
+            // Chèn các thẻ vào DOM
+            // Thay 'container' bằng id của phần tử chứa input
+            spanImport.appendChild(fileInput);
+            spanImport.appendChild(browseButton);
+
+            taskBar.append(spanImport)
 
 
         }
+
+        function fileToArrayPromise(file) {
+            var promise = $q(function (resolve, reject) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    resolve(data);
+                }
+                reader.onerror = function (ex) {
+                    reject(ex);
+                }
+                reader.readAsArrayBuffer(file);
+            })
+            return promise;
+        }
+
+        $scope.importExcel = function () {
+            var fileInput = document.getElementById('importExcelInput'); // Lấy thẻ input theo id
+            var file = fileInput.files[0]; // Lấy tệp đã chọn
+            if (file) {
+                fileToArrayPromise(file)
+                    .then(function (data) {
+                        var wb = XLSX.read(data, { type: "array" });
+                        var d = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                        console.log(d);
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+            }
+        };
 
 
         $scope.exportExcel = function () {
             var createXLSLFormatObj = [];
 
             /* XLS Head Columns */
-            var xlsHeader = ["Mã hóa đơn", "Ngày tạo",  "Người nhận",  "Địa chỉ", "Tổng tiền", "Trạng thái"];
+            var xlsHeader = ["Mã hóa đơn", "Ngày tạo", "Người nhận", "Địa chỉ", "Tổng tiền", "Trạng thái"];
 
 
             let listData = [];
-           
+
             listData = $scope.extractTableData();
 
             /* XLS Rows Data */
@@ -497,7 +555,7 @@ app.controller(
             var filename = " Danh sach hoa don.xlsx";
 
             /* Sheet Name */
-            var ws_name = "Danh sach hoa don" ;
+            var ws_name = "Danh sach hoa don";
 
             var wb = XLSX.utils.book_new(),
                 ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);

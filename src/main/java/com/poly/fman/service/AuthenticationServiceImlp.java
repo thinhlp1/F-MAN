@@ -12,11 +12,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.poly.fman.config.security.CustomOAuth2User;
 import com.poly.fman.dto.auth.AuthResponseDTO;
 import com.poly.fman.dto.auth.ChangeEmailDTO;
 import com.poly.fman.dto.auth.ChangePassDTO;
 import com.poly.fman.dto.auth.LoginDTO;
 import com.poly.fman.dto.auth.RegisterDTO;
+import com.poly.fman.entity.AuthenticationProvider;
 import com.poly.fman.entity.Role;
 import com.poly.fman.entity.User;
 import com.poly.fman.interfaces.service.AuthenticationService;
@@ -55,6 +57,7 @@ public class AuthenticationServiceImlp implements AuthenticationService {
                                 .build();
         }
 
+
         public AuthResponseDTO getTokenUnlimited(LoginDTO loginDTO) {
                 User user = userRepository.findByUsernameAndActiveIsTrue(loginDTO.getUsername())
                                 .orElseThrow();
@@ -79,6 +82,7 @@ public class AuthenticationServiceImlp implements AuthenticationService {
                 user.setEmail(registerDTO.getUsername());
                 user.setCreateAt(new Date());
                 user.setActive(true);
+                user.setAuthenticationProvider(AuthenticationProvider.LOCAL);
 
                 System.out.println(user.toString());
 
@@ -92,6 +96,8 @@ public class AuthenticationServiceImlp implements AuthenticationService {
                                 .build();
 
         }
+
+        
 
         public boolean changePassword(String userName, String newPassword) {
                 try {
