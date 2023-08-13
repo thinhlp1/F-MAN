@@ -18,7 +18,14 @@ app.controller(
     $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
     $scope.errors = ErrorService.getError();
     /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
+    $scope.showPreview = false;
 
+    $scope.toggleInput = function() {
+        var input = document.getElementById('imgInp');
+        if (input) {
+            input.click();
+        }
+    };
     $scope.reset = () => {
       $scope.id = "";
       $scope.form = {};
@@ -303,6 +310,27 @@ app.controller(
     //Call Function
     $scope.load().then(() => {
       $scope.initGrid();
+      document.getElementById('imgInp').addEventListener('change', function() {
+        var preview = document.getElementById('imgPreview');
+        var file = document.getElementById('imgInp').files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            $scope.$apply(function() {
+                $scope.previewImage = e.target.result;
+                $scope.showPreview = true;
+            });
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            $scope.$apply(function() {
+                $scope.previewImage = '';
+                $scope.showPreview = false;
+            });
+        }
+    });
     });
   },
 );
