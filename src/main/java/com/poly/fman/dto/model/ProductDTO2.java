@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO2 implements ModelDTO{
+public class ProductDTO2 implements ModelDTO,ResponseDTO{
     
 	@NotNull(message = "{NotNull.product.id}")
 	@NotBlank(message = "{NotBlank.product.id}")

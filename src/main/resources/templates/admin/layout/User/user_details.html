@@ -5,13 +5,13 @@
         Quay Lại
     </a>
 </div>
-<div class="product-details">
+<div class="product-details" ng-init="loadDetailsUser()">
     <div class="product-details-title mb-4">
         <h3 class="fw-bold">Thông tin tài khoản</h3>
     </div>
     <div class="row product-details-content">
         <div class="col-md-4">
-            <img th:src="@{admin-resouce/plugins/images/users/1.jpg}"
+            <img src="admin-resouce/plugins/images/users/{{user.image}}"
                  class="rounded-circle img-fluid border w-100" alt="Demo" />
         </div>
 
@@ -20,35 +20,35 @@
                 <tbody class="custom-table-list">
                 <tr>
                     <th>Tên người dùng:</th>
-                    <td>${user.name}</td>
+                    <td>{{user.name}}</td>
                 </tr>
                 <tr>
                     <th>Tên tài khoản:</th>
-                    <td>${user.username}</td>
+                    <td>{{user.username}}</td>
                 </tr>
 
                 <tr>
                     <th>Số điện thoại:</th>
-                    <td>${user.numberPhone}</td>
+                    <td>{{user.numberPhone}}</td>
                 </tr>
                 <tr>
                     <th>Email:</th>
-                    <td>${user.email}</td>
+                    <td>{{user.email}}</td>
                 </tr>
                 <tr>
                     <th>Ngày tạo:</th>
-                    <td>${createDate}</td>
+                    <td>{{createDate}}</td>
                 </tr>
                 <tr>
                     <th>Ngày cập nhật:</th>
                     <td>
-                        ${user.updateAt == null ? 'Chưa có ngày cập nhật' :
-                        updateDate }
+                        {{user.updateAt == null ? 'Chưa có ngày cập nhật' :
+                        updateDate }}
                     </td>
                 </tr>
                 <tr>
                     <th>Vai trò:</th>
-                    <td>${user.roleId}</td>
+                    <td>{{user.roleId}}</td>
                 </tr>
                 <tr>
                     <th>Hoạt động:</th>

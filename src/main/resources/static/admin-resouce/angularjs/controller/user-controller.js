@@ -8,15 +8,17 @@ app.controller(
       ErrorService,
       $location,
       $timeout,
+      $routeParams
     ) {
       const USER_URL = "http://localhost:8080/admin/users";
       const USER_LIST_URL = `${USER_URL}/list`;
-  
+      const USER_DETAIL_URL = `http://localhost:8080/admin/users/detail`;
       //Khởi tạo các biến toàn cục
       $scope.id = "";
       $scope.data = DataService.getData(); //Chứa danh sách tất cả đối tượng (Category)
       $scope.form = FormService.getForm(); //Chưa đối tượng được chỉ định (Update, Create)
       $scope.errors = ErrorService.getError();
+      $scope.user;
       /*NOTE: Mục đích của tạo Service là truyền dữ liệu qua lại giữa các Controller*/
       
       $scope.showPreview = false;
@@ -30,8 +32,34 @@ app.controller(
       $scope.reset = () => {
         $scope.id = "";
         $scope.form = {};
+
+        FormService.setForm({});
+        ErrorService.setError({});
+
+        $location.path('user')
       };
-  
+      
+
+      $scope.loadDetailsUser = () => {
+        console.log(USER_DETAIL_URL);
+        return $http
+            .get(USER_DETAIL_URL + "/" + $routeParams.id)
+            .then((resp) => {
+                console.log(resp);
+                $scope.user = resp.data;
+            })
+            .catch((err) => {
+                console.log(err);
+                notification(
+                    "ERROR " + err.status + ": " + err.data.message,
+                    3000,
+                    "right",
+                    "top",
+                    "error",
+                );
+            });
+      };
+
       $scope.load = () => {
         return $http
           .get(USER_LIST_URL)
@@ -103,7 +131,13 @@ app.controller(
           console.log("Thêm thành công", resp);
       }).catch((err) => {
           console.log(err);
-          notification("ERROR " + err.status + ": Thêm thất bại", 3000, "right", "top", "error");
+          notification(
+            "ERROR " + err.status + ": " + err.data.message,
+            3000,
+            "right",
+            "top",
+            "error",
+        );
       });
     };
   
@@ -141,7 +175,7 @@ app.controller(
       };
   
       $scope.delete = (id) => {
-        $("#category").modal("hide");
+        $("#user").modal("hide");
         const url = `${USER_URL}/delete/` + id;
         $http
           .delete(url)
@@ -270,10 +304,7 @@ app.controller(
                       "button",
                       {
                         className: "border-0 bg-transparent",
-                        onClick: () =>
-                          alert(
-                            `Viewing "${row.cells[0].data}" "${row.cells[1].data}"`,
-                          ),
+                        onclick: () => window.location = "/admin/index#!user-detail/" + `${row.cells[2].data}`
                       },
                       gridjs.html('<i class="fa fa-eye" aria-hidden="true"></i>'),
                     ),
@@ -322,32 +353,37 @@ app.controller(
         $scope.grid.config.plugin.remove("search");
         $scope.grid.updateConfig({ data: data }).forceRender();
       };
+
+    
   
       //Call Function
       $scope.load().then(() => {
         $scope.initGrid();
-        document.getElementById('imgInp').addEventListener('change', function() {
-          var preview = document.getElementById('imgPreview');
-          var file = document.getElementById('imgInp').files[0];
-          var reader = new FileReader();
-
-          reader.onload = function(e) {
-              $scope.$apply(function() {
-                  $scope.previewImage = e.target.result;
-                  $scope.showPreview = true;
-              });
-          };
-
-          if (file) {
-              reader.readAsDataURL(file);
-          } else {
-              $scope.$apply(function() {
-                  $scope.previewImage = '';
-                  $scope.showPreview = false;
-              });
-          }
+          var loadingImage = document.getElementById('imgInp');
+        if (loadingImage != null)  {
+          document.getElementById('imgInp').addEventListener('change', function() {
+            var preview = document.getElementById('imgPreview');
+            var file = document.getElementById('imgInp').files[0];
+            var reader = new FileReader();
+  
+            reader.onload = function(e) {
+                $scope.$apply(function() {
+                    $scope.previewImage = e.target.result;
+                    $scope.showPreview = true;
+                });
+            };
+  
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                $scope.$apply(function() {
+                    $scope.previewImage = '';
+                    $scope.showPreview = false;
+                });
+            }
+        });
+        }
+      
       });
-      });
-    },
-  );
+    });
   

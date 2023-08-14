@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +30,8 @@ import com.poly.fman.service.common.SessionService;
 import jakarta.validation.Valid;
 
 import com.poly.fman.dto.model.BrandDTO;
-
+import com.poly.fman.dto.model.ResponseDTO;
+import com.poly.fman.dto.reponse.SimpleReponseDTO;
 import com.poly.fman.entity.Brand;
 
 import com.poly.fman.service.BrandService;
@@ -76,13 +77,18 @@ public class BrandController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BrandDTO> create(@RequestParam("photo_file") MultipartFile photoFile,
+    public ResponseEntity<ResponseDTO> create(@RequestParam("photo_file") MultipartFile photoFile,
                                                    @RequestParam("brand_id") String brandId,
-                                                   @RequestParam("brand_name") String brandName
+                                                   @RequestParam("brand_name") String brandName,
+                                                  BindingResult bindingResult
                                                    ) {
-   try {
+	    if (brandService.existBrandById(brandId)){
+				System.out.println("vào day la bi trung");
+					return ResponseEntity.status(500).body(new SimpleReponseDTO("500", "Mã thương hiệu này đã tồn tại"));
+		     }
+   
             //   Save file ảnh vào thư mục images
-            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images\\brand");
 
             // Thêm phương thức thanh toán vào cơ sở dữ liệu
             BrandDTO brandDTO = new BrandDTO();
@@ -98,10 +104,7 @@ public class BrandController {
 
             // Trả về đối tượng phương thức thanh toán đã được thêm
             return ResponseEntity.ok(brandDTO);
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new RuntimeException();
-        }
+       
     }
 
     @GetMapping("/update-form")
@@ -118,7 +121,7 @@ public class BrandController {
         }
 
             //   Save file ảnh vào thư mục images
-            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images");
+            paramService.saveSpringBootUpdated(photoFile, "src\\main\\resources\\static\\admin-resouce\\plugins\\images\\brand");
 
             // Thêm phương thức thanh toán vào cơ sở dữ liệu
             Brand brand = new Brand();

@@ -179,7 +179,7 @@ app.controller(
               id: "image",
               name: "Hình Ảnh",
               formatter: (cell) => {
-                  const url = "../../../admin-resouce/plugins/images/" + cell;
+                  const url = "../../../admin-resouce/plugins/images/brand/" + cell;
                   return gridjs.html(
                       `<img src="${url}" style="width: 50px; height: 50px">`,
                   );
@@ -242,7 +242,7 @@ app.controller(
                           console.log($scope.id);
                           //Xử lí khi click vào thì gọi thằng modal ra
                           //Modal nằm ở bên trang html
-                          $("#brandus").modal("show");
+                          $("#brand").modal("show");
                         });
                       },
                     },

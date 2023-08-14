@@ -4,7 +4,7 @@
         Quay Lại
     </a>
 </div>
-<form>
+<form class="was-validated">
     <div class="row">
         <div id="imgDialog" class="col-4 mb-3">
             <div id="image-box" class="text-center position-relative w-100 h-100" style="border: dashed"
@@ -25,7 +25,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="user_name" placeholder="Họ và tên" ng-model="form.name"/>
+                        <input type="text" required class="form-control" id="user_name" placeholder="Họ và tên" ng-model="form.name"/>
+                        <div class="invalid-feedback">Vui lòng điền username</div>
                         <label for="user_name">Họ và tên</label>
                     </div>
                 </div>
@@ -34,8 +35,9 @@
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="user_password" placeholder="Nhập Password"
+                            <input type="password" required class="form-control" id="user_password" placeholder="Nhập Password"
                             ng-model="form.password"/>
+                            <div class="invalid-feedback">Vui lòng điền password</div>
                             <label for="user_password">Nhập mật khẩu</label>
                         </div>
                     </div>
@@ -43,8 +45,9 @@
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="user_email" placeholder="Nhập Email"
+                            <input type="text" class="form-control" required id="user_email" placeholder="Nhập Email"
                             ng-model="form.email" />
+                            <div class="invalid-feedback">Vui lòng điền Email</div>
                             <label for="user_email">Email</label>
                         </div>
                     </div>
@@ -53,7 +56,8 @@
                     <div class="form-floating mb-3">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="user_numberPhone"
-                                   placeholder="Nhập số điện thoại"  ng-model="form.numberPhone" />
+                                   placeholder="Nhập số điện thoại" required ng-model="form.numberPhone" />
+                                   <div class="invalid-feedback">Vui lòng điền số điện thoại</div>
                             <label for="user_numberPhone">Số điện thoại</label>
                         </div>
                     </div>
@@ -66,14 +70,15 @@
                         <label class="me-2">Vai trò:</label>
                         <div class="form-check form-check-inline">
                             <input type="radio" class="form-check-input" name="inlineRadioOptions" id="inlineRadio1"
-                                         value="ADMIN"  ng-model="form.roleId" />
+                                         value="ADMIN" required  ng-model="form.roleId" />
                             <label class="form-check-label" for="inlineRadio1">Admin</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input type="radio" class="form-check-input" name="inlineRadioOptions" id="inlineRadio2"
+                            <input type="radio" class="form-check-input" required name="inlineRadioOptions" id="inlineRadio2"
                                          value="USER" ng-model="form.roleId"  checked="${user.roleId == null ? 'checked' : '' }" />
                             <label class="form-check-label" for="inlineRadio2">User</label>
                         </div>
+                        <div class="invalid-feedback">Vui lòng chọn vai trò</div>
                     </div>
                     <div class="col-6">
                         <div class="form-check form-switch">

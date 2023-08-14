@@ -14,23 +14,24 @@ app.config(function ($routeProvider) {
             templateUrl: "/admin/products/",
             controller: "productController",
 
+
         })
         .when("/product-add", {
             templateUrl: "/admin/products/create",
             controller: "productController",
 
-        })
-        .when("/product-update", {
-            templateUrl: "/admin/products/update-form",
-            controller: "productController",
-        })
-        .when("/product-detail/:id", {
-            templateUrl: ($routeParams) => {
-                return "/admin/products/details/" + $routeParams.id;
-            },
-            controller: "productController",
+    })
+    .when("/product-update", {
+      templateUrl: "/admin/products/update-form",
+      controller: "productController",
+    })
+    .when("/product-detail/:id", {
+      templateUrl: ($routeParams) => {
+        return "/admin/products/detail-form/" + $routeParams.id;
+    },
+      controller: "productController",
+    })
 
-        })
 
         // BRAND
         .when("/brand", {
@@ -136,10 +137,14 @@ app.config(function ($routeProvider) {
             templateUrl: "/admin/users/update-form",
             controller: "userController"
         })
+        .when("/user-detail/:id", {
+          templateUrl: ($routeParams) => {
+            return "/admin/users/detail-form/" + $routeParams.id;
+        },
+          controller: "userController",
+        })
 
-
-
-        // PAYMENT
+ 
         .when("/payment", {
             templateUrl: "/admin/payments/",
             controller: "PaymentMethodController"

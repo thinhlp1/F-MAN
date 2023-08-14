@@ -401,11 +401,4 @@ app.controller("PaymentMethodController",
             });
         });
 
-
-
-
-
-
-
-
     });
