@@ -49,6 +49,8 @@
                 </tr>
                 </thead>
                 <tbody>
+                <th:block th:if="${items.size() >= 0}">
+
                 <tr th:each="item: ${items}">
                     <td>[[${item.receiverName}]]</td>
                     <td>
@@ -186,6 +188,7 @@
                         </div>
                     </td>
                 </tr>
+                </th:block>
 
                 </tbody>
             </table>
