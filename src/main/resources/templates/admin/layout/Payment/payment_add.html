@@ -19,6 +19,7 @@
                        ng-model="photo_file"/>
             </div>
         </div>
+        <span style="color:red" ng-show="showFileError">Vui lòng chọn tệp ảnh.</span>
         <div class="col-8">
             <div class="row">
                 <div class="col-12">
@@ -68,9 +69,10 @@
         </div>
 
         <div class="col-12 text-end">
-            <button class="btn btn-blue-primary btn-lg" ng-click="validationController(); create() "
-                    ng-disabled="myForm.photo_file.$dirty && myForm.photo_file.$invalid || myForm.form.id.$dirty && myForm.form.id.$invalid
-            || myForm.form.name.$dirty && myForm.form.name.$invalid || myForm.form.account_number.$dirty && myForm.form.account_number.$invalid">
+            <button class="btn btn-blue-primary btn-lg"
+                    ng-click="validationController(); create()"
+                    ng-disabled="myForm.$invalid || myForm.photo_file.$dirty && myForm.photo_file.$invalid || myForm.form.id.$dirty && myForm.form.id.$invalid
+                    || myForm.form.name.$dirty && myForm.form.name.$invalid || myForm.form.account_number.$dirty && myForm.form.account_number.$invalid">>
                 Tạo
             </button>
         </div>

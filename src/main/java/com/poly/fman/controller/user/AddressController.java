@@ -36,6 +36,9 @@ public class AddressController {
     public String getAllAddress(@RequestParam(name = "user-id") Integer userId, Model model) {
         User user = this.userService.getUserByIdAndActiveTrue(userId);
         List<Address> items = addressService.getListAddressByUserId(userId, Sort.by(Sort.Direction.DESC, "isDefault"));
+        if (items.size() == 0){
+            items.get(0).setIsDefault((byte) 1);
+        }
         AddressDTO2 addressDTO = new AddressDTO2();
         model.addAttribute("address", addressDTO);
         model.addAttribute("user", user);

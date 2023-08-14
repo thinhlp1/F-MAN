@@ -34,6 +34,11 @@ public class ProfileController {
     @GetMapping("/user/profile/{id}")
     public String profile(@PathVariable("id") int id, Model model) {
         User user = userService.getUserByIdAndActiveTrue(id);
+        if (!user.getAuthenticationProvider().name().equalsIgnoreCase("LOCAL")){
+            model.addAttribute("checkUserAuthProviderIsLocal", false);
+        }else{
+            model.addAttribute("checkUserAuthProviderIsLocal", true);
+        }
         Address address = addressService.getByUserIdAndIsDefaultTrue(id);
 //        if (address == null){
 //            address = new Address();

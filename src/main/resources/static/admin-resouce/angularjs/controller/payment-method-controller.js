@@ -322,9 +322,25 @@ app.controller("PaymentMethodController",
             }
         };
 
+        $scope.validationController = () => {
+            // Đánh dấu tất cả các trường dữ liệu đã tương tác là đã touched để hiển thị lỗi khi cần
+            $scope.myForm.form.id.$setTouched();
+            $scope.myForm.form.name.$setTouched();
+            $scope.myForm.form.account_number.$setTouched();
+            $scope.myForm.photo_file.$setTouched();
+        };
+
         $scope.create = () => {
             var fileInput = document.getElementById("imgInp");
             var file = fileInput.files[0];
+
+            if (!$scope.form.photo_file) {
+                $scope.showFileError = true;
+                return;
+            }
+
+            $scope.showFileError = false;
+
             var formData = new FormData();
             formData.append('photo_file', file);
             formData.append('payment_id', $scope.form.id);
