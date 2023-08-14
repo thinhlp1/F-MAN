@@ -41,7 +41,7 @@ public class CategoryPageController {
     public String category(@RequestParam(name = "brand-id") String brandId, Model model) {
         Pageable pageable = PageRequest.of(
                 0,
-                10,
+                8,
                 Sort.Direction.DESC,
                 "id");
         model.addAttribute("items", productService.getAllProductByBrandId(brandId, pageable));
@@ -51,7 +51,7 @@ public class CategoryPageController {
     @PostMapping("fillter")
     public String fillter(@RequestParam(value = "brandId", defaultValue = "%") String brandId,
                           @RequestParam(value = "min_price", defaultValue = "0") BigInteger min,
-                          @RequestParam(value = "max_price", defaultValue = "1000000") BigInteger max,
+                          @RequestParam(value = "max_price", defaultValue = "100000000") BigInteger max,
                           Model model) {
         Page<Product> page;
         Pageable pageable = PageRequest.of(
@@ -127,6 +127,9 @@ public class CategoryPageController {
         model.addAttribute("show", show.orElse(8));
         model.addAttribute("direction", direction.orElse(""));
         model.addAttribute("keywords", keywords.orElse(""));
+        model.addAttribute("brandId", brandId.orElse("%"));
+        model.addAttribute("min_price", min.orElse(null));
+        model.addAttribute("max_price", max.orElse(null));
         model.addAttribute("productTypeId", productTypeId.orElse("%"));
         return page;
     }
