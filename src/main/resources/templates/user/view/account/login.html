@@ -1,39 +1,9 @@
 <!DOCTYPE html>
 <html>
-<!-- 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="author" content="CodePixar">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta charset="UTF-8">
-  <title>Đăng nhập</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
 
-
-  <link rel="shortcut icon" th:href="@{/admin/plugins/images/logo-icon1.png}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/bootstrap.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/owl.carousel.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/nice-select.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/nouislider.min.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/ion.rangeSlider.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/main.css}">
-  <link rel="stylesheet" th:href="@{/user-resouce/css/validform.css}">
-
-</head> -->
 
 <body ng-app="myApp">
 
-  <!-- Start Header Area -->
-  <!-- <div th:replace="~{/user/view/component/nav.html::nav}"></div> -->
-  <!-- End Header Area -->
-
-  <!-- Start Banner Area -->
-  <!-- <section class="section_gap">
-
-  </section> -->
   <!-- End Banner Area -->
 
   <!--================Login Box Area =================-->
@@ -87,6 +57,10 @@
                   nhập</button>
                 <a href="#!forget/no-confirm" >Quên mật khẩu?</a>
               </div>
+              <div class="col-md-12 form-group">
+              
+                <a href="/oauth2/authorization/google" >Đăng nhập bằng Google</a>
+              </div>
             </form>
           </div>
         </div>
@@ -97,29 +71,6 @@
   
   <script th:src="@{/user-resouce/angularjs/controller/loginController.js}"></script>
 
-  <!--================End Login Box Area =================-->
-
-  <!-- Start Footer Area -->
-  <!-- <div th:replace="~{/user/view/component/footer.html::footer}"></div> -->
-  <!-- End Footer Area -->
-
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-  <script th:src="@{/user-resouce/js/vendor/jquery-2.2.4.min.js}"></script>
-  <script th:src="@{/user-resouce/js/vendor/bootstrap.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.ajaxchimp.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.nice-select.min.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.sticky.js}"></script>
-  <script th:src="@{/user-resouce/js/nouislider.min.js}"></script>
-  <script th:src="@{/user-resouce/js/countdown.js}"></script>
-  <script th:src="@{/user-resouce/js/jquery.magnific-popup.min.js}"></script>
-  <script th:src="@{/user-resouce/js/owl.carousel.min.js}"></script>
-  <script th:src="@{/user-resouce/js/gmaps.min.js}"></script>
-  <script th:src="@{/user-resouce/js/main.js}"></script>
-
-  <script th:src="@{/common/commonFunction.js}"></script>
-  
-  <script th:src="@{/user-resouce/angularjs/controller/app.js}"></script>
-  <script th:src="@{/user-resouce/angularjs/user-route.js}"></script> -->
 
 
 </body>

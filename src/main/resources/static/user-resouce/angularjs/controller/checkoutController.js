@@ -5,6 +5,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
     let total;
     let isBynow = false;
     let isReCheckout = false;
+    $scope.userId = parseInt( getCookie("userId"));
 
 
     $scope.loadReCheckout = function () {
@@ -68,7 +69,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
         }
 
 
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         if (cartJSON) {
             cart = JSON.parse(cartJSON);
         } else {
@@ -260,7 +261,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
     }
 
     $scope.removeItem = function (id) {
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         if (!cartJSON) {
             return;
         }
@@ -271,7 +272,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
         if (cartItemIndex !== -1) {
             cart.listCartItem.splice(cartItemIndex, 1);
             const updatedCartJSON = JSON.stringify(cart);
-            sessionStorage.setItem('cart', updatedCartJSON);
+            localStorage.setItem('cart', updatedCartJSON);
             showCartQuantity();
         }
     }
@@ -300,11 +301,21 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
 
         if ($scope.address === undefined){
             Swal.fire({
-                icon: 'error',
-                title: "Chưa có địa chỉ",
-                text: "Vui lòng chọn thay đổi thông tin. Tạo địa chỉ nhận hàng mới",
+                title: 'Chưa có địa chỉ',
+                text: "Bạn có muốn tạo địa chỉ mới không ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Tạo mới'
+            }).then((result) => {
+                window.location.href = "/user/address/all?user-id=" + getCookie("userId");
+
+            }).catch((result)=>{
+                return;
             })
             return;
+           
         }
 
         let addressId = $scope.address.id;
@@ -349,7 +360,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
             addressId: addressId,
             bankCode: bankCode,
             paymentMethodId, paymentMethodId,
-            userId: 3
+            userId: getCookie("userId")
         }
 
         if (bankCode === "") {

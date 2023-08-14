@@ -37,10 +37,7 @@
 
                             </th:block>
                             <th:block th:if="${userId != 0}">
-                                
-                                <li class="nav-item">
-                                    <a class="nav-link" th:href="@{/auth/account#!change-password}">Đổi mật khẩu</a>
-                                </li>
+                         
                                 <li class="nav-item"><a class="nav-link"
                                         th:href="@{|/user/orders/by-user/${userId}?sortBy=createAt&sortOrder=desc&page=1&size=10|}">Đơn
                                         hàng của tôi</a></li>
@@ -88,7 +85,7 @@
 
         let cartQuantity;
         let cartQuantityElm = document.getElementById("cartQuantity")
-        const cartJSON = sessionStorage.getItem('cart');
+        const cartJSON = localStorage.getItem('cart');
         if (!cartJSON) {
             cartQuantity = 0;
         } else {

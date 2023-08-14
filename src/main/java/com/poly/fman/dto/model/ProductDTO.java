@@ -50,9 +50,9 @@ public class ProductDTO implements ModelDTO, ResponseDTO{
 
 	private Date updateAt;
 
-    private ProductTypeDTO productType;
+    private String productTypeId;
 
-	private BrandDTO brand;
+	private String brandId;
 
 	public String getPriceStringVND(){
 		return CommonUtils.convertToCurrencyString(price, " VNĐ");

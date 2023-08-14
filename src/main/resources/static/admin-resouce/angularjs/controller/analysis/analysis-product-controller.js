@@ -164,7 +164,7 @@ app.controller("AnalysisProductController", function ($http, $scope, $routeParam
                 "Thứ tự" :  i,
                 "Mã sản phẩm" : element.product.id,
                 "Tên sản phẩm" : element.product.name,
-                "Loại sản phẩm" : element.product.productType.name,
+                "Loại sản phẩm" : element.product.productTypeId,
                 "Số lượng bán" : element.quantity
             });
             i++;
