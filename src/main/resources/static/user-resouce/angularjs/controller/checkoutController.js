@@ -5,6 +5,7 @@ app.controller('CheckoutController', function ($scope, $http, $location, $routeP
     let total;
     let isBynow = false;
     let isReCheckout = false;
+    $scope.userId = parseInt( getCookie("userId"));
 
 
     $scope.loadReCheckout = function () {

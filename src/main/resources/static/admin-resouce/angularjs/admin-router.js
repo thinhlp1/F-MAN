@@ -14,6 +14,7 @@ app.config(function ($routeProvider) {
             templateUrl: "/admin/products/",
             controller: "productController",
 
+
         })
         .when("/product-add", {
             templateUrl: "/admin/products/create",
@@ -29,6 +30,7 @@ app.config(function ($routeProvider) {
     },
       controller: "productController",
     })
+
 
         // BRAND
         .when("/brand", {
@@ -141,8 +143,7 @@ app.config(function ($routeProvider) {
           controller: "userController",
         })
        
-
-        // PAYMENT
+  // PAYMENT
         .when("/payment", {
             templateUrl: "/admin/payments/",
             controller: "PaymentMethodController"
