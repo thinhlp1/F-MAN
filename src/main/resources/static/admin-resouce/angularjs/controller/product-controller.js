@@ -240,11 +240,11 @@ app.controller(
       $http
         .delete(url)
         .then((resp) => {
-          // Xóa bản ghi khỏi $scope.data
-         // $scope.data = $scope.data.filter((item) => item.id !== id);
-         $scope.load().then(() => {
-          $scope.initGrid();
-        });
+          const index = $scope.data.findIndex(
+            (item) => item.id === id,
+        );
+        $scope.data[index].active = 0;
+        $scope.updateTable($scope.data);
           notification("Xóa thành công", 3000, "right", "top", "success");
         })
         .catch((err) => {
@@ -317,6 +317,32 @@ app.controller(
       );
     });      
     };
+
+    
+    $scope.restore = (id) => {
+      $("#product-restore").modal("hide");
+      const url = `${PRODUCT_URL}/restore/` + id;
+      $http
+          .put(url)
+          .then((resp) => {
+              const index = $scope.data.findIndex(
+                  (item) => item.id === id,
+              );
+              console.log(resp.data)
+              $scope.data[index].active = 1;
+              $scope.updateTable($scope.data);
+              notification("Khôi phục thành công", 3000, "right", "top", "success");
+          })
+          .catch((err) => {
+              notification(
+                  "ERROR " + err.status + ": Khôi phục thất bại",
+                  3000,
+                  "right",
+                  "top",
+                  "error",
+              );
+          });
+  };
        
 
 
@@ -349,16 +375,46 @@ app.controller(
               {
                 id: "active",
                 name: "Trạng Thái",
-                formatter: (cell) => {
+                formatter: (cell, row) => {
                   // cell là nội dụng trong một ô ở cột 'Trạng thái' (cell sẽ auto duyệt qua bằng data được truyền vào)
                   if (cell === 1) {
-                    return "Hoạt động";
+                      return gridjs.h(
+                          "button",
+                          {
+                              className: "btn btn-success text-white",
+                              onClick: () => {
+                                  $scope.id = row.cells[0].data;
+                                  $scope.$evalAsync(() => {
+                                      console.log($scope.id);
+                                      //Xử lí khi click vào thì gọi thằng modal ra
+                                      //Modal nằm ở bên trang html
+                                      $("#product").modal("show");
+                                  });
+                              },
+                          },
+                          'Hoạt động',
+                      );
                   } else if (cell === 0) {
-                    return "Không hoạt động";
+                      return gridjs.h(
+                          "button",
+                          {
+                              className: "btn btn-danger text-white",
+                              onClick: () => {
+                                  $scope.id = row.cells[0].data;
+                                  $scope.$evalAsync(() => {
+                                      console.log($scope.id);
+                                      //Xử lí khi click vào thì gọi thằng modal ra
+                                      //Modal nằm ở bên trang html
+                                      $("#product-restore").modal("show");
+                                  });
+                              },
+                          },
+                          'Vô hiệu hóa',
+                      );
                   } else {
-                    return "";
+                      return "";
                   }
-                },
+              },
               },
               {
                 name: "Action",
@@ -393,24 +449,7 @@ app.controller(
                         '<i class="fa fa-pencil" aria-hidden="true"></i>',
                       ),
                     ),
-                    gridjs.h(
-                      "button",
-                      {
-                        className: "border-0 bg-transparent",
-                        onClick: () => {
-                          $scope.id = row.cells[0].data;
-                          $scope.$evalAsync(() => {
-                            console.log($scope.id);
-                            //Xử lí khi click vào thì gọi thằng modal ra
-                            //Modal nằm ở bên trang html
-                            $("#product").modal("show");
-                          });
-                        },
-                      },
-                      gridjs.html(
-                        '<i class="fa fa-trash"aria-hidden="true"></i>',
-                      ),
-                    ),
+                    
                     gridjs.h(
                       "button",
                       {

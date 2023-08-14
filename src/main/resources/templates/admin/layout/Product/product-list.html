@@ -49,161 +49,43 @@
   
 
 
-    <!-- <script>
+<div class="modal fade" id="product-restore" aria-hidden="true"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa fa-exclamation-triangle"
+                       aria-hidden="true"></i>
+                    KHÔI PHỤC
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
 
-        const clickSize = document.getElementById("clickButton");
-        clickSize.addEventListener('click', function () {
-            const sizeProduct = document.getElementsByName("sizeProuct");
-
-            var sizeArray = [];
-
-            for (let index = 0; index < sizeProduct.length; index++) {
-                if (sizeProduct[index].checked)
-                    sizeArray.push(sizeProduct[index].value)
-            }
-
-            if (sizeArray.length == 0) {
-                sizeArray.push("notsize");
-            }
-
-            //  for (let index = 0; index < sizeArray.length; index++) {
-
-            //           console.log(sizeArray[index])
-            //  }
-            $.ajax({
-                url: "${pageContext.request.contextPath}/admin/products/listfilter",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(sizeArray),
-                success: function (response) {
-                    // Xử lý phản hồi thành công
-
-                },
-                error: function (error) {
-                    // Xử lý phản hồi lỗi
-                    console.log("Checkout failed");
-
-                }
-            });
-
-        })
-    </script> -->
-
-<!-- <div class="table-responsive">
-    <table class="table table-hover table-striped">
-        <thead class="table-header-custom">
-        <tr>
-            <th scope="col">STT</th>
-            <th scope="col">ID</th>
-            <th scope="col">Tên sản phẩm</th>
-            <th scope="col">Loại</th>
-            <th scope="col">Giá</th>
-            <th scope="col">Thương hiệu</th>
-            <th scope="col">Trạng thái</th>
-            <th scope="col">Thao tác</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>ID01</td>
-            <td>Product Name</td>
-            <td>Product Type</td>
-            <td>2000</td>
-            <td>Product Brand</td>
-            <td>Active</td>
-            <td>
-                <a class="text-dark"
-                   href="#!product-update/1">
-                    <button class="border-0 bg-transparent">
-                        <i class="fa fa-pencil" aria-hidden="true"></i>
-                    </button>
-                </a>
-                <a class="text-dark"
-                   href="#!product-detail/1">
-                    <button class="border-0 bg-transparent">
-                        <i class="fa fa-eye" aria-hidden="true"></i>
-                    </button>
-                </a>
-                <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal"
-                        data-bs-target="#PRODUCT"><i class="fa fa-trash"
-                                                     aria-hidden="true"></i>
-                </button>
-                <div class="modal fade" id="PRODUCT" aria-hidden="true"
-                     tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-danger">
-                                    <i class="fa fa-exclamation-triangle"
-                                       aria-hidden="true"></i>
-                                    XÓA
-                                </h5>
-                                <button type="button" class="btn-close"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-
-                            </div>
-                            <div class="modal-body text-center">
-                                <img class="img-fluid mb-3" width="300px" height="300px"
-                                     th:src="@{admin-resouce/plugins/images/large/cat-screaming-no.jpg}">
-                                <h4>Bạn có chắc chắc muốn sản phẩm <span class="text-danger fw-bold">${item.name.toUpperCase()}</span>
-                                    ?</h4>
-                            </div>
-                            <div class="modal-footer">
-                                <div class="row g-3 w-100">
-                                    <div class="col-6">
-                                        <button class="btn btn-outline-danger w-100"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close">Không
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <a href="${pageContext.request.contextPath}/admin/products/delete/${item.id}"
-                                           class="btn btn-blue-primary w-100">Có</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            </div>
+            <div class="modal-body text-center">
+                <img class="img-fluid mb-3" width="300px" height="300px"
+                     th:src="@{/admin-resouce/plugins/images/large/cat-sayin-happy.jpg}">
+                <h4>Bạn có chắc chắc muốn khôi phục danh mục <span class="text-danger fw-bold">{{ id }}</span>
+                    ?</h4>
+            </div>
+            <div class="modal-footer">
+                <div class="row g-3 w-100">
+                    <div class="col-6">
+                        <button class="btn btn-outline-danger w-100"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">Không
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button ng-click="restore(id)"
+                                class="btn btn-blue-primary w-100">Có
+                        </button>
                     </div>
                 </div>
-
-            </td>
-        </tr>
-        </tbody>
-    </table>
-                         <c:choose>-->
-    <!--                       	  <c:when test="${checkItems == true}">-->
-    <!--                        <div class="d-flex justify-content-center pagination-custom">-->
-    <!--                            <ul class="pagination">-->
-    <!--                                <c:if test="${items.number > 0}">-->
-    <!--                                    <li class="page-item">-->
-    <!--                                        <a class="page-link fs-4" href="${pageContext.request.contextPath}/admin/products/?field=${field}&p=${items.number - 1}">-->
-    <!--                                            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>-->
-    <!--                                        </a>-->
-    <!--                                    </li>-->
-    <!--                                </c:if>-->
-    <!--                                <c:forEach var="i" begin="0" end="${items.totalPages - 1}">-->
-    <!--                                    <c:if test="${i >= items.number - 2 && i <= items.number + 2}">-->
-    <!--                                        <li class="page-item ${i == items.number ? 'active' : ''}">-->
-    <!--                                            <a class="page-link fs-4" href="${pageContext.request.contextPath}/admin/products/?field=${field}&p=${i}">-->
-    <!--                                                    ${i + 1}-->
-    <!--                                            </a>-->
-    <!--                                        </li>-->
-    <!--                                    </c:if>-->
-    <!--                                </c:forEach>-->
-    <!--                                <c:if test="${items.number < items.totalPages - 1}">-->
-    <!--                                    <li class="page-item">-->
-    <!--                                        <a class="page-link fs-4" href="${pageContext.request.contextPath}/admin/products/?field=${field}&p=${items.number + 1}">-->
-    <!--                                            <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>-->
-    <!--                                        </a>-->
-    <!--                                    </li>-->
-    <!--                                </c:if>-->
-    <!--                            </ul>-->
-    <!--                        </div>-->
-    <!--                        	  </c:when>-->
-    <!--                        	  <c:otherwise>-->
-    <!--                        	  -->
-    <!--                        	  </c:otherwise>-->
-    <!--                       </c:choose> -->
-<!-- </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+   

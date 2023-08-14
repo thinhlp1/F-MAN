@@ -117,6 +117,17 @@ public class ProductService {
                 .setParameter("id", product.getId())
                 .executeUpdate();
     }
+
+     public void restoreProductActive(Product product) {
+    	entityManager.createNativeQuery("UPDATE fman.product SET active = :active , update_at = :updateAt WHERE id = :id")
+                .setParameter("active", (byte) 1) 
+                .setParameter("updateAt", new Date())
+                .setParameter("id", product.getId())
+                .executeUpdate();
+    }
+
+
+    
     
     
     public Page<Product> getAllProductByBrandIdLikeAndPriceBetween( String brandId, BigInteger minPrice , BigInteger maxPrice , Pageable pageable) {
